@@ -1,4 +1,4 @@
-name: CI - Test & Build
+name: Check and Build
 
 on:
   push:
@@ -12,8 +12,8 @@ on:
       - develop
 
 jobs:
-  android:
-    name: Android Build & Test
+  checks:
+    name: Format Check, Lint & Test
     runs-on: ubuntu-latest
 
     steps:
@@ -38,13 +38,10 @@ jobs:
       - name: Run tests
         run: flutter test --coverage
 
-      - name: Build Android (appbundle)
-        run: flutter build appbundle --release
-
-  ios:
-    name: iOS Build & Test
-    runs-on: macos-latest
-
+  android_build:
+    name: Build Android
+    runs-on: ubuntu-latest
+    needs: checks
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -55,17 +52,22 @@ jobs:
           channel: stable
           cache: true
 
-      - name: Install dependencies
-        run: flutter pub get
+      - name: Build Android (appbundle)
+        run: flutter build appbundle --release
 
-      - name: Format check
-        run: dart format --output=none --set-exit-if-changed .
+  ios_build:
+    name: Build iOS
+    runs-on: macos-latest
+    needs: checks
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - name: Analyze
-        run: flutter analyze --fatal-warnings
-
-      - name: Run tests
-        run: flutter test --coverage
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
 
       - name: Build iOS
         run: flutter build ios --release --no-codesign
