@@ -13,7 +13,7 @@ class _PageSwitcherState extends State<PageSwitcher> {
   static final List<Widget> _pages = <Widget>[
     const Center(child: Text('Home Page')),
     const Center(child: Text('Drink Page')),
-    const Center(child: Text('Achievments Page')),
+    const Center(child: Text('Achievements Page')),
     const Center(child: Text('Leaderboard Page')),
     const Center(child: Text('Profile Page')),
   ];
@@ -31,13 +31,19 @@ class _PageSwitcherState extends State<PageSwitcher> {
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.brown,
+        selectedItemColor: Theme.of(context).colorScheme.primary,
         unselectedItemColor: Colors.grey,
         onTap: _onItemTapped,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.book), label: 'Drink'),
-          BottomNavigationBarItem(icon: Icon(Icons.star), label: 'Achievments'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.local_drink),
+            label: 'Drink',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.star),
+            label: 'Achievements',
+          ),
           BottomNavigationBarItem(
             icon: Icon(Icons.emoji_events),
             label: 'Leaderboard',
