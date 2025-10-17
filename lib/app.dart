@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:remembeer/page_switcher.dart';
 
 class App extends StatelessWidget {
   const App({super.key});
@@ -11,7 +12,7 @@ class App extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.brown),
         useMaterial3: true,
       ),
-      home: const Text('Hello, Remembeer!'),
+      home: const PageSwitcher(),
     );
   }
 }
