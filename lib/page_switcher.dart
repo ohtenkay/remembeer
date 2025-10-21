@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:remembeer/pages/activity_page.dart';
+import 'package:remembeer/pages/drink_page.dart';
+import 'package:remembeer/pages/leaderboards_page.dart';
+import 'package:remembeer/pages/profile_page.dart';
+import 'package:remembeer/pages/settings_page.dart';
 
 class PageSwitcher extends StatefulWidget {
   const PageSwitcher({super.key});
@@ -11,11 +16,11 @@ class _PageSwitcherState extends State<PageSwitcher> {
   int _selectedIndex = 0;
 
   static final List<Widget> _pages = <Widget>[
-    const Center(child: Text('Home Page')),
-    const Center(child: Text('Drink Page')),
-    const Center(child: Text('Achievements Page')),
-    const Center(child: Text('Leaderboard Page')),
-    const Center(child: Text('Profile Page')),
+    const ProfilePage(),
+    const LeaderboardsPage(),
+    const DrinkPage(),
+    const ActivityPage(),
+    const SettingsPage(),
   ];
 
   void _onItemTapped(int index) {
@@ -35,20 +40,20 @@ class _PageSwitcherState extends State<PageSwitcher> {
         unselectedItemColor: Colors.grey,
         onTap: _onItemTapped,
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.emoji_events),
+            label: 'Leaderboards',
+          ),
           BottomNavigationBarItem(
             icon: Icon(Icons.local_drink),
             label: 'Drink',
           ),
+          BottomNavigationBarItem(icon: Icon(Icons.group), label: 'Activity'),
           BottomNavigationBarItem(
-            icon: Icon(Icons.star),
-            label: 'Achievements',
+            icon: Icon(Icons.settings),
+            label: 'Settings',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.emoji_events),
-            label: 'Leaderboard',
-          ),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
         ],
       ),
     );
