@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:remembeer/pages/activity_page.dart';
 import 'package:remembeer/pages/drink_page.dart';
 import 'package:remembeer/pages/leaderboards_page.dart';
@@ -39,14 +40,26 @@ class _PageSwitcherState extends State<PageSwitcher> {
         selectedItemColor: Theme.of(context).colorScheme.primary,
         unselectedItemColor: Colors.grey,
         onTap: _onItemTapped,
-        items: const [
+        items: [
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
           BottomNavigationBarItem(
             icon: Icon(Icons.emoji_events),
             label: 'Leaderboards',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.local_drink),
+            icon: SizedBox(
+              width: 40,
+              height: 40,
+              child: SvgPicture.asset(
+                'assets/icons/beer.svg',
+                colorFilter: ColorFilter.mode(
+                  _selectedIndex == 2
+                      ? Theme.of(context).colorScheme.primary
+                      : Colors.grey.shade700,
+                  BlendMode.srcIn,
+                ),
+              ),
+            ),
             label: 'Drink',
           ),
           BottomNavigationBarItem(icon: Icon(Icons.group), label: 'Activity'),
