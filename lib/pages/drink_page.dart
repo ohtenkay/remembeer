@@ -6,18 +6,28 @@ class DrinkPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.separated(
-      padding: EdgeInsets.all(12.0),
-      itemCount: 20,
-      separatorBuilder: (context, index) => Divider(),
-      itemBuilder: (context, index) {
-        return ListTile(
-          leading: BeerIcon(),
-          title: Text('Drink Item ${index + 1}'),
-          subtitle: Text('Details about Drink Item ${index + 1}'),
-          trailing: Icon(Icons.chevron_right),
-        );
-      },
+    return Column(
+      children: [
+        Text(
+          'Date Selector Placeholder',
+          style: Theme.of(context).textTheme.headlineMedium,
+        ),
+        Expanded(
+          child: ListView.separated(
+            padding: EdgeInsets.all(12.0),
+            itemCount: 20,
+            separatorBuilder: (context, index) => Divider(),
+            itemBuilder: (context, index) {
+              return ListTile(
+                leading: BeerIcon(),
+                title: Text('Drink Item ${index + 1}'),
+                subtitle: Text('Details about Drink Item ${index + 1}'),
+                trailing: Icon(Icons.chevron_right),
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 }

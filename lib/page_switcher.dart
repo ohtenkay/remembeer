@@ -36,6 +36,22 @@ class _PageSwitcherState extends State<PageSwitcher> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: IndexedStack(index: _selectedIndex, children: _pages),
+      appBar: _selectedIndex == _drinkPageIndex
+          // TODO(ohtenkay): Maybe move this from AppBar to DrinkPage itself.
+          ? AppBar(
+              backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: const [
+                  Text('Streak placeholder', style: TextStyle(fontSize: 12)),
+                  Text(
+                    'Create session placeholder',
+                    style: TextStyle(fontSize: 12),
+                  ),
+                ],
+              ),
+            )
+          : null,
       floatingActionButton: _selectedIndex == _drinkPageIndex
           ? FloatingActionButton(
               onPressed: () {
