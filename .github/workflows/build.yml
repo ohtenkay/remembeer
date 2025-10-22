@@ -71,3 +71,18 @@ jobs:
 
       - name: Build iOS
         run: flutter build ios --release --no-codesign
+
+  ready-to-merge:
+    name: Ready to merge
+    runs-on: ubuntu-latest
+    if: always()
+    needs:
+      - checks
+      - android_build
+      - ios_build
+    steps:
+      - name: Decide whether the needed jobs succeeded or failed
+        uses: re-actors/alls-green@release/v1
+        with:
+          allowed-skips: ${{ toJSON(needs) }}
+          jobs: ${{ toJSON(needs) }}
