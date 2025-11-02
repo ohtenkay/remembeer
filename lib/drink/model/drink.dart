@@ -5,7 +5,7 @@ import 'package:remembeer/drink_type/model/drink_type.dart';
 
 part 'drink.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 @GeoPointConverter()
 class Drink {
   final String? id;

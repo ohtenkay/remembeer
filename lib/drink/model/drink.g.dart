@@ -22,7 +22,7 @@ Map<String, dynamic> _$DrinkToJson(Drink instance) => <String, dynamic>{
   'id': instance.id,
   'userId': instance.userId,
   'timestamp': instance.timestamp.toIso8601String(),
-  'drink': instance.drink,
+  'drink': instance.drink.toJson(),
   'volumeInMilliliters': instance.volumeInMilliliters,
   'location': _$JsonConverterToJson<GeoPoint, GeoPoint>(
     instance.location,
