@@ -11,7 +11,7 @@ class Drink {
   final String? id;
   final String userId;
   final DateTime timestamp;
-  final DrinkType drink;
+  final DrinkType drinkType;
   final double volumeInMilliliters;
   final GeoPoint? location;
 
@@ -19,7 +19,7 @@ class Drink {
     this.id,
     required this.userId,
     required this.timestamp,
-    required this.drink,
+    required this.drinkType,
     required this.volumeInMilliliters,
     this.location,
   });

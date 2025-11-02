@@ -10,7 +10,7 @@ Drink _$DrinkFromJson(Map<String, dynamic> json) => Drink(
   id: json['id'] as String?,
   userId: json['userId'] as String,
   timestamp: DateTime.parse(json['timestamp'] as String),
-  drink: DrinkType.fromJson(json['drink'] as Map<String, dynamic>),
+  drinkType: DrinkType.fromJson(json['drinkType'] as Map<String, dynamic>),
   volumeInMilliliters: (json['volumeInMilliliters'] as num).toDouble(),
   location: _$JsonConverterFromJson<GeoPoint, GeoPoint>(
     json['location'],
@@ -22,7 +22,7 @@ Map<String, dynamic> _$DrinkToJson(Drink instance) => <String, dynamic>{
   'id': instance.id,
   'userId': instance.userId,
   'timestamp': instance.timestamp.toIso8601String(),
-  'drink': instance.drink.toJson(),
+  'drinkType': instance.drinkType.toJson(),
   'volumeInMilliliters': instance.volumeInMilliliters,
   'location': _$JsonConverterToJson<GeoPoint, GeoPoint>(
     instance.location,

@@ -100,7 +100,7 @@ Future<void> _addTestDrink() async {
   final testDrink = Drink(
     userId: 'test_user_123',
     timestamp: DateTime.now(),
-    drink: DrinkType(
+    drinkType: DrinkType(
       id: 'beer_id',
       name: 'Test Beer',
       alcoholPercentage: 5.0,

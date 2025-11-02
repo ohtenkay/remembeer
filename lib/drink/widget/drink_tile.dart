@@ -12,7 +12,7 @@ class DrinkTile extends StatelessWidget {
     // TODO(metju-ac): Implement a proper drink tile, this is just a placeholder.
     return ListTile(
       leading: BeerIcon(),
-      title: Text('Drink named ${drink.drink.name}'),
+      title: Text('Drink named ${drink.drinkType.name}'),
       subtitle: Text(
         'Drank on ${drink.timestamp.toLocal()} on ${drink.location?.latitude} ${drink.location?.longitude}',
       ),
