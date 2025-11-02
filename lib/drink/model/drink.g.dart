@@ -1,0 +1,41 @@
+// GENERATED CODE - DO NOT MODIFY BY HAND
+
+part of 'drink.dart';
+
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+Drink _$DrinkFromJson(Map<String, dynamic> json) => Drink(
+  id: json['id'] as String?,
+  userId: json['userId'] as String,
+  timestamp: DateTime.parse(json['timestamp'] as String),
+  drink: DrinkType.fromJson(json['drink'] as Map<String, dynamic>),
+  volumeInMilliliters: (json['volumeInMilliliters'] as num).toDouble(),
+  location: _$JsonConverterFromJson<GeoPoint, GeoPoint>(
+    json['location'],
+    const GeoPointConverter().fromJson,
+  ),
+);
+
+Map<String, dynamic> _$DrinkToJson(Drink instance) => <String, dynamic>{
+  'id': instance.id,
+  'userId': instance.userId,
+  'timestamp': instance.timestamp.toIso8601String(),
+  'drink': instance.drink,
+  'volumeInMilliliters': instance.volumeInMilliliters,
+  'location': _$JsonConverterToJson<GeoPoint, GeoPoint>(
+    instance.location,
+    const GeoPointConverter().toJson,
+  ),
+};
+
+Value? _$JsonConverterFromJson<Json, Value>(
+  Object? json,
+  Value? Function(Json json) fromJson,
+) => json == null ? null : fromJson(json as Json);
+
+Json? _$JsonConverterToJson<Json, Value>(
+  Value? value,
+  Json? Function(Value value) toJson,
+) => value == null ? null : toJson(value);
