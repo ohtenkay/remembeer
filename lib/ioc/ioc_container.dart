@@ -4,6 +4,8 @@ import 'package:remembeer/drink/service/drink_service.dart';
 final get = GetIt.instance;
 
 class IoCContainer {
+  IoCContainer._();
+
   static void initialize() {
     get.registerSingleton(DrinkService());
   }
