@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:remembeer/common/beer_icon.dart';
-import 'package:remembeer/drink/model/drink.dart';
+import 'package:remembeer/drink/model/drink_data.dart';
 import 'package:remembeer/drink/service/drink_service.dart';
 import 'package:remembeer/drink_type/model/drink_category.dart';
 import 'package:remembeer/drink_type/model/drink_type.dart';
@@ -97,9 +97,9 @@ class _PageSwitcherState extends State<PageSwitcher> {
 
 Future<void> _addTestDrink() async {
   final drinkService = get<DrinkService>();
-  final testDrink = Drink(
+  final testDrink = DrinkData(
     userId: 'test_user_123',
-    timestamp: DateTime.now(),
+    consumedAt: DateTime.now(),
     drinkType: DrinkType(
       id: 'beer_id',
       name: 'Test Beer',

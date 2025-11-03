@@ -1,12 +1,12 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'drink.dart';
+part of 'drink_data.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-Drink _$DrinkFromJson(Map<String, dynamic> json) => Drink(
+DrinkData _$DrinkDataFromJson(Map<String, dynamic> json) => DrinkData(
   userId: json['userId'] as String,
   consumedAt: DateTime.parse(json['consumedAt'] as String),
   drinkType: DrinkType.fromJson(json['drinkType'] as Map<String, dynamic>),
@@ -15,35 +15,9 @@ Drink _$DrinkFromJson(Map<String, dynamic> json) => Drink(
     json['location'],
     const GeoPointConverter().fromJson,
   ),
-  id: json['id'] as String,
-  createdAt: _$JsonConverterFromJson<Timestamp, DateTime>(
-    json['createdAt'],
-    const TimestampConverter().fromJson,
-  ),
-  updatedAt: _$JsonConverterFromJson<Timestamp, DateTime>(
-    json['updatedAt'],
-    const TimestampConverter().fromJson,
-  ),
-  deletedAt: _$JsonConverterFromJson<Timestamp, DateTime>(
-    json['deletedAt'],
-    const TimestampConverter().fromJson,
-  ),
 );
 
-Map<String, dynamic> _$DrinkToJson(Drink instance) => <String, dynamic>{
-  'id': instance.id,
-  'createdAt': _$JsonConverterToJson<Timestamp, DateTime>(
-    instance.createdAt,
-    const TimestampConverter().toJson,
-  ),
-  'updatedAt': _$JsonConverterToJson<Timestamp, DateTime>(
-    instance.updatedAt,
-    const TimestampConverter().toJson,
-  ),
-  'deletedAt': _$JsonConverterToJson<Timestamp, DateTime>(
-    instance.deletedAt,
-    const TimestampConverter().toJson,
-  ),
+Map<String, dynamic> _$DrinkDataToJson(DrinkData instance) => <String, dynamic>{
   'userId': instance.userId,
   'consumedAt': instance.consumedAt.toIso8601String(),
   'drinkType': instance.drinkType.toJson(),

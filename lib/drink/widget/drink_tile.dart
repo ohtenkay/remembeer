@@ -14,7 +14,7 @@ class DrinkTile extends StatelessWidget {
       leading: BeerIcon(),
       title: Text('Drink named ${drink.drinkType.name}'),
       subtitle: Text(
-        'Drank on ${drink.timestamp.toLocal()} on ${drink.location?.latitude} ${drink.location?.longitude}',
+        'Drank on ${drink.consumedAt.toLocal()} on ${drink.location?.latitude} ${drink.location?.longitude} ${drink.deletedAt}',
       ),
       trailing: Icon(Icons.chevron_right),
     );

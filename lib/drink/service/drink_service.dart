@@ -1,8 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:remembeer/drink/model/drink.dart';
+import 'package:remembeer/drink/model/drink_data.dart';
 
 class DrinkService {
-  final _drinkCollection = FirebaseFirestore.instance
+  final _drinkReadCollection = FirebaseFirestore.instance
       .collection('drinks')
       .withConverter(
         fromFirestore: (snapshot, options) {
@@ -17,12 +18,24 @@ class DrinkService {
         },
       );
 
-  Stream<List<Drink>> get drinksStream => _drinkCollection.snapshots().map(
-    (querySnapshot) =>
-        querySnapshot.docs.map((docSnapshot) => docSnapshot.data()).toList(),
-  );
+  final _drinkWriteCollection = FirebaseFirestore.instance.collection('drinks');
 
-  Future<void> createDrink(Drink drink) {
-    return _drinkCollection.add(drink);
+  Stream<List<Drink>> get drinksStream => _drinkReadCollection
+      .where('deletedAt', isNull: true)
+      .snapshots()
+      .map(
+        (querySnapshot) => querySnapshot.docs
+            .map((docSnapshot) => docSnapshot.data())
+            .toList(),
+      );
+
+  Future<void> createDrink(DrinkData drinkData) {
+    final json = drinkData.toJson();
+
+    json['createdAt'] = FieldValue.serverTimestamp();
+    json['updatedAt'] = FieldValue.serverTimestamp();
+    json['deletedAt'] = null;
+
+    return _drinkWriteCollection.add(json);
   }
 }
