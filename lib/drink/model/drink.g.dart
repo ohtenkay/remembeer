@@ -7,14 +7,6 @@ part of 'drink.dart';
 // **************************************************************************
 
 Drink _$DrinkFromJson(Map<String, dynamic> json) => Drink(
-  userId: json['userId'] as String,
-  consumedAt: DateTime.parse(json['consumedAt'] as String),
-  drinkType: DrinkType.fromJson(json['drinkType'] as Map<String, dynamic>),
-  volumeInMilliliters: (json['volumeInMilliliters'] as num).toDouble(),
-  location: _$JsonConverterFromJson<GeoPoint, GeoPoint>(
-    json['location'],
-    const GeoPointConverter().fromJson,
-  ),
   id: json['id'] as String,
   createdAt: _$JsonConverterFromJson<Timestamp, DateTime>(
     json['createdAt'],
@@ -28,6 +20,14 @@ Drink _$DrinkFromJson(Map<String, dynamic> json) => Drink(
     json['deletedAt'],
     const TimestampConverter().fromJson,
   ),
+  userId: json['userId'] as String,
+  consumedAt: DateTime.parse(json['consumedAt'] as String),
+  drinkType: DrinkType.fromJson(json['drinkType'] as Map<String, dynamic>),
+  volumeInMilliliters: (json['volumeInMilliliters'] as num).toDouble(),
+  location: _$JsonConverterFromJson<GeoPoint, GeoPoint>(
+    json['location'],
+    const GeoPointConverter().fromJson,
+  ),
 );
 
 Map<String, dynamic> _$DrinkToJson(Drink instance) => <String, dynamic>{
@@ -36,18 +36,18 @@ Map<String, dynamic> _$DrinkToJson(Drink instance) => <String, dynamic>{
     instance.createdAt,
     const TimestampConverter().toJson,
   ),
+  'userId': instance.userId,
+  'consumedAt': instance.consumedAt.toIso8601String(),
   'updatedAt': _$JsonConverterToJson<Timestamp, DateTime>(
     instance.updatedAt,
     const TimestampConverter().toJson,
   ),
+  'drinkType': instance.drinkType.toJson(),
+  'volumeInMilliliters': instance.volumeInMilliliters,
   'deletedAt': _$JsonConverterToJson<Timestamp, DateTime>(
     instance.deletedAt,
     const TimestampConverter().toJson,
   ),
-  'userId': instance.userId,
-  'consumedAt': instance.consumedAt.toIso8601String(),
-  'drinkType': instance.drinkType.toJson(),
-  'volumeInMilliliters': instance.volumeInMilliliters,
   'location': _$JsonConverterToJson<GeoPoint, GeoPoint>(
     instance.location,
     const GeoPointConverter().toJson,

@@ -1,12 +1,12 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'drink_data.dart';
+part of 'drink_dto.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-DrinkData _$DrinkDataFromJson(Map<String, dynamic> json) => DrinkData(
+DrinkDTO _$DrinkDTOFromJson(Map<String, dynamic> json) => DrinkDTO(
   userId: json['userId'] as String,
   consumedAt: DateTime.parse(json['consumedAt'] as String),
   drinkType: DrinkType.fromJson(json['drinkType'] as Map<String, dynamic>),
@@ -17,7 +17,7 @@ DrinkData _$DrinkDataFromJson(Map<String, dynamic> json) => DrinkData(
   ),
 );
 
-Map<String, dynamic> _$DrinkDataToJson(DrinkData instance) => <String, dynamic>{
+Map<String, dynamic> _$DrinkDTOToJson(DrinkDTO instance) => <String, dynamic>{
   'userId': instance.userId,
   'consumedAt': instance.consumedAt.toIso8601String(),
   'drinkType': instance.drinkType.toJson(),

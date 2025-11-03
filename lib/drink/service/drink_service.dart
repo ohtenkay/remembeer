@@ -1,21 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:remembeer/drink/model/drink.dart';
-import 'package:remembeer/drink/model/drink_data.dart';
+import 'package:remembeer/drink/model/drink_dto.dart';
 
 class DrinkService {
   final _drinkReadCollection = FirebaseFirestore.instance
       .collection('drinks')
       .withConverter(
-        fromFirestore: (snapshot, options) {
+        fromFirestore: (snapshot, _) {
           final json = snapshot.data() ?? {};
           json['id'] = snapshot.id;
           return Drink.fromJson(json);
         },
-        toFirestore: (value, options) {
-          final json = value.toJson();
-          json.remove('id');
-          return json;
-        },
+        toFirestore: (drink, _) => drink.toJson(),
       );
 
   final _drinkWriteCollection = FirebaseFirestore.instance.collection('drinks');
@@ -24,13 +20,13 @@ class DrinkService {
       .where('deletedAt', isNull: true)
       .snapshots()
       .map(
-        (querySnapshot) => querySnapshot.docs
-            .map((docSnapshot) => docSnapshot.data())
-            .toList(),
+        (querySnapshot) => List.unmodifiable(
+          querySnapshot.docs.map((docSnapshot) => docSnapshot.data()).toList(),
+        ),
       );
 
-  Future<void> createDrink(DrinkData drinkData) {
-    final json = drinkData.toJson();
+  Future<void> createDrink(DrinkDTO drinkDTO) {
+    final json = drinkDTO.toJson();
 
     json['createdAt'] = FieldValue.serverTimestamp();
     json['updatedAt'] = FieldValue.serverTimestamp();

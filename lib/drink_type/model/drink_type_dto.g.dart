@@ -1,19 +1,18 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'drink_type_data.dart';
+part of 'drink_type_dto.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-DrinkTypeData _$DrinkTypeDataFromJson(Map<String, dynamic> json) =>
-    DrinkTypeData(
-      name: json['name'] as String,
-      category: $enumDecode(_$DrinkCategoryEnumMap, json['category']),
-      alcoholPercentage: (json['alcoholPercentage'] as num).toDouble(),
-    );
+DrinkTypeDTO _$DrinkTypeDTOFromJson(Map<String, dynamic> json) => DrinkTypeDTO(
+  name: json['name'] as String,
+  category: $enumDecode(_$DrinkCategoryEnumMap, json['category']),
+  alcoholPercentage: (json['alcoholPercentage'] as num).toDouble(),
+);
 
-Map<String, dynamic> _$DrinkTypeDataToJson(DrinkTypeData instance) =>
+Map<String, dynamic> _$DrinkTypeDTOToJson(DrinkTypeDTO instance) =>
     <String, dynamic>{
       'name': instance.name,
       'category': _$DrinkCategoryEnumMap[instance.category],

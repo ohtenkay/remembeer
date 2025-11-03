@@ -1,21 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:remembeer/common/model/base_model.dart';
-import 'package:remembeer/common/model/timestamp_converter.dart';
 import 'package:remembeer/drink/model/drink_fields.dart';
 import 'package:remembeer/drink/model/geopoint_converter.dart';
 import 'package:remembeer/drink_type/model/drink_type.dart';
 
-part 'drink.g.dart';
+part 'drink_dto.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 @GeoPointConverter()
-class Drink extends BaseModel with DrinkFields {
-  Drink({
-    required super.id,
-    super.createdAt,
-    super.updatedAt,
-    super.deletedAt,
+class DrinkDTO with DrinkFields {
+  DrinkDTO({
     required String userId,
     required DateTime consumedAt,
     required DrinkType drinkType,
@@ -29,7 +23,8 @@ class Drink extends BaseModel with DrinkFields {
     this.location = location;
   }
 
-  factory Drink.fromJson(Map<String, dynamic> json) => _$DrinkFromJson(json);
+  factory DrinkDTO.fromJson(Map<String, dynamic> json) =>
+      _$DrinkDTOFromJson(json);
 
-  Map<String, dynamic> toJson() => _$DrinkToJson(this);
+  Map<String, dynamic> toJson() => _$DrinkDTOToJson(this);
 }
