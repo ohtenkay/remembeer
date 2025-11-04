@@ -6,5 +6,5 @@ mixin DrinkFields {
   late DateTime consumedAt;
   late DrinkType drinkType;
   late double volumeInMilliliters;
-  late GeoPoint? location;
+  GeoPoint? location;
 }
