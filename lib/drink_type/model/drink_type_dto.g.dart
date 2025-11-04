@@ -15,7 +15,7 @@ DrinkTypeDTO _$DrinkTypeDTOFromJson(Map<String, dynamic> json) => DrinkTypeDTO(
 Map<String, dynamic> _$DrinkTypeDTOToJson(DrinkTypeDTO instance) =>
     <String, dynamic>{
       'name': instance.name,
-      'category': _$DrinkCategoryEnumMap[instance.category],
+      'category': _$DrinkCategoryEnumMap[instance.category]!,
       'alcoholPercentage': instance.alcoholPercentage,
     };
 
