@@ -13,6 +13,7 @@ formatter:
 analyzer:
   exclude:
     - build/**
+    - "**/*.g.dart"
   errors:
     always_use_package_imports: error
     prefer_single_quotes: error
