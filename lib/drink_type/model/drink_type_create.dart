@@ -1,12 +1,13 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:remembeer/common/model/value_object.dart';
 import 'package:remembeer/drink_type/model/drink_category.dart';
 import 'package:remembeer/drink_type/model/drink_type_fields.dart';
 
-part 'drink_type_dto.g.dart';
+part 'drink_type_create.g.dart';
 
-@JsonSerializable()
-class DrinkTypeDTO with DrinkTypeFields {
-  DrinkTypeDTO({
+@JsonSerializable(createFactory: false)
+class DrinkTypeCreate extends ValueObject with DrinkTypeFields {
+  DrinkTypeCreate({
     required String name,
     required DrinkCategory category,
     required double alcoholPercentage,
@@ -16,8 +17,6 @@ class DrinkTypeDTO with DrinkTypeFields {
     this.alcoholPercentage = alcoholPercentage;
   }
 
-  factory DrinkTypeDTO.fromJson(Map<String, dynamic> json) =>
-      _$DrinkTypeDTOFromJson(json);
-
-  Map<String, dynamic> toJson() => _$DrinkTypeDTOToJson(this);
+  @override
+  Map<String, dynamic> toJson() => _$DrinkTypeCreateToJson(this);
 }
