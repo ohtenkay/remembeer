@@ -41,12 +41,12 @@ abstract class Controller<T extends Entity, U extends ValueObject> {
   Future<void> deleteSingle(T entity) {
     return writeCollection
         .doc(entity.id)
-        .set(entity.toJson().withoutId().withServerDeleteTimestamps());
+        .update(entity.toJson().withoutId().withServerDeleteTimestamps());
   }
 
   Future<void> updateSingle(T entity) {
     return writeCollection
         .doc(entity.id)
-        .set(entity.toJson().withoutId().withServerUpdateTimestamp());
+        .update(entity.toJson().withoutId().withServerUpdateTimestamp());
   }
 }
