@@ -25,7 +25,7 @@ class _PageSwitcherState extends State<PageSwitcher> {
   int _selectedIndex = _drinkPageIndex;
 
   static final List<Widget> _pages = <Widget>[
-    const ProfilePage(),
+    ProfilePage(),
     const LeaderboardsPage(),
     const DrinkPage(),
     const ActivityPage(),
