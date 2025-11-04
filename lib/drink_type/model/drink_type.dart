@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:remembeer/common/model/base_model.dart';
+import 'package:remembeer/common/model/entity.dart';
 import 'package:remembeer/common/model/timestamp_converter.dart';
 import 'package:remembeer/drink_type/model/drink_category.dart';
 import 'package:remembeer/drink_type/model/drink_type_fields.dart';
@@ -8,7 +8,7 @@ import 'package:remembeer/drink_type/model/drink_type_fields.dart';
 part 'drink_type.g.dart';
 
 @JsonSerializable()
-class DrinkType extends BaseModel with DrinkTypeFields {
+class DrinkType extends Entity with DrinkTypeFields {
   DrinkType({
     required super.id,
     super.createdAt,
@@ -26,5 +26,6 @@ class DrinkType extends BaseModel with DrinkTypeFields {
   factory DrinkType.fromJson(Map<String, dynamic> json) =>
       _$DrinkTypeFromJson(json);
 
+  @override
   Map<String, dynamic> toJson() => _$DrinkTypeToJson(this);
 }

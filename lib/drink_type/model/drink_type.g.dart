@@ -26,9 +26,9 @@ DrinkType _$DrinkTypeFromJson(Map<String, dynamic> json) => DrinkType(
 );
 
 Map<String, dynamic> _$DrinkTypeToJson(DrinkType instance) => <String, dynamic>{
-  'id': instance.id,
   'name': instance.name,
-  'category': _$DrinkCategoryEnumMap[instance.category],
+  'id': instance.id,
+  'category': _$DrinkCategoryEnumMap[instance.category]!,
   'createdAt': _$JsonConverterToJson<Timestamp, DateTime>(
     instance.createdAt,
     const TimestampConverter().toJson,
