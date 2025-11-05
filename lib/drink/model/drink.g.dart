@@ -32,22 +32,22 @@ Drink _$DrinkFromJson(Map<String, dynamic> json) => Drink(
 
 Map<String, dynamic> _$DrinkToJson(Drink instance) => <String, dynamic>{
   'id': instance.id,
-  'userId': instance.userId,
   'createdAt': _$JsonConverterToJson<Timestamp, DateTime>(
     instance.createdAt,
     const TimestampConverter().toJson,
   ),
-  'consumedAt': instance.consumedAt.toIso8601String(),
-  'drinkType': instance.drinkType.toJson(),
   'updatedAt': _$JsonConverterToJson<Timestamp, DateTime>(
     instance.updatedAt,
     const TimestampConverter().toJson,
   ),
-  'volumeInMilliliters': instance.volumeInMilliliters,
   'deletedAt': _$JsonConverterToJson<Timestamp, DateTime>(
     instance.deletedAt,
     const TimestampConverter().toJson,
   ),
+  'userId': instance.userId,
+  'consumedAt': instance.consumedAt.toIso8601String(),
+  'drinkType': instance.drinkType.toJson(),
+  'volumeInMilliliters': instance.volumeInMilliliters,
   'location': _$JsonConverterToJson<GeoPoint, GeoPoint>(
     instance.location,
     const GeoPointConverter().toJson,
