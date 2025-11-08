@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:remembeer/common/beer_icon.dart';
-import 'package:remembeer/drink/model/drink_dto.dart';
-import 'package:remembeer/drink/service/drink_service.dart';
+import 'package:remembeer/drink/model/drink_create.dart';
+import 'package:remembeer/drink/service/drink_controller.dart';
 import 'package:remembeer/drink_type/model/drink_category.dart';
 import 'package:remembeer/drink_type/model/drink_type.dart';
 import 'package:remembeer/ioc/ioc_container.dart';
@@ -96,8 +96,8 @@ class _PageSwitcherState extends State<PageSwitcher> {
 }
 
 Future<void> _addTestDrink() async {
-  final drinkService = get<DrinkService>();
-  final testDrink = DrinkDTO(
+  final drinkController = get<DrinkController>();
+  final testDrink = DrinkCreate(
     userId: 'test_user_123',
     consumedAt: DateTime.now(),
     drinkType: DrinkType(
@@ -110,5 +110,5 @@ Future<void> _addTestDrink() async {
     location: const GeoPoint(49.2099, 16.5990),
   );
 
-  await drinkService.createDrink(testDrink);
+  await drinkController.createSingle(testDrink);
 }

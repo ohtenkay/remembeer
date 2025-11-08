@@ -36,18 +36,18 @@ Map<String, dynamic> _$DrinkToJson(Drink instance) => <String, dynamic>{
     instance.createdAt,
     const TimestampConverter().toJson,
   ),
-  'userId': instance.userId,
-  'consumedAt': instance.consumedAt.toIso8601String(),
   'updatedAt': _$JsonConverterToJson<Timestamp, DateTime>(
     instance.updatedAt,
     const TimestampConverter().toJson,
   ),
-  'drinkType': instance.drinkType.toJson(),
-  'volumeInMilliliters': instance.volumeInMilliliters,
   'deletedAt': _$JsonConverterToJson<Timestamp, DateTime>(
     instance.deletedAt,
     const TimestampConverter().toJson,
   ),
+  'userId': instance.userId,
+  'consumedAt': instance.consumedAt.toIso8601String(),
+  'drinkType': instance.drinkType.toJson(),
+  'volumeInMilliliters': instance.volumeInMilliliters,
   'location': _$JsonConverterToJson<GeoPoint, GeoPoint>(
     instance.location,
     const GeoPointConverter().toJson,
