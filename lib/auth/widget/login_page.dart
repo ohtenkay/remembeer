@@ -12,7 +12,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final AuthController _authService = get<AuthController>();
+  final AuthController _authController = get<AuthController>();
   late final TextEditingController _emailController;
   late final TextEditingController _passwordController;
   String _errorMessage = '';
@@ -35,6 +35,7 @@ class _LoginPageState extends State<LoginPage> {
             TextField(
               controller: _emailController,
               decoration: InputDecoration(labelText: 'Email'),
+              keyboardType: TextInputType.emailAddress,
             ),
             TextField(
               controller: _passwordController,
@@ -54,6 +55,10 @@ class _LoginPageState extends State<LoginPage> {
                   style: TextStyle(color: Colors.red),
                 ),
               ),
+            TextButton(
+              onPressed: () => _showPasswordResetDialog(context),
+              child: const Text('Forgot Password?'),
+            ),
             SizedBox(height: 10),
             TextButton(
               onPressed: () =>
@@ -84,15 +89,63 @@ class _LoginPageState extends State<LoginPage> {
     final password = _passwordController.text;
 
     try {
-      await _authService.signInWithEmailAndPassword(
+      await _authController.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
     } on FirebaseAuthException catch (e) {
       setState(() {
         // TODO(metju-ac): Propper error handling
-        _errorMessage = e.message ?? 'Registration failed';
+        _errorMessage = e.message ?? 'Login failed';
       });
     }
+  }
+
+  Future<void> _showPasswordResetDialog(BuildContext context) async {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Reset Password'),
+          content: TextField(
+            controller: _emailController,
+            decoration: const InputDecoration(
+              labelText: 'Email',
+            ),
+            keyboardType: TextInputType.emailAddress,
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                final email = _emailController.text.trim();
+
+                if (email.isEmpty) {
+                  return;
+                }
+
+                _authController.resetPassword(email: email);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text(
+                      'Password reset email sent! Check your inbox (including spam).',
+                    ),
+                    duration: Duration(seconds: 3),
+                  ),
+                );
+
+                Navigator.of(context).pop();
+              },
+              child: const Text('Send'),
+            ),
+          ],
+        );
+      },
+    );
   }
 }

@@ -11,7 +11,7 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  final AuthController _authService = get<AuthController>();
+  final AuthController _authController = get<AuthController>();
   late final TextEditingController _emailController;
   late final TextEditingController _passwordController;
   String _errorMessage = '';
@@ -34,6 +34,7 @@ class _RegisterPageState extends State<RegisterPage> {
             TextField(
               controller: _emailController,
               decoration: InputDecoration(labelText: 'Email'),
+              keyboardType: TextInputType.emailAddress,
             ),
             TextField(
               controller: _passwordController,
@@ -71,7 +72,7 @@ class _RegisterPageState extends State<RegisterPage> {
     final password = _passwordController.text;
 
     try {
-      await _authService.createUserWithEmailAndPassword(
+      await _authController.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
