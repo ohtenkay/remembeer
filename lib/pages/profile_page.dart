@@ -13,7 +13,7 @@ class ProfilePage extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text('Logged in as ${_authController.currentUser!.email}'),
+          Text('Logged in as ${_authController.authenticatedUser.email}'),
           const SizedBox(height: 20),
           _buildVerificationWidget(),
           SizedBox(height: 20),
