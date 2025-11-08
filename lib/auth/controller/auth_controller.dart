@@ -17,6 +17,8 @@ class AuthController {
 
   bool get isAuthenticated => currentUser != null;
 
+  bool get isVerified => currentUser?.emailVerified ?? false;
+
   Future<UserCredential> signInWithEmailAndPassword({
     required String email,
     required String password,
@@ -35,6 +37,13 @@ class AuthController {
       email: email,
       password: password,
     );
+  }
+
+  Future<void> sendEmailVerification() async {
+    final user = _firebaseAuth.currentUser;
+    if (user != null && !user.emailVerified) {
+      await user.sendEmailVerification();
+    }
   }
 
   Future<void> signOut() async {

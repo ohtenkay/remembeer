@@ -14,6 +14,8 @@ class ProfilePage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text('Logged in as ${_authController.currentUser!.email}'),
+          const SizedBox(height: 20),
+          _buildVerificationWidget(),
           SizedBox(height: 20),
           ElevatedButton(
             onPressed: _logout,
@@ -26,5 +28,16 @@ class ProfilePage extends StatelessWidget {
 
   Future<void> _logout() async {
     await _authController.signOut();
+  }
+
+  Widget _buildVerificationWidget() {
+    if (_authController.isVerified) {
+      return const Text('Email verified');
+    } else {
+      return ElevatedButton(
+        onPressed: () => _authController.sendEmailVerification(),
+        child: const Text('Send verification email'),
+      );
+    }
   }
 }
