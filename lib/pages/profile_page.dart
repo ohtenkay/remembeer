@@ -15,7 +15,7 @@ class ProfilePage extends StatelessWidget {
         children: [
           Text('Logged in as ${_authController.authenticatedUser.email}'),
           const SizedBox(height: 20),
-          _buildVerificationWidget(),
+          _buildVerificationWidget(context),
           SizedBox(height: 20),
           ElevatedButton(
             onPressed: _logout,
@@ -30,12 +30,22 @@ class ProfilePage extends StatelessWidget {
     await _authController.signOut();
   }
 
-  Widget _buildVerificationWidget() {
+  Widget _buildVerificationWidget(BuildContext context) {
     if (_authController.isVerified) {
       return const Text('Email verified');
     } else {
       return ElevatedButton(
-        onPressed: () => _authController.sendEmailVerification(),
+        onPressed: () {
+          _authController.sendEmailVerification();
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text(
+                'Verification email sent! Please check your inbox (including spam).',
+              ),
+              duration: Duration(seconds: 3),
+            ),
+          );
+        },
         child: const Text('Send verification email'),
       );
     }
