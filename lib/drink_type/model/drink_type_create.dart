@@ -1,21 +1,20 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:remembeer/common/model/value_object.dart';
 import 'package:remembeer/drink_type/model/drink_category.dart';
-import 'package:remembeer/drink_type/model/drink_type_fields.dart';
 
 part 'drink_type_create.g.dart';
 
 @JsonSerializable(createFactory: false)
-class DrinkTypeCreate extends ValueObject with DrinkTypeFields {
+class DrinkTypeCreate extends ValueObject {
+  final String name;
+  final DrinkCategory category;
+  final double alcoholPercentage;
+
   DrinkTypeCreate({
-    required String name,
-    required DrinkCategory category,
-    required double alcoholPercentage,
-  }) {
-    this.name = name;
-    this.category = category;
-    this.alcoholPercentage = alcoholPercentage;
-  }
+    required this.name,
+    required this.category,
+    required this.alcoholPercentage,
+  });
 
   @override
   Map<String, dynamic> toJson() => _$DrinkTypeCreateToJson(this);
