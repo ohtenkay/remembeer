@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:remembeer/auth/controller/auth_controller.dart';
+import 'package:remembeer/auth/service/auth_service.dart';
 import 'package:remembeer/auth/widget/register_page.dart';
 import 'package:remembeer/ioc/ioc_container.dart';
 
@@ -12,7 +12,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final AuthController _authController = get<AuthController>();
+  final AuthService _authService = get<AuthService>();
   late final TextEditingController _emailController;
   late final TextEditingController _passwordController;
   String _errorMessage = '';
@@ -89,7 +89,7 @@ class _LoginPageState extends State<LoginPage> {
     final password = _passwordController.text;
 
     try {
-      await _authController.signInWithEmailAndPassword(
+      await _authService.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
@@ -129,7 +129,7 @@ class _LoginPageState extends State<LoginPage> {
                   return;
                 }
 
-                _authController.resetPassword(email: email);
+                _authService.resetPassword(email: email);
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
                     content: Text(

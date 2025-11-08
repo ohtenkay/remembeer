@@ -1,4 +1,4 @@
-import 'package:remembeer/common/service/controller.dart';
+import 'package:remembeer/common/controller/controller.dart';
 import 'package:remembeer/drink/model/drink.dart';
 import 'package:remembeer/drink/model/drink_create.dart';
 

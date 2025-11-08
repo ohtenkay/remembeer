@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:remembeer/auth/controller/auth_controller.dart';
+import 'package:remembeer/auth/service/auth_service.dart';
 import 'package:remembeer/ioc/ioc_container.dart';
 
 class ProfilePage extends StatelessWidget {
   ProfilePage({super.key});
 
-  final _authController = get<AuthController>();
+  final _authService = get<AuthService>();
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +13,7 @@ class ProfilePage extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text('Logged in as ${_authController.authenticatedUser.email}'),
+          Text('Logged in as ${_authService.authenticatedUser.email}'),
           const SizedBox(height: 20),
           _buildVerificationWidget(context),
           SizedBox(height: 20),
@@ -27,16 +27,16 @@ class ProfilePage extends StatelessWidget {
   }
 
   Future<void> _logout() async {
-    await _authController.signOut();
+    await _authService.signOut();
   }
 
   Widget _buildVerificationWidget(BuildContext context) {
-    if (_authController.isVerified) {
+    if (_authService.isVerified) {
       return const Text('Email verified');
     } else {
       return ElevatedButton(
         onPressed: () {
-          _authController.sendEmailVerification();
+          _authService.sendEmailVerification();
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text(

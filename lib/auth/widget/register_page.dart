@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:remembeer/auth/controller/auth_controller.dart';
+import 'package:remembeer/auth/service/auth_service.dart';
 import 'package:remembeer/ioc/ioc_container.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -11,7 +11,7 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  final AuthController _authController = get<AuthController>();
+  final AuthService _authService = get<AuthService>();
   late final TextEditingController _emailController;
   late final TextEditingController _passwordController;
   String _errorMessage = '';
@@ -72,7 +72,7 @@ class _RegisterPageState extends State<RegisterPage> {
     final password = _passwordController.text;
 
     try {
-      await _authController.createUserWithEmailAndPassword(
+      await _authService.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );

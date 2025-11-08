@@ -1,11 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:rxdart/rxdart.dart';
 
-class AuthController {
+class AuthService {
   final FirebaseAuth _firebaseAuth;
   final _authStateSubject = BehaviorSubject<User?>();
 
-  AuthController(this._firebaseAuth) {
+  AuthService(this._firebaseAuth) {
     _authStateSubject.add(_firebaseAuth.currentUser);
     _firebaseAuth.authStateChanges().listen(_authStateSubject.add);
   }
