@@ -12,7 +12,7 @@ class DrinkList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return LoadingStreamBuilder(
-      stream: _drinkController.entitiesStream,
+      stream: _drinkController.userRelatedEntitiesStream,
       builder: (context, drinks) {
         return Expanded(
           child: ListView.separated(
