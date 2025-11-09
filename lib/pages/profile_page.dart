@@ -16,7 +16,7 @@ class ProfilePage extends StatelessWidget {
           Text('Logged in as ${_authService.authenticatedUser.email}'),
           const SizedBox(height: 20),
           _buildVerificationWidget(context),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           ElevatedButton(
             onPressed: _logout,
             child: const Text('Logout'),

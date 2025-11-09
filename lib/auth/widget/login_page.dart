@@ -34,39 +34,39 @@ class _LoginPageState extends State<LoginPage> {
           children: [
             TextField(
               controller: _emailController,
-              decoration: InputDecoration(labelText: 'Email'),
+              decoration: const InputDecoration(labelText: 'Email'),
               keyboardType: TextInputType.emailAddress,
             ),
             TextField(
               controller: _passwordController,
-              decoration: InputDecoration(labelText: 'Password'),
+              decoration: const InputDecoration(labelText: 'Password'),
               obscureText: true,
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: _login,
-              child: Text('Login'),
+              child: const Text('Login'),
             ),
             if (_errorMessage.isNotEmpty)
               Padding(
                 padding: const EdgeInsets.only(top: 12.0),
                 child: Text(
                   _errorMessage,
-                  style: TextStyle(color: Colors.red),
+                  style: const TextStyle(color: Colors.red),
                 ),
               ),
             TextButton(
               onPressed: () => _showPasswordResetDialog(context),
               child: const Text('Forgot Password?'),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             TextButton(
               onPressed: () =>
                   Navigator.of(
                     context,
                   ).push(
                     MaterialPageRoute<void>(
-                      builder: (context) => RegisterPage(),
+                      builder: (context) => const RegisterPage(),
                     ),
                   ),
               child: const Text('Don\'t have an account? Register'),
@@ -95,7 +95,7 @@ class _LoginPageState extends State<LoginPage> {
       );
     } on FirebaseAuthException catch (e) {
       setState(() {
-        // TODO(metju-ac): Propper error handling
+        // TODO(metju-ac): Proper error handling
         _errorMessage = e.message ?? 'Login failed';
       });
     }
