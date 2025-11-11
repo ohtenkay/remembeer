@@ -9,14 +9,12 @@ part 'drink_create.g.dart';
 @JsonSerializable(explicitToJson: true, createFactory: false)
 @GeoPointConverter()
 class DrinkCreate extends ValueObject {
-  final String userId;
   final DateTime consumedAt;
   final DrinkType drinkType;
   final double volumeInMilliliters;
   final GeoPoint? location;
 
   DrinkCreate({
-    required this.userId,
     required this.consumedAt,
     required this.drinkType,
     required this.volumeInMilliliters,

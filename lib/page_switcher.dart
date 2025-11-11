@@ -98,7 +98,6 @@ class _PageSwitcherState extends State<PageSwitcher> {
 Future<void> _addTestDrink() async {
   final drinkController = get<DrinkController>();
   final testDrink = DrinkCreate(
-    userId: 'test_user_123',
     consumedAt: DateTime.now(),
     drinkType: DrinkType(
       id: 'beer_id',
