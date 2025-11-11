@@ -168,12 +168,12 @@ class _AddDrinkPageState extends State<AddDrinkPage> {
         labelText: 'Volume (ml)',
         border: OutlineInputBorder(),
       ),
-      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+      keyboardType: TextInputType.number,
       validator: (value) {
         if (value == null || value.isEmpty) {
           return 'Please enter a volume.';
         }
-        if (double.tryParse(value) == null) {
+        if (int.tryParse(value) == null) {
           return 'Please enter a valid number.';
         }
         return null;
@@ -227,7 +227,7 @@ class _AddDrinkPageState extends State<AddDrinkPage> {
       child: ElevatedButton(
         onPressed: () {
           if (_formKey.currentState!.validate()) {
-            final volume = double.parse(_volumeController.text);
+            final volume = int.parse(_volumeController.text);
             widget._drinkController.createSingle(
               DrinkCreate(
                 consumedAt: _selectedConsumedAt,

@@ -11,7 +11,7 @@ part 'drink_create.g.dart';
 class DrinkCreate extends ValueObject {
   final DateTime consumedAt;
   final DrinkType drinkType;
-  final double volumeInMilliliters;
+  final int volumeInMilliliters;
   final GeoPoint? location;
 
   DrinkCreate({

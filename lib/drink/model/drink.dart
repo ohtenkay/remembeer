@@ -13,7 +13,7 @@ class Drink extends Entity {
   final String userId;
   final DateTime consumedAt;
   final DrinkType drinkType;
-  final double volumeInMilliliters;
+  final int volumeInMilliliters;
   final GeoPoint? location;
 
   Drink({

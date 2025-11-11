@@ -23,7 +23,7 @@ Drink _$DrinkFromJson(Map<String, dynamic> json) => Drink(
   userId: json['userId'] as String,
   consumedAt: DateTime.parse(json['consumedAt'] as String),
   drinkType: DrinkType.fromJson(json['drinkType'] as Map<String, dynamic>),
-  volumeInMilliliters: (json['volumeInMilliliters'] as num).toDouble(),
+  volumeInMilliliters: (json['volumeInMilliliters'] as num).toInt(),
   location: _$JsonConverterFromJson<GeoPoint, GeoPoint>(
     json['location'],
     const GeoPointConverter().fromJson,
