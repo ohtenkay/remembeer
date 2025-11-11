@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:remembeer/common/widget/loading_stream_builder.dart';
+import 'package:remembeer/common/widget/async_builder.dart';
 import 'package:remembeer/drink_type/controller/drink_type_controller.dart';
 import 'package:remembeer/drink_type/widget/drink_type_tile.dart';
 import 'package:remembeer/ioc/ioc_container.dart';
@@ -11,7 +11,7 @@ class CustomDrinkTypeList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LoadingStreamBuilder(
+    return AsyncBuilder(
       stream: _drinkTypeController.userRelatedEntitiesStream,
       builder: (builder, customDrinkTypes) {
         return ListView.separated(
