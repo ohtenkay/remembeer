@@ -1,11 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:remembeer/common/beer_icon.dart';
-import 'package:remembeer/drink/controller/drink_controller.dart';
-import 'package:remembeer/drink/model/drink_create.dart';
-import 'package:remembeer/drink_type/model/drink_category.dart';
-import 'package:remembeer/drink_type/model/drink_type.dart';
-import 'package:remembeer/ioc/ioc_container.dart';
+import 'package:remembeer/drink/widget/add_drink_page.dart';
 import 'package:remembeer/pages/activity_page.dart';
 import 'package:remembeer/pages/drink_page.dart';
 import 'package:remembeer/pages/leaderboards_page.dart';
@@ -60,7 +55,14 @@ class _PageSwitcherState extends State<PageSwitcher> {
           : null,
       floatingActionButton: _selectedIndex == _drinkPageIndex
           ? FloatingActionButton(
-              onPressed: _addTestDrink,
+              onPressed: () =>
+                  Navigator.of(
+                    context,
+                  ).push(
+                    MaterialPageRoute<void>(
+                      builder: (context) => AddDrinkPage(),
+                    ),
+                  ),
               child: Icon(Icons.add),
             )
           : null,
@@ -93,21 +95,4 @@ class _PageSwitcherState extends State<PageSwitcher> {
       ),
     );
   }
-}
-
-Future<void> _addTestDrink() async {
-  final drinkController = get<DrinkController>();
-  final testDrink = DrinkCreate(
-    consumedAt: DateTime.now(),
-    drinkType: DrinkType(
-      id: 'beer_id',
-      name: 'Test Beer',
-      alcoholPercentage: 5.0,
-      category: DrinkCategory.Beer,
-    ),
-    volumeInMilliliters: 500.0,
-    location: const GeoPoint(49.2099, 16.5990),
-  );
-
-  await drinkController.createSingle(testDrink);
 }
