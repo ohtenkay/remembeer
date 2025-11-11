@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:remembeer/common/widget/page_template.dart';
 import 'package:remembeer/drink/controller/drink_controller.dart';
 import 'package:remembeer/drink/model/drink_create.dart';
 import 'package:remembeer/drink_type/model/drink_category.dart';
@@ -62,34 +63,28 @@ class _AddDrinkPageState extends State<AddDrinkPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
-        title: const Text('Record a Drink'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Column(
-          children: [
-            Expanded(
-              child: Form(
-                key: _formKey,
-                child: ListView(
-                  children: [
-                    _buildDrinkTypeDropdown(),
-                    _SPACING,
-                    _buildVolumeInput(),
-                    const SizedBox(height: 8),
-                    _buildPredefinedVolumesRow(),
-                    _SPACING,
-                    _buildConsumedAtInput(),
-                  ],
-                ),
+    return PageTemplate(
+      title: const Text('Record a Drink'),
+      child: Column(
+        children: [
+          Expanded(
+            child: Form(
+              key: _formKey,
+              child: ListView(
+                children: [
+                  _buildDrinkTypeDropdown(),
+                  _SPACING,
+                  _buildVolumeInput(),
+                  const SizedBox(height: 8),
+                  _buildPredefinedVolumesRow(),
+                  _SPACING,
+                  _buildConsumedAtInput(),
+                ],
               ),
             ),
-            _buildSubmitButton(context),
-          ],
-        ),
+          ),
+          _buildSubmitButton(context),
+        ],
       ),
     );
   }

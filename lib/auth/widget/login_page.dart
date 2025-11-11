@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:remembeer/auth/service/auth_service.dart';
 import 'package:remembeer/auth/widget/register_page.dart';
+import 'package:remembeer/common/widget/page_template.dart';
 import 'package:remembeer/ioc/ioc_container.dart';
 
 class LoginPage extends StatefulWidget {
@@ -26,53 +27,50 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TextField(
-              controller: _emailController,
-              decoration: const InputDecoration(labelText: 'Email'),
-              keyboardType: TextInputType.emailAddress,
-            ),
-            TextField(
-              controller: _passwordController,
-              decoration: const InputDecoration(labelText: 'Password'),
-              obscureText: true,
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _login,
-              child: const Text('Login'),
-            ),
-            if (_errorMessage.isNotEmpty)
-              Padding(
-                padding: const EdgeInsets.only(top: 12.0),
-                child: Text(
-                  _errorMessage,
-                  style: const TextStyle(color: Colors.red),
-                ),
+    return PageTemplate(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          TextField(
+            controller: _emailController,
+            decoration: const InputDecoration(labelText: 'Email'),
+            keyboardType: TextInputType.emailAddress,
+          ),
+          TextField(
+            controller: _passwordController,
+            decoration: const InputDecoration(labelText: 'Password'),
+            obscureText: true,
+          ),
+          const SizedBox(height: 20),
+          ElevatedButton(
+            onPressed: _login,
+            child: const Text('Login'),
+          ),
+          if (_errorMessage.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(top: 12.0),
+              child: Text(
+                _errorMessage,
+                style: const TextStyle(color: Colors.red),
               ),
-            TextButton(
-              onPressed: () => _showPasswordResetDialog(context),
-              child: const Text('Forgot Password?'),
             ),
-            const SizedBox(height: 10),
-            TextButton(
-              onPressed: () =>
-                  Navigator.of(
-                    context,
-                  ).push(
-                    MaterialPageRoute<void>(
-                      builder: (context) => const RegisterPage(),
-                    ),
+          TextButton(
+            onPressed: () => _showPasswordResetDialog(context),
+            child: const Text('Forgot Password?'),
+          ),
+          const SizedBox(height: 10),
+          TextButton(
+            onPressed: () =>
+                Navigator.of(
+                  context,
+                ).push(
+                  MaterialPageRoute<void>(
+                    builder: (context) => const RegisterPage(),
                   ),
-              child: const Text('Don\'t have an account? Register'),
-            ),
-          ],
-        ),
+                ),
+            child: const Text('Don\'t have an account? Register'),
+          ),
+        ],
       ),
     );
   }

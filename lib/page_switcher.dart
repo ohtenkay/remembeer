@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:remembeer/common/beer_icon.dart';
-import 'package:remembeer/drink/widget/add_drink_page.dart';
 import 'package:remembeer/pages/activity_page.dart';
 import 'package:remembeer/pages/drink_page.dart';
 import 'package:remembeer/pages/leaderboards_page.dart';
@@ -35,64 +34,47 @@ class _PageSwitcherState extends State<PageSwitcher> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: IndexedStack(index: _selectedIndex, children: _pages),
-      appBar: _selectedIndex == _drinkPageIndex
-          // TODO(ohtenkay): Maybe move this from AppBar to DrinkPage itself.
-          ? AppBar(
-              backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
-              title: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: const [
-                  Text('Streak placeholder', style: TextStyle(fontSize: 12)),
-                  Text(
-                    'Create session placeholder',
-                    style: TextStyle(fontSize: 12),
-                  ),
-                ],
-              ),
-            )
-          : null,
-      floatingActionButton: _selectedIndex == _drinkPageIndex
-          ? FloatingActionButton(
-              onPressed: () =>
-                  Navigator.of(
-                    context,
-                  ).push(
-                    MaterialPageRoute<void>(
-                      builder: (context) => AddDrinkPage(),
-                    ),
-                  ),
-              child: Icon(Icons.add),
-            )
-          : null,
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        currentIndex: _selectedIndex,
-        selectedItemColor: Theme.of(context).colorScheme.primary,
-        unselectedItemColor: Colors.grey,
-        onTap: _onItemTapped,
-        items: [
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.emoji_events),
-            label: 'Leaderboards',
-          ),
-          BottomNavigationBarItem(
-            icon: BeerIcon(
-              color: _selectedIndex == _drinkPageIndex
-                  ? Theme.of(context).colorScheme.primary
-                  : Colors.grey,
+    return Material(
+      child: SafeArea(
+        child: Column(
+          children: [
+            Expanded(
+              child: IndexedStack(index: _selectedIndex, children: _pages),
             ),
-            label: 'Drink',
-          ),
-          BottomNavigationBarItem(icon: Icon(Icons.group), label: 'Activity'),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Settings',
-          ),
-        ],
+            _buildNavigationBar(context),
+          ],
+        ),
       ),
+    );
+  }
+
+  BottomNavigationBar _buildNavigationBar(BuildContext context) {
+    return BottomNavigationBar(
+      type: BottomNavigationBarType.fixed,
+      currentIndex: _selectedIndex,
+      selectedItemColor: Theme.of(context).colorScheme.primary,
+      unselectedItemColor: Colors.grey,
+      onTap: _onItemTapped,
+      items: [
+        BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.emoji_events),
+          label: 'Leaderboards',
+        ),
+        BottomNavigationBarItem(
+          icon: BeerIcon(
+            color: _selectedIndex == _drinkPageIndex
+                ? Theme.of(context).colorScheme.primary
+                : Colors.grey,
+          ),
+          label: 'Drink',
+        ),
+        BottomNavigationBarItem(icon: Icon(Icons.group), label: 'Activity'),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.settings),
+          label: 'Settings',
+        ),
+      ],
     );
   }
 }
