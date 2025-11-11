@@ -27,4 +27,11 @@ class DrinkType extends Entity {
 
   @override
   Map<String, dynamic> toJson() => _$DrinkTypeToJson(this);
+
+  @override
+  bool operator ==(Object other) =>
+      other is DrinkType && other.runtimeType == runtimeType && other.id == id;
+
+  @override
+  int get hashCode => id.hashCode;
 }

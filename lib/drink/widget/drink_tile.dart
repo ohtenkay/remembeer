@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:remembeer/common/beer_icon.dart';
 import 'package:remembeer/drink/model/drink.dart';
+import 'package:remembeer/drink/widget/update_drink_page.dart';
 
 class DrinkTile extends StatelessWidget {
   final Drink drink;
@@ -16,7 +17,16 @@ class DrinkTile extends StatelessWidget {
       subtitle: Text(
         'Drank on ${drink.consumedAt.toLocal()} on ${drink.location?.latitude} ${drink.location?.longitude} ${drink.deletedAt}',
       ),
-      trailing: Icon(Icons.chevron_right),
+      trailing: IconButton(
+        onPressed: () => {
+          Navigator.of(context).push(
+            MaterialPageRoute<void>(
+              builder: (context) => UpdateDrinkPage(drinkToUpdate: drink),
+            ),
+          ),
+        },
+        icon: Icon(Icons.chevron_right),
+      ),
     );
   }
 }

@@ -1,33 +1,34 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:remembeer/common/widget/page_template.dart';
 import 'package:remembeer/drink/controller/drink_controller.dart';
-import 'package:remembeer/drink/model/drink_create.dart';
+import 'package:remembeer/drink/model/drink.dart';
 import 'package:remembeer/drink/widget/drink_form.dart';
 import 'package:remembeer/drink_type/model/drink_type.dart';
 import 'package:remembeer/ioc/ioc_container.dart';
 
-class AddDrinkPage extends StatelessWidget {
-  AddDrinkPage({super.key});
+class UpdateDrinkPage extends StatelessWidget {
+  final Drink drinkToUpdate;
+
+  UpdateDrinkPage({super.key, required this.drinkToUpdate});
 
   final _drinkController = get<DrinkController>();
 
   @override
   Widget build(BuildContext context) {
     return PageTemplate(
-      title: const Text('Record a Drink'),
+      title: const Text('Update Drink'),
       child: DrinkForm(
-        // TODO(metju-ac): pass user's favorite drink
-        initialDrinkType: hardcodedDrinkTypes.first,
-        initialConsumedAt: DateTime.now(),
-        initialVolume: 500,
+        initialDrinkType: drinkToUpdate.drinkType,
+        initialConsumedAt: drinkToUpdate.consumedAt,
+        initialVolume: drinkToUpdate.volumeInMilliliters,
         onSubmit:
             ({
               required DrinkType drinkType,
               required DateTime consumedAt,
               required int volumeInMilliliters,
             }) {
-              _drinkController.createSingle(
-                DrinkCreate(
+              _drinkController.updateSingle(
+                drinkToUpdate.copyWith(
                   consumedAt: consumedAt,
                   drinkType: drinkType,
                   volumeInMilliliters: volumeInMilliliters,
