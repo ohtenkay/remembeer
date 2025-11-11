@@ -1,16 +1,21 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
+import 'package:remembeer/auth/service/auth_service.dart';
 import 'package:remembeer/common/extension/json_firestore_helper.dart';
 import 'package:remembeer/common/model/entity.dart';
 import 'package:remembeer/common/model/value_object.dart';
 
 abstract class Controller<T extends Entity, U extends ValueObject> {
   @protected
+  final AuthService _authService;
+
+  @protected
   final CollectionReference<T> readCollection;
   @protected
   final CollectionReference<Map<String, dynamic>> writeCollection;
 
-  Controller({
+  Controller(
+    this._authService, {
     required String collectionPath,
     required T Function(Map<String, dynamic> json) fromJson,
   }) : writeCollection = FirebaseFirestore.instance.collection(collectionPath),
@@ -25,8 +30,9 @@ abstract class Controller<T extends Entity, U extends ValueObject> {
                  throw StateError('Invalid write to read only collection'),
            );
 
-  Stream<List<T>> get entitiesStream => readCollection
+  Stream<List<T>> get userRelatedEntitiesStream => readCollection
       .where(deletedAtField, isNull: true)
+      .where(userIdField, isEqualTo: _authService.authenticatedUser.uid)
       .snapshots()
       .map(
         (querySnapshot) => List.unmodifiable(
@@ -35,7 +41,11 @@ abstract class Controller<T extends Entity, U extends ValueObject> {
       );
 
   Future<void> createSingle(U dto) {
-    return writeCollection.add(dto.toJson().withServerCreateTimestamps());
+    return writeCollection.add(
+      dto.toJson().withServerCreateTimestamps().withUserId(
+        _authService.authenticatedUser,
+      ),
+    );
   }
 
   Future<void> deleteSingle(T entity) {

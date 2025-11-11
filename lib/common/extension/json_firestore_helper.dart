@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 const String idField = 'id';
+const String userIdField = 'userId';
 const String createdAtField = 'createdAt';
 const String updatedAtField = 'updatedAt';
 const String deletedAtField = 'deletedAt';
@@ -13,6 +15,11 @@ extension JsonFirestoreHelper on Map<String, dynamic> {
 
   Map<String, dynamic> withoutId() {
     remove(idField);
+    return this;
+  }
+
+  Map<String, dynamic> withUserId(User user) {
+    this[userIdField] = user.uid;
     return this;
   }
 
