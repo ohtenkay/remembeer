@@ -1,31 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:remembeer/drink_type/model/drink_category.dart';
+import 'package:remembeer/common/widget/loading_stream_builder.dart';
 import 'package:remembeer/drink_type/model/drink_type.dart';
-
-final List<DrinkType> hardcodedDrinkTypes = [
-  DrinkType(
-    id: 'pilsner',
-    userId: 'global',
-    name: 'Pilsner Urquell',
-    category: DrinkCategory.Beer,
-    alcoholPercentage: 4.4,
-  ),
-  DrinkType(
-    id: 'radegast',
-    userId: 'global',
-    name: 'Radegast',
-    category: DrinkCategory.Beer,
-    alcoholPercentage: 5.1,
-  ),
-  DrinkType(
-    id: 'starobrno',
-    userId: 'global',
-    name: 'Starobrno',
-    category: DrinkCategory.Beer,
-    alcoholPercentage: 4.0,
-  ),
-];
+import 'package:remembeer/drink_type/model/drink_type_controller.dart';
+import 'package:remembeer/ioc/ioc_container.dart';
 
 const _SPACING = SizedBox(height: 16);
 
@@ -54,6 +32,7 @@ class DrinkForm extends StatefulWidget {
 }
 
 class _DrinkFormState extends State<DrinkForm> {
+  final DrinkTypeController _drinkTypeController = get<DrinkTypeController>();
   final _formKey = GlobalKey<FormState>();
 
   late DrinkType? _selectedDrinkType = widget.initialDrinkType;
@@ -139,31 +118,36 @@ class _DrinkFormState extends State<DrinkForm> {
     _consumedAtController.text = _formatDateTime(_selectedConsumedAt);
   }
 
-  DropdownButtonFormField<DrinkType> _buildDrinkTypeDropdown() {
-    return DropdownButtonFormField<DrinkType>(
-      initialValue: _selectedDrinkType,
-      hint: const Text('Select a drink'),
-      items: hardcodedDrinkTypes.map((drinkType) {
-        return DropdownMenuItem(
-          value: drinkType,
-          child: Text(drinkType.name),
+  Widget _buildDrinkTypeDropdown() {
+    return LoadingStreamBuilder(
+      stream: _drinkTypeController.allAvailableDrinkTypesStream,
+      builder: (context, drinkTypes) {
+        return DropdownButtonFormField<DrinkType>(
+          initialValue: _selectedDrinkType,
+          hint: const Text('Select a drink'),
+          items: drinkTypes.map((drinkType) {
+            return DropdownMenuItem(
+              value: drinkType,
+              child: Text(drinkType.name),
+            );
+          }).toList(),
+          onChanged: (newValue) {
+            setState(() {
+              _selectedDrinkType = newValue;
+            });
+          },
+          validator: (value) {
+            if (value == null) {
+              return 'Please select your drink.';
+            }
+            return null;
+          },
+          decoration: const InputDecoration(
+            labelText: 'Drink',
+            border: OutlineInputBorder(),
+          ),
         );
-      }).toList(),
-      onChanged: (newValue) {
-        setState(() {
-          _selectedDrinkType = newValue;
-        });
       },
-      validator: (value) {
-        if (value == null) {
-          return 'Please select your drink.';
-        }
-        return null;
-      },
-      decoration: const InputDecoration(
-        labelText: 'Drink',
-        border: OutlineInputBorder(),
-      ),
     );
   }
 

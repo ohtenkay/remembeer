@@ -3,6 +3,7 @@ import 'package:remembeer/common/widget/page_template.dart';
 import 'package:remembeer/drink/controller/drink_controller.dart';
 import 'package:remembeer/drink/model/drink_create.dart';
 import 'package:remembeer/drink/widget/drink_form.dart';
+import 'package:remembeer/drink_type/model/drink_category.dart';
 import 'package:remembeer/drink_type/model/drink_type.dart';
 import 'package:remembeer/ioc/ioc_container.dart';
 
@@ -17,7 +18,13 @@ class AddDrinkPage extends StatelessWidget {
       title: const Text('Record a Drink'),
       child: DrinkForm(
         // TODO(metju-ac): pass user's favorite drink
-        initialDrinkType: hardcodedDrinkTypes.first,
+        initialDrinkType: DrinkType(
+          id: 'ZzQmvVon2JcCB12ZhQIZ',
+          userId: 'global',
+          name: 'Pilsner Urquell',
+          category: DrinkCategory.Beer,
+          alcoholPercentage: 4.4,
+        ),
         initialConsumedAt: DateTime.now(),
         initialVolume: 500,
         onSubmit:
