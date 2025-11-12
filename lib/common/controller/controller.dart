@@ -5,6 +5,8 @@ import 'package:remembeer/common/extension/json_firestore_helper.dart';
 import 'package:remembeer/common/model/entity.dart';
 import 'package:remembeer/common/model/value_object.dart';
 
+const String globalUserId = 'global';
+
 abstract class Controller<T extends Entity, U extends ValueObject> {
   @protected
   final AuthService authService;
@@ -30,6 +32,14 @@ abstract class Controller<T extends Entity, U extends ValueObject> {
                  throw StateError('Invalid write to read only collection'),
            );
 
+  void _assertNotGlobal(T entity) {
+    if (entity.userId == globalUserId) {
+      throw UnsupportedError(
+        'Cannot modify a global entity (${entity.id}) from the app.',
+      );
+    }
+  }
+
   Stream<List<T>> get userRelatedEntitiesStream => readCollection
       .where(deletedAtField, isNull: true)
       .where(userIdField, isEqualTo: authService.authenticatedUser.uid)
@@ -49,12 +59,14 @@ abstract class Controller<T extends Entity, U extends ValueObject> {
   }
 
   Future<void> deleteSingle(T entity) {
+    _assertNotGlobal(entity);
     return writeCollection
         .doc(entity.id)
         .update(entity.toJson().withoutId().withServerDeleteTimestamps());
   }
 
   Future<void> updateSingle(T entity) {
+    _assertNotGlobal(entity);
     return writeCollection
         .doc(entity.id)
         .update(entity.toJson().withoutId().withServerUpdateTimestamp());
