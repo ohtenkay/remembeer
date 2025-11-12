@@ -7,7 +7,7 @@ import 'package:remembeer/common/model/value_object.dart';
 
 abstract class Controller<T extends Entity, U extends ValueObject> {
   @protected
-  final AuthService _authService;
+  final AuthService authService;
 
   @protected
   final CollectionReference<T> readCollection;
@@ -15,7 +15,7 @@ abstract class Controller<T extends Entity, U extends ValueObject> {
   final CollectionReference<Map<String, dynamic>> writeCollection;
 
   Controller(
-    this._authService, {
+    this.authService, {
     required String collectionPath,
     required T Function(Map<String, dynamic> json) fromJson,
   }) : writeCollection = FirebaseFirestore.instance.collection(collectionPath),
@@ -32,7 +32,7 @@ abstract class Controller<T extends Entity, U extends ValueObject> {
 
   Stream<List<T>> get userRelatedEntitiesStream => readCollection
       .where(deletedAtField, isNull: true)
-      .where(userIdField, isEqualTo: _authService.authenticatedUser.uid)
+      .where(userIdField, isEqualTo: authService.authenticatedUser.uid)
       .snapshots()
       .map(
         (querySnapshot) => List.unmodifiable(
@@ -43,7 +43,7 @@ abstract class Controller<T extends Entity, U extends ValueObject> {
   Future<void> createSingle(U dto) {
     return writeCollection.add(
       dto.toJson().withServerCreateTimestamps().withUserId(
-        _authService.authenticatedUser,
+        authService.authenticatedUser,
       ),
     );
   }
