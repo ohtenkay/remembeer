@@ -10,7 +10,6 @@ part 'drink.g.dart';
 @JsonSerializable(explicitToJson: true)
 @GeoPointConverter()
 class Drink extends Entity {
-  final String userId;
   final DateTime consumedAt;
   final DrinkType drinkType;
   final int volumeInMilliliters;
@@ -18,10 +17,10 @@ class Drink extends Entity {
 
   Drink({
     required super.id,
+    required super.userId,
     super.createdAt,
     super.updatedAt,
     super.deletedAt,
-    required this.userId,
     required this.consumedAt,
     required this.drinkType,
     required this.volumeInMilliliters,

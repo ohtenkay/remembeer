@@ -14,6 +14,7 @@ class DrinkType extends Entity {
 
   DrinkType({
     required super.id,
+    required super.userId,
     super.createdAt,
     super.updatedAt,
     super.deletedAt,

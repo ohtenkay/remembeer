@@ -6,18 +6,21 @@ import 'package:remembeer/drink_type/model/drink_type.dart';
 final List<DrinkType> hardcodedDrinkTypes = [
   DrinkType(
     id: 'pilsner',
+    userId: 'global',
     name: 'Pilsner Urquell',
     category: DrinkCategory.Beer,
     alcoholPercentage: 4.4,
   ),
   DrinkType(
     id: 'radegast',
+    userId: 'global',
     name: 'Radegast',
     category: DrinkCategory.Beer,
     alcoholPercentage: 5.1,
   ),
   DrinkType(
     id: 'starobrno',
+    userId: 'global',
     name: 'Starobrno',
     category: DrinkCategory.Beer,
     alcoholPercentage: 4.0,

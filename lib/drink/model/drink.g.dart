@@ -8,6 +8,7 @@ part of 'drink.dart';
 
 Drink _$DrinkFromJson(Map<String, dynamic> json) => Drink(
   id: json['id'] as String,
+  userId: json['userId'] as String,
   createdAt: _$JsonConverterFromJson<Timestamp, DateTime>(
     json['createdAt'],
     const TimestampConverter().fromJson,
@@ -20,7 +21,6 @@ Drink _$DrinkFromJson(Map<String, dynamic> json) => Drink(
     json['deletedAt'],
     const TimestampConverter().fromJson,
   ),
-  userId: json['userId'] as String,
   consumedAt: DateTime.parse(json['consumedAt'] as String),
   drinkType: DrinkType.fromJson(json['drinkType'] as Map<String, dynamic>),
   volumeInMilliliters: (json['volumeInMilliliters'] as num).toInt(),
@@ -32,6 +32,7 @@ Drink _$DrinkFromJson(Map<String, dynamic> json) => Drink(
 
 Map<String, dynamic> _$DrinkToJson(Drink instance) => <String, dynamic>{
   'id': instance.id,
+  'userId': instance.userId,
   'createdAt': _$JsonConverterToJson<Timestamp, DateTime>(
     instance.createdAt,
     const TimestampConverter().toJson,
@@ -44,7 +45,6 @@ Map<String, dynamic> _$DrinkToJson(Drink instance) => <String, dynamic>{
     instance.deletedAt,
     const TimestampConverter().toJson,
   ),
-  'userId': instance.userId,
   'consumedAt': instance.consumedAt.toIso8601String(),
   'drinkType': instance.drinkType.toJson(),
   'volumeInMilliliters': instance.volumeInMilliliters,
