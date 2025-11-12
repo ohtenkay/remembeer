@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:remembeer/auth/service/auth_service.dart';
 import 'package:remembeer/common/widget/page_template.dart';
+import 'package:remembeer/drink_type/widget/custom_drink_types_page.dart';
 import 'package:remembeer/ioc/ioc_container.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -15,6 +16,14 @@ class ProfilePage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            ElevatedButton(
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute<void>(builder: (_) => CustomDrinkTypesPage()),
+              ),
+              child: const Text('Manage custom drink types'),
+            ),
+            const SizedBox(height: 80),
+
             Text('Logged in as ${_authService.authenticatedUser.email}'),
             const SizedBox(height: 20),
             _buildVerificationWidget(context),
