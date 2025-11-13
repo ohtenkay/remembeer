@@ -123,7 +123,13 @@ class _DrinkFormState extends State<DrinkForm> {
   Widget _buildDrinkTypeDropdown() {
     return LoadingStreamBuilder(
       stream: _drinkTypeController.allAvailableDrinkTypesStream,
-      builder: (context, drinkTypes) {
+      builder: (context, unmodifiableDrinkTypes) {
+        final drinkTypes = unmodifiableDrinkTypes.toList();
+        if (_selectedDrinkType != null &&
+            !drinkTypes.contains(_selectedDrinkType)) {
+          drinkTypes.insert(0, _selectedDrinkType!);
+        }
+
         return DropdownButtonFormField<DrinkType>(
           initialValue: _selectedDrinkType,
           hint: const Text('Select a drink'),
