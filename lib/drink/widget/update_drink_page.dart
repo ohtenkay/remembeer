@@ -3,7 +3,6 @@ import 'package:remembeer/common/widget/page_template.dart';
 import 'package:remembeer/drink/controller/drink_controller.dart';
 import 'package:remembeer/drink/model/drink.dart';
 import 'package:remembeer/drink/widget/drink_form.dart';
-import 'package:remembeer/drink_type/model/drink_type.dart';
 import 'package:remembeer/ioc/ioc_container.dart';
 
 class UpdateDrinkPage extends StatelessWidget {
@@ -22,11 +21,11 @@ class UpdateDrinkPage extends StatelessWidget {
         initialConsumedAt: drinkToUpdate.consumedAt,
         initialVolume: drinkToUpdate.volumeInMilliliters,
         onSubmit:
-            ({
-              required DrinkType drinkType,
-              required DateTime consumedAt,
-              required int volumeInMilliliters,
-            }) async {
+            (
+              drinkType,
+              consumedAt,
+              volumeInMilliliters,
+            ) async {
               await _drinkController.updateSingle(
                 drinkToUpdate.copyWith(
                   consumedAt: consumedAt,

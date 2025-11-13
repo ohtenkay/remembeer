@@ -28,11 +28,11 @@ class AddDrinkPage extends StatelessWidget {
         initialConsumedAt: DateTime.now(),
         initialVolume: 500,
         onSubmit:
-            ({
-              required DrinkType drinkType,
-              required DateTime consumedAt,
-              required int volumeInMilliliters,
-            }) async {
+            (
+              drinkType,
+              consumedAt,
+              volumeInMilliliters,
+            ) async {
               await _drinkController.createSingle(
                 DrinkCreate(
                   consumedAt: consumedAt,

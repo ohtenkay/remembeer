@@ -12,11 +12,11 @@ class DrinkForm extends StatefulWidget {
   final DrinkType initialDrinkType;
   final DateTime initialConsumedAt;
   final int initialVolume;
-  final Future<void> Function({
-    required DrinkType drinkType,
-    required DateTime consumedAt,
-    required int volumeInMilliliters,
-  })
+  final Future<void> Function(
+    DrinkType drinkType,
+    DateTime consumedAt,
+    int volumeInMilliliters,
+  )
   onSubmit;
   final Future<void> Function()? onDelete;
 
@@ -249,9 +249,9 @@ class _DrinkFormState extends State<DrinkForm> {
     if (_formKey.currentState!.validate()) {
       final volume = int.parse(_volumeController.text);
       await widget.onSubmit(
-        drinkType: _selectedDrinkType!,
-        consumedAt: _selectedConsumedAt,
-        volumeInMilliliters: volume,
+        _selectedDrinkType!,
+        _selectedConsumedAt,
+        volume,
       );
     }
   }

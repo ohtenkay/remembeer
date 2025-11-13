@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 class DrinkTypeForm extends StatefulWidget {
   final String initialName;
   final double initialAlcoholPercentage;
-  final void Function({
-    required String name,
-    required double alcoholPercentage,
-  })
+  final void Function(
+    String name,
+    double alcoholPercentage,
+  )
   onSubmit;
 
   const DrinkTypeForm({
@@ -111,8 +111,8 @@ class _DrinkTypeFormState extends State<DrinkTypeForm> {
             final roundedAlcoholPercentage =
                 (alcoholPercentage * 100).round() / 100;
             widget.onSubmit(
-              name: name,
-              alcoholPercentage: roundedAlcoholPercentage,
+              name,
+              roundedAlcoholPercentage,
             );
             Navigator.of(context).pop();
           }

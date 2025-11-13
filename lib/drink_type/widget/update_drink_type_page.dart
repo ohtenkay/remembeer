@@ -19,7 +19,7 @@ class UpdateDrinkTypePage extends StatelessWidget {
       child: DrinkTypeForm(
         initialName: drinkTypeToUpdate.name,
         initialAlcoholPercentage: drinkTypeToUpdate.alcoholPercentage,
-        onSubmit: ({required String name, required double alcoholPercentage}) {
+        onSubmit: (name, alcoholPercentage) {
           _drinkTypeController.updateSingle(
             drinkTypeToUpdate.copyWith(
               name: name,
