@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:remembeer/common/widget/loading_stream_builder.dart';
+import 'package:remembeer/drink_type/controller/drink_type_controller.dart';
 import 'package:remembeer/drink_type/model/drink_type.dart';
-import 'package:remembeer/drink_type/model/drink_type_controller.dart';
 import 'package:remembeer/ioc/ioc_container.dart';
 
 const _SPACING = SizedBox(height: 16);
