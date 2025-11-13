@@ -151,7 +151,7 @@ class _DrinkFormState extends State<DrinkForm> {
     );
   }
 
-  TextFormField _buildVolumeInput() {
+  Widget _buildVolumeInput() {
     return TextFormField(
       controller: _volumeController,
       decoration: const InputDecoration(
@@ -171,7 +171,7 @@ class _DrinkFormState extends State<DrinkForm> {
     );
   }
 
-  Expanded _buildVolumeButton({required String name, required double volume}) {
+  Widget _buildVolumeButton({required String name, required double volume}) {
     return Expanded(
       child: OutlinedButton(
         onPressed: () => _volumeController.text = volume.toString(),
@@ -180,7 +180,7 @@ class _DrinkFormState extends State<DrinkForm> {
     );
   }
 
-  Row _buildPredefinedVolumesRow() {
+  Widget _buildPredefinedVolumesRow() {
     return Row(
       children: [
         _buildVolumeButton(name: 'Tuplacek', volume: 1000),
@@ -192,7 +192,7 @@ class _DrinkFormState extends State<DrinkForm> {
     );
   }
 
-  TextFormField _buildConsumedAtInput() {
+  Widget _buildConsumedAtInput() {
     return TextFormField(
       controller: _consumedAtController,
       readOnly: true,
@@ -211,7 +211,7 @@ class _DrinkFormState extends State<DrinkForm> {
     );
   }
 
-  SizedBox _buildSubmitButton(BuildContext context) {
+  Widget _buildSubmitButton(BuildContext context) {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(

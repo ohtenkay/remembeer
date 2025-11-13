@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:remembeer/common/beer_icon.dart';
 import 'package:remembeer/drink_type/model/drink_type.dart';
+import 'package:remembeer/drink_type/widget/update_drink_type_page.dart';
 
 class DrinkTypeTile extends StatelessWidget {
   final DrinkType drinkType;
@@ -14,7 +15,14 @@ class DrinkTypeTile extends StatelessWidget {
       title: Text(drinkType.name),
       subtitle: Text('ABV: ${drinkType.alcoholPercentage}%'),
       trailing: IconButton(
-        onPressed: () => {},
+        onPressed: () => {
+          Navigator.of(context).push(
+            MaterialPageRoute<void>(
+              builder: (context) =>
+                  UpdateDrinkTypePage(drinkTypeToUpdate: drinkType),
+            ),
+          ),
+        },
         icon: Icon(Icons.chevron_right),
       ),
     );
