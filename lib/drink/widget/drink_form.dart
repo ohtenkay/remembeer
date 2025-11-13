@@ -12,12 +12,13 @@ class DrinkForm extends StatefulWidget {
   final DrinkType initialDrinkType;
   final DateTime initialConsumedAt;
   final int initialVolume;
-  final void Function({
+  final Future<void> Function({
     required DrinkType drinkType,
     required DateTime consumedAt,
     required int volumeInMilliliters,
   })
   onSubmit;
+  final Future<void> Function()? onDelete;
 
   const DrinkForm({
     super.key,
@@ -25,6 +26,7 @@ class DrinkForm extends StatefulWidget {
     required this.initialConsumedAt,
     required this.initialVolume,
     required this.onSubmit,
+    this.onDelete,
   });
 
   @override
@@ -74,7 +76,7 @@ class _DrinkFormState extends State<DrinkForm> {
             ),
           ),
         ),
-        _buildSubmitButton(context),
+        _buildActionButtons(context),
       ],
     );
   }
@@ -211,26 +213,46 @@ class _DrinkFormState extends State<DrinkForm> {
     );
   }
 
-  Widget _buildSubmitButton(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      child: ElevatedButton(
-        onPressed: () {
-          if (_formKey.currentState!.validate()) {
-            final volume = int.parse(_volumeController.text);
-            widget.onSubmit(
-              drinkType: _selectedDrinkType!,
-              consumedAt: _selectedConsumedAt,
-              volumeInMilliliters: volume,
-            );
-            Navigator.of(context).pop();
-          }
-        },
-        style: ElevatedButton.styleFrom(
-          padding: const EdgeInsets.all(30.0),
+  Widget _buildActionButtons(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        ElevatedButton(
+          onPressed: () async {
+            await _submitForm();
+          },
+          style: ElevatedButton.styleFrom(
+            padding: const EdgeInsets.all(30.0),
+          ),
+          child: const Text('Submit'),
         ),
-        child: const Text('Submit'),
-      ),
+        if (widget.onDelete != null) ...[
+          const SizedBox(height: 8),
+          ElevatedButton(
+            onPressed: () async {
+              if (widget.onDelete != null) {
+                await widget.onDelete!();
+              }
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              padding: const EdgeInsets.all(30.0),
+            ),
+            child: const Text('Delete'),
+          ),
+        ],
+      ],
     );
+  }
+
+  Future<void> _submitForm() async {
+    if (_formKey.currentState!.validate()) {
+      final volume = int.parse(_volumeController.text);
+      await widget.onSubmit(
+        drinkType: _selectedDrinkType!,
+        consumedAt: _selectedConsumedAt,
+        volumeInMilliliters: volume,
+      );
+    }
   }
 }

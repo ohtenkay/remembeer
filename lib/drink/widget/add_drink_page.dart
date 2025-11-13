@@ -32,14 +32,17 @@ class AddDrinkPage extends StatelessWidget {
               required DrinkType drinkType,
               required DateTime consumedAt,
               required int volumeInMilliliters,
-            }) {
-              _drinkController.createSingle(
+            }) async {
+              await _drinkController.createSingle(
                 DrinkCreate(
                   consumedAt: consumedAt,
                   drinkType: drinkType,
                   volumeInMilliliters: volumeInMilliliters,
                 ),
               );
+              if (context.mounted) {
+                Navigator.of(context).pop();
+              }
             },
       ),
     );
