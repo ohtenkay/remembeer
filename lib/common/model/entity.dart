@@ -2,6 +2,7 @@ import 'package:remembeer/common/model/timestamp_converter.dart';
 
 abstract class Entity {
   final String id;
+  final String userId;
   @TimestampConverter()
   final DateTime? createdAt;
   @TimestampConverter()
@@ -11,6 +12,7 @@ abstract class Entity {
 
   const Entity({
     required this.id,
+    required this.userId,
     this.createdAt,
     this.updatedAt,
     this.deletedAt,

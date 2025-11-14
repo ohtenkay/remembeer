@@ -10,18 +10,17 @@ part 'drink.g.dart';
 @JsonSerializable(explicitToJson: true)
 @GeoPointConverter()
 class Drink extends Entity {
-  final String userId;
   final DateTime consumedAt;
   final DrinkType drinkType;
-  final double volumeInMilliliters;
+  final int volumeInMilliliters;
   final GeoPoint? location;
 
   Drink({
     required super.id,
+    required super.userId,
     super.createdAt,
     super.updatedAt,
     super.deletedAt,
-    required this.userId,
     required this.consumedAt,
     required this.drinkType,
     required this.volumeInMilliliters,
@@ -32,4 +31,24 @@ class Drink extends Entity {
 
   @override
   Map<String, dynamic> toJson() => _$DrinkToJson(this);
+
+  Drink copyWith({
+    DateTime? consumedAt,
+    DrinkType? drinkType,
+    int? volumeInMilliliters,
+    GeoPoint? location,
+  }) {
+    return Drink(
+      id: id,
+      createdAt: createdAt,
+      updatedAt: updatedAt,
+      deletedAt: deletedAt,
+      userId: userId,
+
+      consumedAt: consumedAt ?? this.consumedAt,
+      drinkType: drinkType ?? this.drinkType,
+      volumeInMilliliters: volumeInMilliliters ?? this.volumeInMilliliters,
+      location: location ?? this.location,
+    );
+  }
 }

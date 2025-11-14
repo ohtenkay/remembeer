@@ -5,9 +5,11 @@ import 'package:remembeer/common/extension/json_firestore_helper.dart';
 import 'package:remembeer/common/model/entity.dart';
 import 'package:remembeer/common/model/value_object.dart';
 
+const String globalUserId = 'global';
+
 abstract class Controller<T extends Entity, U extends ValueObject> {
   @protected
-  final AuthService _authService;
+  final AuthService authService;
 
   @protected
   final CollectionReference<T> readCollection;
@@ -15,7 +17,7 @@ abstract class Controller<T extends Entity, U extends ValueObject> {
   final CollectionReference<Map<String, dynamic>> writeCollection;
 
   Controller(
-    this._authService, {
+    this.authService, {
     required String collectionPath,
     required T Function(Map<String, dynamic> json) fromJson,
   }) : writeCollection = FirebaseFirestore.instance.collection(collectionPath),
@@ -30,9 +32,17 @@ abstract class Controller<T extends Entity, U extends ValueObject> {
                  throw StateError('Invalid write to read only collection'),
            );
 
+  void _assertNotGlobal(T entity) {
+    if (entity.userId == globalUserId) {
+      throw UnsupportedError(
+        'Cannot modify a global entity (${entity.id}) from the app.',
+      );
+    }
+  }
+
   Stream<List<T>> get userRelatedEntitiesStream => readCollection
       .where(deletedAtField, isNull: true)
-      .where(userIdField, isEqualTo: _authService.authenticatedUser.uid)
+      .where(userIdField, isEqualTo: authService.authenticatedUser.uid)
       .snapshots()
       .map(
         (querySnapshot) => List.unmodifiable(
@@ -43,18 +53,20 @@ abstract class Controller<T extends Entity, U extends ValueObject> {
   Future<void> createSingle(U dto) {
     return writeCollection.add(
       dto.toJson().withServerCreateTimestamps().withUserId(
-        _authService.authenticatedUser,
+        authService.authenticatedUser,
       ),
     );
   }
 
   Future<void> deleteSingle(T entity) {
+    _assertNotGlobal(entity);
     return writeCollection
         .doc(entity.id)
         .update(entity.toJson().withoutId().withServerDeleteTimestamps());
   }
 
   Future<void> updateSingle(T entity) {
+    _assertNotGlobal(entity);
     return writeCollection
         .doc(entity.id)
         .update(entity.toJson().withoutId().withServerUpdateTimestamp());

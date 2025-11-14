@@ -14,6 +14,7 @@ class DrinkType extends Entity {
 
   DrinkType({
     required super.id,
+    required super.userId,
     super.createdAt,
     super.updatedAt,
     super.deletedAt,
@@ -27,4 +28,29 @@ class DrinkType extends Entity {
 
   @override
   Map<String, dynamic> toJson() => _$DrinkTypeToJson(this);
+
+  @override
+  bool operator ==(Object other) =>
+      other is DrinkType && other.runtimeType == runtimeType && other.id == id;
+
+  @override
+  int get hashCode => id.hashCode;
+
+  DrinkType copyWith({
+    String? name,
+    DrinkCategory? category,
+    double? alcoholPercentage,
+  }) {
+    return DrinkType(
+      id: id,
+      userId: userId,
+      createdAt: createdAt,
+      updatedAt: updatedAt,
+      deletedAt: deletedAt,
+
+      name: name ?? this.name,
+      category: category ?? this.category,
+      alcoholPercentage: alcoholPercentage ?? this.alcoholPercentage,
+    );
+  }
 }

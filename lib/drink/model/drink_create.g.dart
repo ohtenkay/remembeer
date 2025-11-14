@@ -8,7 +8,6 @@ part of 'drink_create.dart';
 
 Map<String, dynamic> _$DrinkCreateToJson(DrinkCreate instance) =>
     <String, dynamic>{
-      'userId': instance.userId,
       'consumedAt': instance.consumedAt.toIso8601String(),
       'drinkType': instance.drinkType.toJson(),
       'volumeInMilliliters': instance.volumeInMilliliters,
