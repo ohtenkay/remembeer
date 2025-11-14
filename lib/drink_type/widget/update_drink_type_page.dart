@@ -19,11 +19,13 @@ class UpdateDrinkTypePage extends StatelessWidget {
       child: DrinkTypeForm(
         initialName: drinkTypeToUpdate.name,
         initialAlcoholPercentage: drinkTypeToUpdate.alcoholPercentage,
-        onSubmit: (name, alcoholPercentage) async {
+        initialDrinkCategory: drinkTypeToUpdate.category,
+        onSubmit: (name, alcoholPercentage, drinkCategory) async {
           await _drinkTypeController.updateSingle(
             drinkTypeToUpdate.copyWith(
               name: name,
               alcoholPercentage: alcoholPercentage,
+              category: drinkCategory,
             ),
           );
           if (context.mounted) {

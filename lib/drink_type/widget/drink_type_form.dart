@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:remembeer/drink_type/model/drink_category.dart';
+
+const _SPACING = SizedBox(height: 16);
 
 class DrinkTypeForm extends StatefulWidget {
   final String initialName;
   final double initialAlcoholPercentage;
+  final DrinkCategory initialDrinkCategory;
   final Future<void> Function(
     String name,
     double alcoholPercentage,
+    DrinkCategory category,
   )
   onSubmit;
   final Future<void> Function()? onDelete;
@@ -14,6 +19,7 @@ class DrinkTypeForm extends StatefulWidget {
     super.key,
     required this.initialName,
     required this.initialAlcoholPercentage,
+    required this.initialDrinkCategory,
     required this.onSubmit,
     this.onDelete,
   });
@@ -24,6 +30,8 @@ class DrinkTypeForm extends StatefulWidget {
 
 class _DrinkTypeFormState extends State<DrinkTypeForm> {
   final _formKey = GlobalKey<FormState>();
+
+  late DrinkCategory? _selectedDrinkCategory = widget.initialDrinkCategory;
   final _nameController = TextEditingController();
   final _alcoholPercentageController = TextEditingController();
 
@@ -52,8 +60,10 @@ class _DrinkTypeFormState extends State<DrinkTypeForm> {
             child: ListView(
               children: [
                 _buildNameInput(),
-                const SizedBox(height: 16),
+                _SPACING,
                 _buildAlcoholPercentageInput(),
+                _SPACING,
+                _buildDrinkCategoryDropdown(),
               ],
             ),
           ),
@@ -132,6 +142,34 @@ class _DrinkTypeFormState extends State<DrinkTypeForm> {
     );
   }
 
+  Widget _buildDrinkCategoryDropdown() {
+    return DropdownButtonFormField<DrinkCategory>(
+      initialValue: _selectedDrinkCategory,
+      hint: const Text('Select Category'),
+      items: DrinkCategory.values.map((drinkCategory) {
+        return DropdownMenuItem(
+          value: drinkCategory,
+          child: Text(drinkCategory.displayName),
+        );
+      }).toList(),
+      onChanged: (newValue) {
+        setState(() {
+          _selectedDrinkCategory = newValue;
+        });
+      },
+      validator: (value) {
+        if (value == null) {
+          return 'Please select a category.';
+        }
+        return null;
+      },
+      decoration: const InputDecoration(
+        labelText: 'Category',
+        border: OutlineInputBorder(),
+      ),
+    );
+  }
+
   Future<void> _submitForm(BuildContext context) async {
     if (_formKey.currentState!.validate()) {
       final name = _nameController.text;
@@ -142,6 +180,7 @@ class _DrinkTypeFormState extends State<DrinkTypeForm> {
       await widget.onSubmit(
         name,
         roundedAlcoholPercentage,
+        _selectedDrinkCategory!,
       );
     }
   }

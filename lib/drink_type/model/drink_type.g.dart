@@ -51,7 +51,13 @@ Value? _$JsonConverterFromJson<Json, Value>(
   Value? Function(Json json) fromJson,
 ) => json == null ? null : fromJson(json as Json);
 
-const _$DrinkCategoryEnumMap = {DrinkCategory.Beer: 'Beer'};
+const _$DrinkCategoryEnumMap = {
+  DrinkCategory.Beer: 'Beer',
+  DrinkCategory.Cider: 'Cider',
+  DrinkCategory.Cocktail: 'Cocktail',
+  DrinkCategory.Spirit: 'Spirit',
+  DrinkCategory.Wine: 'Wine',
+};
 
 Json? _$JsonConverterToJson<Json, Value>(
   Value? value,

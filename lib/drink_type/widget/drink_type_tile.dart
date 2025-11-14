@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:remembeer/common/beer_icon.dart';
+import 'package:remembeer/common/widget/drink_icon.dart';
 import 'package:remembeer/drink_type/model/drink_type.dart';
 import 'package:remembeer/drink_type/widget/update_drink_type_page.dart';
 
@@ -11,7 +11,7 @@ class DrinkTypeTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: const BeerIcon(),
+      leading: DrinkIcon(category: drinkType.category),
       title: Text(drinkType.name),
       subtitle: Text('ABV: ${drinkType.alcoholPercentage}%'),
       trailing: IconButton(
