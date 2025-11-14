@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:remembeer/common/widget/loading_stream_builder.dart';
 import 'package:remembeer/drink_type/controller/drink_type_controller.dart';
+import 'package:remembeer/drink_type/model/drink_category.dart';
 import 'package:remembeer/drink_type/model/drink_type.dart';
 import 'package:remembeer/ioc/ioc_container.dart';
 
@@ -179,7 +180,7 @@ class _DrinkFormState extends State<DrinkForm> {
     );
   }
 
-  Widget _buildVolumeButton({required String name, required double volume}) {
+  Widget _buildVolumeButton({required String name, required int volume}) {
     return Expanded(
       child: OutlinedButton(
         onPressed: () => _volumeController.text = volume.toString(),
@@ -189,14 +190,24 @@ class _DrinkFormState extends State<DrinkForm> {
   }
 
   Widget _buildPredefinedVolumesRow() {
+    if (_selectedDrinkType == null) {
+      return const SizedBox.shrink();
+    }
+
+    final volumes = _selectedDrinkType!.category.predefinedVolumes;
+    final buttons = <Widget>[];
+    // TODO(metju-ac): improve this logic when doing UI, consider Wrap component
+    volumes.forEach((name, volume) {
+      buttons.add(_buildVolumeButton(name: name, volume: volume));
+      buttons.add(const SizedBox(width: 8));
+    });
+
+    if (buttons.isNotEmpty) {
+      buttons.removeLast();
+    }
+
     return Row(
-      children: [
-        _buildVolumeButton(name: 'Tuplacek', volume: 1000),
-        const SizedBox(width: 8),
-        _buildVolumeButton(name: 'Big', volume: 500),
-        const SizedBox(width: 8),
-        _buildVolumeButton(name: 'Small', volume: 300),
-      ],
+      children: buttons,
     );
   }
 
