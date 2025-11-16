@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:remembeer/common/beer_icon.dart';
+import 'package:remembeer/common/widget/drink_icon.dart';
+import 'package:remembeer/drink_type/model/drink_category.dart';
 import 'package:remembeer/pages/activity_page.dart';
 import 'package:remembeer/pages/drink_page.dart';
 import 'package:remembeer/pages/leaderboards_page.dart';
@@ -62,7 +63,8 @@ class _PageSwitcherState extends State<PageSwitcher> {
           label: 'Leaderboards',
         ),
         BottomNavigationBarItem(
-          icon: BeerIcon(
+          icon: DrinkIcon(
+            category: DrinkCategory.Beer,
             color: _selectedIndex == _drinkPageIndex
                 ? Theme.of(context).colorScheme.primary
                 : Colors.grey,

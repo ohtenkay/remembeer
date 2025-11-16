@@ -1,25 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:remembeer/drink_type/model/drink_category.dart';
 
-class BeerIcon extends StatelessWidget {
+class DrinkIcon extends StatelessWidget {
+  final DrinkCategory category;
   final Color? color;
   final double size;
 
-  const BeerIcon({
+  const DrinkIcon({
     super.key,
+    required this.category,
     this.color,
     this.size = 40,
   });
 
   @override
   Widget build(BuildContext context) {
-    final color = this.color ?? Theme.of(context).colorScheme.primary;
+    final iconPath = category.iconPath;
+    final defaultColor = category.defaultColor;
+
+    final color = this.color ?? defaultColor;
 
     return SizedBox(
       width: size,
       height: size,
       child: SvgPicture.asset(
-        'assets/icons/beer.svg',
+        iconPath,
         colorFilter: ColorFilter.mode(
           color,
           BlendMode.srcIn,

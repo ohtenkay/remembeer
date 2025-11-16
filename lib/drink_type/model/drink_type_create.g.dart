@@ -13,4 +13,10 @@ Map<String, dynamic> _$DrinkTypeCreateToJson(DrinkTypeCreate instance) =>
       'alcoholPercentage': instance.alcoholPercentage,
     };
 
-const _$DrinkCategoryEnumMap = {DrinkCategory.Beer: 'Beer'};
+const _$DrinkCategoryEnumMap = {
+  DrinkCategory.Beer: 'Beer',
+  DrinkCategory.Cider: 'Cider',
+  DrinkCategory.Cocktail: 'Cocktail',
+  DrinkCategory.Spirit: 'Spirit',
+  DrinkCategory.Wine: 'Wine',
+};
