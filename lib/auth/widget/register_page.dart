@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:remembeer/auth/service/auth_service.dart';
 import 'package:remembeer/common/widget/page_template.dart';
 import 'package:remembeer/ioc/ioc_container.dart';
+import 'package:remembeer/user_data/service/user_data_service.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -13,6 +14,7 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   final AuthService _authService = get<AuthService>();
+  final UserDataService _userDataService = get<UserDataService>();
   late final TextEditingController _emailController;
   late final TextEditingController _passwordController;
   String _errorMessage = '';
@@ -75,6 +77,9 @@ class _RegisterPageState extends State<RegisterPage> {
         email: email,
         password: password,
       );
+
+      await _userDataService.createDefaultUserData();
+
       if (mounted) {
         Navigator.pop(context);
       }
