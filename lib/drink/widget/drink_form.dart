@@ -172,7 +172,8 @@ class _DrinkFormState extends State<DrinkForm> {
         if (value == null || value.isEmpty) {
           return 'Please enter a volume.';
         }
-        if (int.tryParse(value) == null) {
+        final volume = int.tryParse(value);
+        if (volume == null || volume <= 0) {
           return 'Please enter a valid number.';
         }
         return null;
