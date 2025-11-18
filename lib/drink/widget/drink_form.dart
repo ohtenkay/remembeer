@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:remembeer/common/widget/async_builder.dart';
-import 'package:remembeer/drink_type/controller/drink_type_controller.dart';
 import 'package:remembeer/drink_type/model/drink_category.dart';
 import 'package:remembeer/drink_type/model/drink_type.dart';
-import 'package:remembeer/ioc/ioc_container.dart';
+import 'package:remembeer/drink_type/widget/drink_type_dropdown.dart';
 
 const _SPACING = SizedBox(height: 16);
 
@@ -35,7 +33,6 @@ class DrinkForm extends StatefulWidget {
 }
 
 class _DrinkFormState extends State<DrinkForm> {
-  final DrinkTypeController _drinkTypeController = get<DrinkTypeController>();
   final _formKey = GlobalKey<FormState>();
 
   late DrinkType? _selectedDrinkType = widget.initialDrinkType;
@@ -122,40 +119,12 @@ class _DrinkFormState extends State<DrinkForm> {
   }
 
   Widget _buildDrinkTypeDropdown() {
-    return AsyncBuilder(
-      stream: _drinkTypeController.allAvailableDrinkTypesStream,
-      builder: (context, unmodifiableDrinkTypes) {
-        final drinkTypes = unmodifiableDrinkTypes.toList();
-        if (_selectedDrinkType != null &&
-            !drinkTypes.contains(_selectedDrinkType)) {
-          drinkTypes.insert(0, _selectedDrinkType!);
-        }
-
-        return DropdownButtonFormField<DrinkType>(
-          initialValue: _selectedDrinkType,
-          hint: const Text('Select a drink'),
-          items: drinkTypes.map((drinkType) {
-            return DropdownMenuItem(
-              value: drinkType,
-              child: Text(drinkType.name),
-            );
-          }).toList(),
-          onChanged: (newValue) {
-            setState(() {
-              _selectedDrinkType = newValue;
-            });
-          },
-          validator: (value) {
-            if (value == null) {
-              return 'Please select your drink.';
-            }
-            return null;
-          },
-          decoration: const InputDecoration(
-            labelText: 'Drink',
-            border: OutlineInputBorder(),
-          ),
-        );
+    return DrinkTypeDropdown(
+      selectedDrinkType: _selectedDrinkType,
+      onChanged: (newValue) {
+        setState(() {
+          _selectedDrinkType = newValue;
+        });
       },
     );
   }
@@ -172,7 +141,8 @@ class _DrinkFormState extends State<DrinkForm> {
         if (value == null || value.isEmpty) {
           return 'Please enter a volume.';
         }
-        if (int.tryParse(value) == null) {
+        final volume = int.tryParse(value);
+        if (volume == null || volume <= 0) {
           return 'Please enter a valid number.';
         }
         return null;

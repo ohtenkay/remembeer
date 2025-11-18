@@ -15,7 +15,7 @@ class Drink extends Entity {
   final int volumeInMilliliters;
   final GeoPoint? location;
 
-  Drink({
+  const Drink({
     required super.id,
     required super.userId,
     super.createdAt,

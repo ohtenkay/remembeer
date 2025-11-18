@@ -102,7 +102,8 @@ class _DrinkTypeFormState extends State<DrinkTypeForm> {
         if (value == null || value.isEmpty) {
           return 'Please enter an alcohol percentage.';
         }
-        if (double.tryParse(value) == null) {
+        final percentage = double.tryParse(value);
+        if (percentage == null || percentage < 0 || percentage > 100) {
           return 'Please enter a valid number.';
         }
         return null;

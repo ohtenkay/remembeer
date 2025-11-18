@@ -12,7 +12,7 @@ class DrinkType extends Entity {
   final DrinkCategory category;
   final double alcoholPercentage;
 
-  DrinkType({
+  const DrinkType({
     required super.id,
     required super.userId,
     super.createdAt,
