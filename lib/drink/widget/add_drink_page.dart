@@ -16,7 +16,7 @@ class AddDrinkPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AsyncBuilder(
-      stream: _userDataService.userDataStream,
+      future: _userDataService.getCurrentUserData,
       builder: (context, userData) {
         return PageTemplate(
           title: const Text('Record a Drink'),

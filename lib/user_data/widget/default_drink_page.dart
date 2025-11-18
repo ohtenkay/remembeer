@@ -27,7 +27,7 @@ class _DefaultDrinkPageState extends State<DefaultDrinkPage> {
     return PageTemplate(
       title: const Text('Default drink'),
       child: AsyncBuilder(
-        stream: _userDataService.userDataStream,
+        future: _userDataService.getCurrentUserData,
         builder: (context, userData) {
           _selectedDrinkType ??= userData.defaultDrinkType;
           _selectedVolume ??= userData.defaultDrinkSize;
