@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:remembeer/common/widget/drink_icon.dart';
 import 'package:remembeer/drink/model/drink.dart';
-import 'package:remembeer/drink/widget/update_drink_page.dart';
+import 'package:remembeer/drink/widget/drink_form_page.dart';
 
 class DrinkCard extends StatelessWidget {
   final Drink drink;
@@ -42,7 +42,7 @@ class DrinkCard extends StatelessWidget {
           onPressed: () {
             Navigator.of(context).push(
               MaterialPageRoute<void>(
-                builder: (context) => UpdateDrinkPage(drinkToUpdate: drink),
+                builder: (context) => DrinkFormPage(drinkToUpdate: drink),
               ),
             );
           },

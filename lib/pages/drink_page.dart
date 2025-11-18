@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:remembeer/common/widget/page_template.dart';
-import 'package:remembeer/drink/widget/add_drink_page.dart';
+import 'package:remembeer/drink/widget/drink_form_page.dart';
 import 'package:remembeer/drink/widget/drink_list.dart';
 
 class DrinkPage extends StatelessWidget {
@@ -25,7 +25,7 @@ class DrinkPage extends StatelessWidget {
               context,
             ).push(
               MaterialPageRoute<void>(
-                builder: (context) => AddDrinkPage(),
+                builder: (context) => DrinkFormPage(),
               ),
             ),
         child: Icon(Icons.add),
