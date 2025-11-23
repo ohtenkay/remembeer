@@ -21,11 +21,15 @@ class UserStatsService {
         return drink.consumedAt.isAfter(thirtyDaysAgo);
       }).toList();
 
+      final (isStreakActive, streakDays) = _calculateStreak(drinks);
+
       return UserStats(
         totalBeersConsumed: _calculateEquivalentBeers(drinks),
         totalAlcoholConsumed: _calculateTotalAlcohol(drinks),
         beersConsumedLast30Days: _calculateEquivalentBeers(drinksLast30Days),
         alcoholConsumedLast30Days: _calculateTotalAlcohol(drinksLast30Days),
+        streakDays: streakDays,
+        isStreakActive: isStreakActive,
       );
     });
   }
@@ -46,5 +50,41 @@ class UserStatsService {
           sum +
           (drink.volumeInMilliliters * drink.drinkType.alcoholPercentage / 100),
     );
+  }
+
+  (bool, int) _calculateStreak(List<Drink> drinks) {
+    final now = DateTime.now();
+    final todayDate = DateTime(now.year, now.month, now.day);
+
+    final uniqueDays =
+        drinks
+            .map(
+              (drink) => DateTime(
+                drink.consumedAt.year,
+                drink.consumedAt.month,
+                drink.consumedAt.day,
+              ),
+            )
+            .toSet()
+            .toList()
+          ..sort((a, b) => b.compareTo(a));
+
+    final isStreakActive = uniqueDays.contains(todayDate);
+
+    var streakDays = 0;
+    var expectedDate = isStreakActive
+        ? todayDate
+        : todayDate.subtract(const Duration(days: 1));
+
+    for (final day in uniqueDays) {
+      if (!day.isAtSameMomentAs(expectedDate)) {
+        break;
+      }
+
+      streakDays++;
+      expectedDate = expectedDate.subtract(const Duration(days: 1));
+    }
+
+    return (isStreakActive, streakDays);
   }
 }
