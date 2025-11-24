@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class PageTemplate extends StatelessWidget {
   final Widget? title;
   final Widget child;
-  final FloatingActionButton? floatingActionButton;
+  final Widget? floatingActionButton;
 
   const PageTemplate({
     super.key,
