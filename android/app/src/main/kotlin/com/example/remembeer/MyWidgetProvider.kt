@@ -23,7 +23,7 @@ class MyWidgetProvider : AppWidgetProvider() {
             )
 
             val views = RemoteViews(context.packageName, R.layout.widget_layout)
-            views.setOnClickPendingIntent(R.id.button, pendingIntent)
+            views.setOnClickPendingIntent(R.id.widget_root, pendingIntent)
             appWidgetManager.updateAppWidget(id, views)
         }
     }
