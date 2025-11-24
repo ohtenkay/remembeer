@@ -9,7 +9,6 @@ import android.content.Intent
 import android.widget.RemoteViews
 
 class QuickAddWidgetProvider : AppWidgetProvider() {
-
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
         for (id in appWidgetIds) {
             val intent = Intent(context, MainActivity::class.java).apply {

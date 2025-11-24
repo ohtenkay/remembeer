@@ -40,17 +40,24 @@ class _PageSwitcherState extends State<PageSwitcher> {
     platform.setMethodCallHandler(_handleQuickAddAction);
   }
 
+  @override
+  void dispose() {
+    platform.setMethodCallHandler(null);
+    super.dispose();
+  }
+
   Future<void> _handleQuickAddAction(MethodCall call) async {
     if (call.method == 'quickAddPressed') {
       await _drinkController.addDefaultDrink();
 
-      if (mounted) {
-        showDefaultDrinkAdded(context);
+      if (!mounted) {
+        return;
       }
 
       setState(() {
         _selectedIndex = _drinkPageIndex;
       });
+      showDefaultDrinkAdded(context);
     }
   }
 
