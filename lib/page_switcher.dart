@@ -22,7 +22,7 @@ class PageSwitcher extends StatefulWidget {
 }
 
 class _PageSwitcherState extends State<PageSwitcher> {
-  static const platform = MethodChannel('com.example.widget_action');
+  static const platform = MethodChannel('quick_add_action');
   int _selectedIndex = _drinkPageIndex;
 
   final _drinkController = get<DrinkController>();
@@ -39,12 +39,11 @@ class _PageSwitcherState extends State<PageSwitcher> {
   @override
   void initState() {
     super.initState();
-    platform.setMethodCallHandler(_handleWidgetAction);
+    platform.setMethodCallHandler(_handleQuickAddAction);
   }
 
-  // TODO(ohtenkay): think about moving this elsewhere
-  Future<void> _handleWidgetAction(MethodCall call) async {
-    if (call.method == 'widgetPressed') {
+  Future<void> _handleQuickAddAction(MethodCall call) async {
+    if (call.method == 'quickAddPressed') {
       final userSettings = await _userSettingsService.currentUserSettings;
       await _drinkController.createSingle(
         DrinkCreate(

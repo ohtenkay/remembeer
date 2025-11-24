@@ -7,7 +7,7 @@ import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 
 class MainActivity : FlutterActivity() {
-    private val CHANNEL = "com.example.widget_action"
+    private val CHANNEL = "quick_add_action"
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
@@ -21,18 +21,18 @@ class MainActivity : FlutterActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        handleWidgetIntent(intent)
+        handleQuickAddIntent(intent)
     }
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        handleWidgetIntent(intent)
+        handleQuickAddIntent(intent)
     }
 
-    private fun handleWidgetIntent(intent: Intent) {
-        if (intent.action == "WIDGET_ACTION") {
+    private fun handleQuickAddIntent(intent: Intent) {
+        if (intent.action == "QUICK_ADD_ACTION") {
             flutterEngine?.dartExecutor?.binaryMessenger?.let { messenger ->
-                MethodChannel(messenger, CHANNEL).invokeMethod("widgetPressed", null)
+                MethodChannel(messenger, CHANNEL).invokeMethod("quickAddPressed", null)
             }
         }
     }
