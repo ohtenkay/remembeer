@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:remembeer/common/widget/page_template.dart';
+import 'package:remembeer/drink/action/drink_notifications.dart';
 import 'package:remembeer/drink/controller/drink_controller.dart';
 import 'package:remembeer/drink/widget/add_drink_page.dart';
 import 'package:remembeer/drink/widget/drink_list.dart';
@@ -26,14 +27,8 @@ class DrinkPage extends StatelessWidget {
       floatingActionButton: GestureDetector(
         onLongPress: () async {
           await drinkController.addDefaultDrink();
-
           if (context.mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Default drink added!'),
-                duration: Duration(seconds: 2),
-              ),
-            );
+            showDefaultDrinkAdded(context);
           }
         },
         child: FloatingActionButton(
