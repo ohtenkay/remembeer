@@ -15,7 +15,6 @@ class IoCContainer {
   static void initialize() {
     get.registerSingleton(FirebaseAuth.instance);
     get.registerSingleton(AuthService(get<FirebaseAuth>()));
-    get.registerSingleton(DrinkController(get<AuthService>()));
     get.registerSingleton(DrinkTypeController(get<AuthService>()));
     get.registerSingleton(
       UserSettingsController(authService: get<AuthService>()),
@@ -24,6 +23,12 @@ class IoCContainer {
       UserSettingsService(
         authService: get<AuthService>(),
         userSettingsController: get<UserSettingsController>(),
+      ),
+    );
+    get.registerSingleton(
+      DrinkController(
+        get<AuthService>(),
+        userSettingsService: get<UserSettingsService>(),
       ),
     );
     get.registerSingleton(

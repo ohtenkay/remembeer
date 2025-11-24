@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:remembeer/common/widget/drink_icon.dart';
 import 'package:remembeer/drink/controller/drink_controller.dart';
-import 'package:remembeer/drink/model/drink_create.dart';
 import 'package:remembeer/drink_type/model/drink_category.dart';
 import 'package:remembeer/ioc/ioc_container.dart';
 import 'package:remembeer/pages/activity_page.dart';
@@ -10,7 +9,6 @@ import 'package:remembeer/pages/drink_page.dart';
 import 'package:remembeer/pages/leaderboards_page.dart';
 import 'package:remembeer/pages/profile_page.dart';
 import 'package:remembeer/pages/settings_page.dart';
-import 'package:remembeer/user_settings/service/user_settings_service.dart';
 
 const _drinkPageIndex = 2;
 
@@ -26,7 +24,6 @@ class _PageSwitcherState extends State<PageSwitcher> {
   int _selectedIndex = _drinkPageIndex;
 
   final _drinkController = get<DrinkController>();
-  final _userSettingsService = get<UserSettingsService>();
 
   static final List<Widget> _pages = <Widget>[
     ProfilePage(),
@@ -44,14 +41,7 @@ class _PageSwitcherState extends State<PageSwitcher> {
 
   Future<void> _handleQuickAddAction(MethodCall call) async {
     if (call.method == 'quickAddPressed') {
-      final userSettings = await _userSettingsService.currentUserSettings;
-      await _drinkController.createSingle(
-        DrinkCreate(
-          consumedAt: DateTime.now(),
-          drinkType: userSettings.defaultDrinkType,
-          volumeInMilliliters: userSettings.defaultDrinkSize,
-        ),
-      );
+      await _drinkController.addDefaultDrink();
 
       setState(() {
         _selectedIndex = _drinkPageIndex;
