@@ -1,12 +1,12 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'user_data.dart';
+part of 'user_settings.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-UserData _$UserDataFromJson(Map<String, dynamic> json) => UserData(
+UserSettings _$UserSettingsFromJson(Map<String, dynamic> json) => UserSettings(
   id: json['id'] as String,
   defaultDrinkType: DrinkType.fromJson(
     json['defaultDrinkType'] as Map<String, dynamic>,
@@ -14,8 +14,9 @@ UserData _$UserDataFromJson(Map<String, dynamic> json) => UserData(
   defaultDrinkSize: (json['defaultDrinkSize'] as num).toInt(),
 );
 
-Map<String, dynamic> _$UserDataToJson(UserData instance) => <String, dynamic>{
-  'id': instance.id,
-  'defaultDrinkType': instance.defaultDrinkType.toJson(),
-  'defaultDrinkSize': instance.defaultDrinkSize,
-};
+Map<String, dynamic> _$UserSettingsToJson(UserSettings instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'defaultDrinkType': instance.defaultDrinkType.toJson(),
+      'defaultDrinkSize': instance.defaultDrinkSize,
+    };

@@ -4,7 +4,7 @@ import 'package:remembeer/common/widget/page_template.dart';
 import 'package:remembeer/drink_type/model/drink_type.dart';
 import 'package:remembeer/drink_type/widget/drink_type_dropdown.dart';
 import 'package:remembeer/ioc/ioc_container.dart';
-import 'package:remembeer/user_data/service/user_data_service.dart';
+import 'package:remembeer/user_settings/service/user_settings_service.dart';
 
 class DefaultDrinkPage extends StatefulWidget {
   const DefaultDrinkPage({
@@ -16,7 +16,7 @@ class DefaultDrinkPage extends StatefulWidget {
 }
 
 class _DefaultDrinkPageState extends State<DefaultDrinkPage> {
-  final _userDataService = get<UserDataService>();
+  final _userSettingsService = get<UserSettingsService>();
   final _formKey = GlobalKey<FormState>();
 
   DrinkType? _selectedDrinkType;
@@ -27,10 +27,10 @@ class _DefaultDrinkPageState extends State<DefaultDrinkPage> {
     return PageTemplate(
       title: const Text('Default drink'),
       child: AsyncBuilder(
-        future: _userDataService.getCurrentUserData,
-        builder: (context, userData) {
-          _selectedDrinkType ??= userData.defaultDrinkType;
-          _selectedVolume ??= userData.defaultDrinkSize;
+        future: _userSettingsService.currentUserSettings,
+        builder: (context, userSettings) {
+          _selectedDrinkType ??= userSettings.defaultDrinkType;
+          _selectedVolume ??= userSettings.defaultDrinkSize;
 
           return Column(
             children: [
@@ -59,8 +59,8 @@ class _DefaultDrinkPageState extends State<DefaultDrinkPage> {
       return;
     }
 
-    await _userDataService.updateDefaultDrinkType(_selectedDrinkType!);
-    await _userDataService.updateDefaultDrinkSize(_selectedVolume!);
+    await _userSettingsService.updateDefaultDrinkType(_selectedDrinkType!);
+    await _userSettingsService.updateDefaultDrinkSize(_selectedVolume!);
 
     if (mounted) {
       Navigator.of(context).pop();
