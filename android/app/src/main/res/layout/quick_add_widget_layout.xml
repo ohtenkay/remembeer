@@ -8,17 +8,18 @@
         android:id="@+id/quick_add_widget_root"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#FFFFFF"
+        android:background="@color/widget_background"
         android:contentDescription="@string/quick_add_widget_description">
 
         <TextView
             android:id="@+id/quick_add_text"
             android:text="+1"
             android:textSize="28sp"
-            android:textColor="#D4A017"
+            android:textColor="@color/widget_text_color"
             android:gravity="center"
             android:textStyle="bold"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            android:contentDescription="@string/quick_add_text_description"/>
     </FrameLayout>
 </FrameLayout>

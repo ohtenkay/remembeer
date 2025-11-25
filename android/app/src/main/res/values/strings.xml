@@ -2,4 +2,5 @@
 <resources>
     <string name="app_name">Remembeer</string>
     <string name="quick_add_widget_description">Quick Add - Add default drink with one tap</string>
+    <string name="quick_add_text_description">Plus one - Add default drink</string>
 </resources>
