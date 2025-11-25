@@ -31,7 +31,7 @@ class _PageSwitcherState extends State<PageSwitcher> {
     const LeaderboardsPage(),
     const DrinkPage(),
     const ActivityPage(),
-    const SettingsPage(),
+    SettingsPage(),
   ];
 
   @override
