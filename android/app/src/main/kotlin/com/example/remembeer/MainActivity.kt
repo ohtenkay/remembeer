@@ -7,16 +7,13 @@ import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 
 class MainActivity : FlutterActivity() {
-    private val CHANNEL = "quick_add_action"
+    private val channel = "quick_add_action"
+    private var methodChannel: MethodChannel? = null
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
 
-        // Set up MethodChannel inside configureFlutterEngine
-        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL)
-            .setMethodCallHandler { call, result ->
-                // Flutter -> Native calls if needed
-            }
+        methodChannel = MethodChannel(flutterEngine.dartExecutor.binaryMessenger, channel)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,9 +28,7 @@ class MainActivity : FlutterActivity() {
 
     private fun handleQuickAddIntent(intent: Intent) {
         if (intent.action == "QUICK_ADD_ACTION") {
-            flutterEngine?.dartExecutor?.binaryMessenger?.let { messenger ->
-                MethodChannel(messenger, CHANNEL).invokeMethod("quickAddPressed", null)
-            }
+            methodChannel?.invokeMethod("quickAddPressed", null)
         }
     }
 }
