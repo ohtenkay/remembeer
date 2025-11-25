@@ -16,8 +16,8 @@ abstract class Controller<T extends Entity, U extends ValueObject> {
   @protected
   final CollectionReference<Map<String, dynamic>> writeCollection;
 
-  Controller(
-    this.authService, {
+  Controller({
+    required this.authService,
     required String collectionPath,
     required T Function(Map<String, dynamic> json) fromJson,
   }) : writeCollection = FirebaseFirestore.instance.collection(collectionPath),

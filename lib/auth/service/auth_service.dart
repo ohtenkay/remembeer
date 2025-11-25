@@ -5,7 +5,8 @@ class AuthService {
   final FirebaseAuth _firebaseAuth;
   final _authStateSubject = BehaviorSubject<User?>();
 
-  AuthService(this._firebaseAuth) {
+  AuthService({required FirebaseAuth firebaseAuth})
+    : _firebaseAuth = firebaseAuth {
     _authStateSubject.add(_firebaseAuth.currentUser);
     _firebaseAuth.authStateChanges().listen(_authStateSubject.add);
   }

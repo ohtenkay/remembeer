@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:remembeer/common/widget/drink_icon.dart';
 import 'package:remembeer/drink/action/drink_notifications.dart';
-import 'package:remembeer/drink/controller/drink_controller.dart';
+import 'package:remembeer/drink/service/drink_service.dart';
 import 'package:remembeer/drink_type/model/drink_category.dart';
 import 'package:remembeer/ioc/ioc_container.dart';
 import 'package:remembeer/pages/activity_page.dart';
@@ -24,7 +24,7 @@ class _PageSwitcherState extends State<PageSwitcher> {
   static const platform = MethodChannel('quick_add_action');
   int _selectedIndex = _drinkPageIndex;
 
-  final _drinkController = get<DrinkController>();
+  final _drinkService = get<DrinkService>();
 
   static final List<Widget> _pages = <Widget>[
     ProfilePage(),
@@ -48,7 +48,7 @@ class _PageSwitcherState extends State<PageSwitcher> {
 
   Future<void> _handleQuickAddAction(MethodCall call) async {
     if (call.method == 'quickAddPressed') {
-      await _drinkController.addDefaultDrink();
+      await _drinkService.addDefaultDrink();
 
       if (!mounted) {
         return;

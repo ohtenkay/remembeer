@@ -4,7 +4,7 @@ import 'package:remembeer/drink_type/model/drink_type.dart';
 import 'package:remembeer/drink_type/model/drink_type_create.dart';
 
 class DrinkTypeController extends Controller<DrinkType, DrinkTypeCreate> {
-  DrinkTypeController(super.authService)
+  DrinkTypeController({required super.authService})
     : super(
         collectionPath: 'drink_types',
         fromJson: DrinkType.fromJson,

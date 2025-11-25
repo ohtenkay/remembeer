@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:remembeer/common/widget/page_template.dart';
 import 'package:remembeer/drink/action/drink_notifications.dart';
-import 'package:remembeer/drink/controller/drink_controller.dart';
+import 'package:remembeer/drink/service/drink_service.dart';
 import 'package:remembeer/drink/widget/add_drink_page.dart';
 import 'package:remembeer/drink/widget/drink_list.dart';
 import 'package:remembeer/ioc/ioc_container.dart';
@@ -11,7 +11,7 @@ class DrinkPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final drinkController = get<DrinkController>();
+    final drinkService = get<DrinkService>();
 
     return PageTemplate(
       title: Row(
@@ -26,7 +26,7 @@ class DrinkPage extends StatelessWidget {
       ),
       floatingActionButton: GestureDetector(
         onLongPress: () async {
-          await drinkController.addDefaultDrink();
+          await drinkService.addDefaultDrink();
           if (context.mounted) {
             showDefaultDrinkAdded(context);
           }
