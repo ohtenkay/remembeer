@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:remembeer/auth/service/auth_service.dart';
+import 'package:remembeer/auth/widget/username_page.dart';
 import 'package:remembeer/common/widget/page_template.dart';
 import 'package:remembeer/drink_type/widget/custom_drink_types_page.dart';
 import 'package:remembeer/ioc/ioc_container.dart';
@@ -16,8 +17,10 @@ class SettingsPage extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          _buildHeading('Profile'),
+          _buildProfileSettingsBox(context),
           _buildHeading('Drinks'),
-          _buildDrinkSettinsBox(context),
+          _buildDrinkSettingsBox(context),
           const Spacer(),
           _buildSignOutButton(context),
         ],
@@ -65,11 +68,11 @@ class SettingsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildSettingsCard(
-    BuildContext context,
-    String title,
-    Widget destinationPage,
-  ) {
+  Widget _buildSettingsCard({
+    required BuildContext context,
+    required String title,
+    required Widget destinationPage,
+  }) {
     return ListTile(
       title: Text(title),
       trailing: const Icon(Icons.chevron_right),
@@ -81,7 +84,42 @@ class SettingsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildDrinkSettinsBox(BuildContext context) {
+  Widget _buildDrinkSettingsBox(BuildContext context) {
+    return _buildSettingsBox(
+      context: context,
+      children: [
+        _buildSettingsCard(
+          context: context,
+          title: 'Custom drinks',
+          destinationPage: CustomDrinkTypesPage(),
+        ),
+        const Divider(height: 1),
+        _buildSettingsCard(
+          context: context,
+          title: 'Default drink',
+          destinationPage: const DefaultDrinkPage(),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildProfileSettingsBox(BuildContext context) {
+    return _buildSettingsBox(
+      context: context,
+      children: [
+        _buildSettingsCard(
+          context: context,
+          title: 'Change username',
+          destinationPage: UserNamePage(),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSettingsBox({
+    required BuildContext context,
+    required List<Widget> children,
+  }) {
     return DecoratedBox(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10.0),
@@ -91,15 +129,7 @@ class SettingsPage extends StatelessWidget {
         ),
       ),
       child: Column(
-        children: [
-          _buildSettingsCard(context, 'Custom drinks', CustomDrinkTypesPage()),
-          const Divider(height: 1),
-          _buildSettingsCard(
-            context,
-            'Default drink',
-            const DefaultDrinkPage(),
-          ),
-        ],
+        children: children,
       ),
     );
   }
