@@ -1,7 +1,7 @@
 import 'package:remembeer/drink/controller/drink_controller.dart';
 import 'package:remembeer/drink/model/drink.dart';
 import 'package:remembeer/drink_type/model/drink_category.dart';
-import 'package:remembeer/user_stats//model/user_stats.dart';
+import 'package:remembeer/user_stats/model/user_stats.dart';
 
 const _BEER_VOLUME_ML = 500;
 

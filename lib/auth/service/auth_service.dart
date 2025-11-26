@@ -32,6 +32,9 @@ class AuthService {
 
   bool get isVerified => authenticatedUser.emailVerified;
 
+  String get userName =>
+      authenticatedUser.displayName ?? authenticatedUser.email!;
+
   Future<UserCredential> signInWithEmailAndPassword({
     required String email,
     required String password,
