@@ -1,0 +1,97 @@
+import 'package:flutter/material.dart';
+import 'package:remembeer/auth/service/auth_service.dart';
+import 'package:remembeer/common/widget/page_template.dart';
+import 'package:remembeer/ioc/ioc_container.dart';
+
+class UserNamePage extends StatefulWidget {
+  const UserNamePage({super.key});
+
+  @override
+  State<UserNamePage> createState() => _UserNamePageState();
+}
+
+class _UserNamePageState extends State<UserNamePage> {
+  final _authService = get<AuthService>();
+
+  final _formKey = GlobalKey<FormState>();
+  final _usernameController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _usernameController.text = _authService.userName;
+  }
+
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return PageTemplate(
+      title: const Text('Change your username'),
+      child: Column(
+        children: [
+          Expanded(
+            child: Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  _buildUsernameInput(),
+                ],
+              ),
+            ),
+          ),
+          _buildSaveButton(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSaveButton() {
+    return ElevatedButton(
+      onPressed: () async {
+        await _submitForm();
+      },
+      style: ElevatedButton.styleFrom(
+        padding: const EdgeInsets.all(16.0),
+      ),
+      child: const Text(
+        'Save Changes',
+        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+      ),
+    );
+  }
+
+  Widget _buildUsernameInput() {
+    return TextFormField(
+      controller: _usernameController,
+      decoration: const InputDecoration(
+        labelText: 'Username',
+        border: OutlineInputBorder(),
+        prefixIcon: Icon(Icons.person_outline),
+      ),
+      validator: (value) {
+        if (value == null || value.trim().isEmpty) {
+          return 'Username cannot be empty.';
+        }
+        if (value.trim().length < 3) {
+          return 'Username must be at least 3 characters long.';
+        }
+        return null;
+      },
+    );
+  }
+
+  Future<void> _submitForm() async {
+    if (_formKey.currentState!.validate()) {
+      final newUsername = _usernameController.text.trim();
+      await _authService.updateUsername(newUsername: newUsername);
+      if (mounted) {
+        Navigator.of(context).pop();
+      }
+    }
+  }
+}

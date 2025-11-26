@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:remembeer/auth/service/auth_service.dart';
+import 'package:remembeer/auth/widget/username_page.dart';
 import 'package:remembeer/common/widget/async_builder.dart';
 import 'package:remembeer/common/widget/drink_icon.dart';
 import 'package:remembeer/common/widget/page_template.dart';
@@ -30,7 +31,7 @@ class ProfilePage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                _buildProfileHeader(),
+                _buildProfileHeader(context),
                 const SizedBox(height: 30),
                 _buildTopRow(userStats),
                 const SizedBox(height: 30),
@@ -43,7 +44,7 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  Widget _buildProfileHeader() {
+  Widget _buildProfileHeader(BuildContext context) {
     return Column(
       children: [
         const CircleAvatar(
@@ -51,11 +52,26 @@ class ProfilePage extends StatelessWidget {
           backgroundImage: AssetImage('assets/avatars/jirka_kara.png'),
         ),
         const SizedBox(height: 16),
-        Text(
-          _authService.userName,
-          style: const TextStyle(
-            fontSize: 28,
-            fontWeight: FontWeight.w800,
+        InkWell(
+          onTap: () {
+            Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (context) => const UserNamePage(),
+              ),
+            );
+          },
+          // TODO(metju-ac): is this the right solution?
+          child: AsyncBuilder(
+            stream: _authService.authStateChanges,
+            builder: (context, _) {
+              return Text(
+                _authService.userName,
+                style: const TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.w800,
+                ),
+              );
+            },
           ),
         ),
         Text(
