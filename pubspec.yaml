@@ -64,6 +64,7 @@ dev_dependencies:
 # The following section is specific to Flutter packages.
 flutter:
   assets:
+    - assets/avatars/
     - assets/icons/
     - assets/seed_data/
 
