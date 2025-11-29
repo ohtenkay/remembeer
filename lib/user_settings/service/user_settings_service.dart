@@ -17,7 +17,7 @@ class UserSettingsService {
   final AuthService authService;
   final UserSettingsController userSettingsController;
 
-  UserSettingsService({
+  const UserSettingsService({
     required this.authService,
     required this.userSettingsController,
   });
