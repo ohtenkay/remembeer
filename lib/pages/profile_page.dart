@@ -5,6 +5,7 @@ import 'package:remembeer/common/widget/drink_icon.dart';
 import 'package:remembeer/common/widget/page_template.dart';
 import 'package:remembeer/drink_type/model/drink_category.dart';
 import 'package:remembeer/ioc/ioc_container.dart';
+import 'package:remembeer/user/model/user_model.dart';
 import 'package:remembeer/user/service/user_service.dart';
 import 'package:remembeer/user_stats/model/user_stats.dart';
 import 'package:remembeer/user_stats/service/user_stats_service.dart';
@@ -12,16 +13,28 @@ import 'package:remembeer/user_stats/service/user_stats_service.dart';
 const _ICON_SIZE = 30.0;
 
 class ProfilePage extends StatelessWidget {
-  ProfilePage({super.key});
+  final String? userId;
+
+  ProfilePage({super.key, this.userId});
 
   final _userService = get<UserService>();
   final _userStatsService = get<UserStatsService>();
 
   @override
   Widget build(BuildContext context) {
+    final isCurrentUser = userId == null;
+
+    final userStream = isCurrentUser
+        ? _userService.currentUserStream
+        : _userService.userStreamFor(userId!);
+    final userStatsStream = isCurrentUser
+        ? _userStatsService.userStatsStream
+        : _userStatsService.userStatsStreamFor(userId!);
+
     return PageTemplate(
+      title: isCurrentUser ? null : const Text('Profile'),
       child: AsyncBuilder(
-        stream: _userStatsService.userStatsStream,
+        stream: userStatsStream,
         builder: (context, userStats) {
           return SingleChildScrollView(
             padding: const EdgeInsets.symmetric(
@@ -31,7 +44,11 @@ class ProfilePage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                _buildProfileHeader(context),
+                _buildProfileHeader(
+                  context: context,
+                  userStream: userStream,
+                  isCurrentUser: isCurrentUser,
+                ),
                 const SizedBox(height: 30),
                 _buildTopRow(userStats),
                 const SizedBox(height: 30),
@@ -44,9 +61,13 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  Widget _buildProfileHeader(BuildContext context) {
+  Widget _buildProfileHeader({
+    required BuildContext context,
+    required Stream<UserModel> userStream,
+    required bool isCurrentUser,
+  }) {
     return AsyncBuilder(
-      stream: _userService.currentUserStream,
+      stream: userStream,
       builder: (context, user) {
         return Column(
           children: [
@@ -55,25 +76,49 @@ class ProfilePage extends StatelessWidget {
               backgroundImage: AssetImage('assets/avatars/${user.avatarName}'),
             ),
             const SizedBox(height: 16),
-            InkWell(
-              onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute<void>(
-                    builder: (context) => const UserNamePage(),
+            if (isCurrentUser)
+              InkWell(
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (context) => const UserNamePage(),
+                    ),
+                  );
+                },
+                child: _buildUsernameLabel(user),
+              )
+            else
+              Column(
+                children: [
+                  _buildUsernameLabel(user),
+                  const SizedBox(height: 12),
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      // TODO(metju-ac): Implement add friend functionality
+                      print('Add friend ${user.id}');
+                    },
+                    icon: const Icon(Icons.person_add),
+                    label: const Text('Add as friend'),
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      backgroundColor: Theme.of(context).primaryColor,
+                    ),
                   ),
-                );
-              },
-              child: Text(
-                user.username,
-                style: const TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.w800,
-                ),
+                ],
               ),
-            ),
           ],
         );
       },
+    );
+  }
+
+  Widget _buildUsernameLabel(UserModel user) {
+    return Text(
+      user.username,
+      style: const TextStyle(
+        fontSize: 28,
+        fontWeight: FontWeight.w800,
+      ),
     );
   }
 

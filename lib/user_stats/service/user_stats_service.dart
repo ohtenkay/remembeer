@@ -12,8 +12,8 @@ class UserStatsService {
     required this.drinkController,
   });
 
-  Stream<UserStats> get userStatsStream {
-    return drinkController.userRelatedEntitiesStream.map((drinks) {
+  Stream<UserStats> _mapDrinksToStats(Stream<List<Drink>> drinksStream) {
+    return drinksStream.map((drinks) {
       final now = DateTime.now();
       final thirtyDaysAgo = now.subtract(const Duration(days: 30));
 
@@ -32,6 +32,14 @@ class UserStatsService {
         isStreakActive: isStreakActive,
       );
     });
+  }
+
+  Stream<UserStats> get userStatsStream {
+    return _mapDrinksToStats(drinkController.userRelatedEntitiesStream);
+  }
+
+  Stream<UserStats> userStatsStreamFor(String userId) {
+    return _mapDrinksToStats(drinkController.drinksStreamFor(userId));
   }
 
   double _calculateEquivalentBeers(List<Drink> drinks) {

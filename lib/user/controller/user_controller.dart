@@ -31,6 +31,17 @@ class UserController {
         return data;
       });
 
+  Stream<UserModel> userStreamFor(String userId) =>
+      _userCollection.doc(userId).snapshots().map((docSnapshot) {
+        final data = docSnapshot.data();
+        if (data == null) {
+          throw StateError(
+            'User not found for user $userId',
+          );
+        }
+        return data;
+      });
+
   Future<UserModel> get currentUser async {
     final doc = await _userCollection
         .doc(authService.authenticatedUser.uid)

@@ -15,6 +15,9 @@ class UserService {
 
   Stream<UserModel> get currentUserStream => userController.currentUserStream;
 
+  Stream<UserModel> userStreamFor(String userId) =>
+      userController.userStreamFor(userId);
+
   Future<List<UserModel>> searchUsersByUsername(String query) =>
       userController.searchUsersByUsername(query);
 
