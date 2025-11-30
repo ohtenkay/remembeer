@@ -6,6 +6,7 @@ import 'package:remembeer/drink_type/model/drink_category.dart';
 import 'package:remembeer/ioc/ioc_container.dart';
 import 'package:remembeer/user/model/user_model.dart';
 import 'package:remembeer/user/service/user_service.dart';
+import 'package:remembeer/user/widget/search_user_page.dart';
 import 'package:remembeer/user/widget/username_page.dart';
 import 'package:remembeer/user_stats/model/user_stats.dart';
 import 'package:remembeer/user_stats/service/user_stats_service.dart';
@@ -76,39 +77,66 @@ class ProfilePage extends StatelessWidget {
               backgroundImage: AssetImage('assets/avatars/${user.avatarName}'),
             ),
             const SizedBox(height: 16),
-            if (isCurrentUser)
-              InkWell(
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute<void>(
-                      builder: (context) => const UserNamePage(),
-                    ),
-                  );
-                },
-                child: _buildUsernameLabel(user),
-              )
-            else
-              Column(
-                children: [
-                  _buildUsernameLabel(user),
-                  const SizedBox(height: 12),
-                  ElevatedButton.icon(
-                    onPressed: () {
-                      // TODO(metju-ac): Implement add friend functionality
-                      print('Add friend ${user.id}');
-                    },
-                    icon: const Icon(Icons.person_add),
-                    label: const Text('Add as friend'),
-                    style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.white,
-                      backgroundColor: Theme.of(context).primaryColor,
-                    ),
-                  ),
-                ],
-              ),
+            InkWell(
+              onTap: isCurrentUser
+                  ? () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute<void>(
+                          builder: (context) => const UserNamePage(),
+                        ),
+                      );
+                    }
+                  : null,
+              child: _buildUsernameLabel(user),
+            ),
+            const SizedBox(height: 12),
+            _buildProfileButton(
+              context: context,
+              user: user,
+              isCurrentUser: isCurrentUser,
+            ),
           ],
         );
       },
+    );
+  }
+
+  Widget _buildProfileButton({
+    required BuildContext context,
+    required UserModel user,
+    required bool isCurrentUser,
+  }) {
+    final VoidCallback onPressed;
+    final IconData icon;
+    final String label;
+
+    if (isCurrentUser) {
+      onPressed = () {
+        Navigator.of(context).push(
+          MaterialPageRoute<void>(
+            builder: (context) => const SearchUserPage(),
+          ),
+        );
+      };
+      icon = Icons.search;
+      label = 'Search for friends';
+    } else {
+      onPressed = () {
+        // TODO(metju-ac): Implement add friend functionality
+        print('Add friend ${user.id}');
+      };
+      icon = Icons.person_add;
+      label = 'Add as friend';
+    }
+
+    return ElevatedButton.icon(
+      onPressed: onPressed,
+      icon: Icon(icon),
+      label: Text(label),
+      style: ElevatedButton.styleFrom(
+        foregroundColor: Colors.white,
+        backgroundColor: Theme.of(context).primaryColor,
+      ),
     );
   }
 
