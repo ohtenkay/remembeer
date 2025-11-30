@@ -3,6 +3,7 @@ import 'package:remembeer/common/widget/async_builder.dart';
 import 'package:remembeer/common/widget/drink_icon.dart';
 import 'package:remembeer/common/widget/page_template.dart';
 import 'package:remembeer/drink_type/model/drink_category.dart';
+import 'package:remembeer/friend_request/model/friendship_status.dart';
 import 'package:remembeer/ioc/ioc_container.dart';
 import 'package:remembeer/user/model/user_model.dart';
 import 'package:remembeer/user/service/user_service.dart';
@@ -106,37 +107,72 @@ class ProfilePage extends StatelessWidget {
     required UserModel user,
     required bool isCurrentUser,
   }) {
-    final VoidCallback onPressed;
-    final IconData icon;
-    final String label;
-
     if (isCurrentUser) {
-      onPressed = () {
-        Navigator.of(context).push(
-          MaterialPageRoute<void>(
-            builder: (context) => const SearchUserPage(),
-          ),
-        );
-      };
-      icon = Icons.search;
-      label = 'Search for friends';
-    } else {
-      onPressed = () {
-        // TODO(metju-ac): Implement add friend functionality
-        print('Add friend ${user.id}');
-      };
-      icon = Icons.person_add;
-      label = 'Add as friend';
+      return ElevatedButton.icon(
+        onPressed: () {
+          Navigator.of(context).push(
+            MaterialPageRoute<void>(
+              builder: (context) => const SearchUserPage(),
+            ),
+          );
+        },
+        icon: const Icon(Icons.search),
+        label: const Text('Search for friends'),
+        style: ElevatedButton.styleFrom(
+          foregroundColor: Colors.white,
+          backgroundColor: Theme.of(context).primaryColor,
+        ),
+      );
     }
 
-    return ElevatedButton.icon(
-      onPressed: onPressed,
-      icon: Icon(icon),
-      label: Text(label),
-      style: ElevatedButton.styleFrom(
-        foregroundColor: Colors.white,
-        backgroundColor: Theme.of(context).primaryColor,
-      ),
+    return AsyncBuilder(
+      stream: _userService.friendshipStatus(user.id),
+      builder: (context, status) {
+        final VoidCallback onPressed;
+        final IconData icon;
+        final String label;
+
+        switch (status) {
+          case FriendshipStatus.friends:
+            onPressed = () {
+              print('Remove friend ${user.id}');
+            };
+            icon = Icons.person_remove;
+            label = 'Remove friend';
+            break;
+          case FriendshipStatus.requestSent:
+            onPressed = () {
+              _userService.revokeFriendRequest(user.id);
+            };
+            icon = Icons.cancel_schedule_send;
+            label = 'Revoke sent request';
+            break;
+          case FriendshipStatus.requestReceived:
+            onPressed = () {
+              print('Accept friend request from ${user.id}');
+            };
+            icon = Icons.check_circle;
+            label = 'Accept request';
+            break;
+          case FriendshipStatus.notFriends:
+            onPressed = () {
+              _userService.sendFriendRequest(user.id);
+            };
+            icon = Icons.person_add;
+            label = 'Add as friend';
+            break;
+        }
+
+        return ElevatedButton.icon(
+          onPressed: onPressed,
+          icon: Icon(icon),
+          label: Text(label),
+          style: ElevatedButton.styleFrom(
+            foregroundColor: Colors.white,
+            backgroundColor: Theme.of(context).primaryColor,
+          ),
+        );
+      },
     );
   }
 

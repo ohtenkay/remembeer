@@ -43,6 +43,7 @@ class IoCContainer {
     get.registerSingleton(
       UserService(
         authService: get<AuthService>(),
+        friendRequestController: get<FriendRequestController>(),
         userController: get<UserController>(),
       ),
     );

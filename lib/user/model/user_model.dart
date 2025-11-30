@@ -9,12 +9,14 @@ class UserModel {
   final String username;
   late String searchableUsername;
   final String avatarName;
+  final Set<String> friends;
 
   UserModel({
     required this.id,
     required this.email,
     required this.username,
     this.avatarName = 'jirka_kara.png',
+    this.friends = const {},
   }) {
     searchableUsername = username.toLowerCase();
   }
@@ -27,12 +29,14 @@ class UserModel {
   UserModel copyWith({
     String? username,
     String? avatarName,
+    Set<String>? friends,
   }) {
     return UserModel(
       id: id,
       email: email,
       username: username ?? this.username,
       avatarName: avatarName ?? this.avatarName,
+      friends: friends ?? this.friends,
     );
   }
 }
