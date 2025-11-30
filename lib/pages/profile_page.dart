@@ -45,35 +45,35 @@ class ProfilePage extends StatelessWidget {
   }
 
   Widget _buildProfileHeader(BuildContext context) {
-    return Column(
-      children: [
-        const CircleAvatar(
-          radius: 60,
-          backgroundImage: AssetImage('assets/avatars/jirka_kara.png'),
-        ),
-        const SizedBox(height: 16),
-        InkWell(
-          onTap: () {
-            Navigator.of(context).push(
-              MaterialPageRoute<void>(
-                builder: (context) => const UserNamePage(),
-              ),
-            );
-          },
-          child: AsyncBuilder(
-            stream: _userService.currentUserStream,
-            builder: (context, user) {
-              return Text(
+    return AsyncBuilder(
+      stream: _userService.currentUserStream,
+      builder: (context, user) {
+        return Column(
+          children: [
+            CircleAvatar(
+              radius: 60,
+              backgroundImage: AssetImage('assets/avatars/${user.avatarName}'),
+            ),
+            const SizedBox(height: 16),
+            InkWell(
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (context) => const UserNamePage(),
+                  ),
+                );
+              },
+              child: Text(
                 user.username,
                 style: const TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.w800,
                 ),
-              );
-            },
-          ),
-        ),
-      ],
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 
