@@ -32,17 +32,6 @@ class AuthService {
 
   bool get isVerified => authenticatedUser.emailVerified;
 
-  String get userName =>
-      authenticatedUser.displayName ?? authenticatedUser.email!;
-
-  Future<void> updateUsername({required String newUsername}) async {
-    final user = authenticatedUser;
-    await user.updateDisplayName(newUsername);
-
-    await user.reload();
-    _authStateSubject.add(_firebaseAuth.currentUser);
-  }
-
   Future<UserCredential> signInWithEmailAndPassword({
     required String email,
     required String password,

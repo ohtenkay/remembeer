@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:remembeer/auth/service/auth_service.dart';
 import 'package:remembeer/auth/widget/username_page.dart';
 import 'package:remembeer/common/widget/async_builder.dart';
 import 'package:remembeer/common/widget/drink_icon.dart';
 import 'package:remembeer/common/widget/page_template.dart';
 import 'package:remembeer/drink_type/model/drink_category.dart';
 import 'package:remembeer/ioc/ioc_container.dart';
+import 'package:remembeer/user/service/user_service.dart';
 import 'package:remembeer/user_stats/model/user_stats.dart';
 import 'package:remembeer/user_stats/service/user_stats_service.dart';
 
@@ -14,7 +14,7 @@ const _ICON_SIZE = 30.0;
 class ProfilePage extends StatelessWidget {
   ProfilePage({super.key});
 
-  final _authService = get<AuthService>();
+  final _userService = get<UserService>();
   final _userStatsService = get<UserStatsService>();
 
   @override
@@ -60,25 +60,17 @@ class ProfilePage extends StatelessWidget {
               ),
             );
           },
-          // TODO(metju-ac): is this the right solution?
           child: AsyncBuilder(
-            stream: _authService.authStateChanges,
-            builder: (context, _) {
+            stream: _userService.currentUserStream,
+            builder: (context, user) {
               return Text(
-                _authService.userName,
+                user.username,
                 style: const TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.w800,
                 ),
               );
             },
-          ),
-        ),
-        Text(
-          _authService.authenticatedUser.email!,
-          style: const TextStyle(
-            fontSize: 16,
-            color: Colors.grey,
           ),
         ),
       ],

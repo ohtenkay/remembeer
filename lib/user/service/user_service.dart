@@ -13,6 +13,8 @@ class UserService {
 
   Future<UserModel> get currentUser => userController.currentUser;
 
+  Stream<UserModel> get currentUserStream => userController.currentUserStream;
+
   Future<List<UserModel>> searchUsersByUsername(String query) =>
       userController.searchUsersByUsername(query);
 
@@ -26,5 +28,18 @@ class UserService {
     );
 
     await userController.createOrUpdateUser(defaultUser);
+  }
+
+  Future<void> updateUsername({required String newUsername}) async {
+    final currentUser = await userController.currentUser;
+    if (currentUser.username == newUsername) {
+      return;
+    }
+
+    final updatedUser = currentUser.copyWith(
+      username: newUsername,
+    );
+
+    await userController.createOrUpdateUser(updatedUser);
   }
 }

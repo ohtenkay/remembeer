@@ -18,6 +18,19 @@ class UserController {
         toFirestore: (value, _) => value.toJson().withoutId(),
       );
 
+  Stream<UserModel> get currentUserStream => _userCollection
+      .doc(authService.authenticatedUser.uid)
+      .snapshots()
+      .map((docSnapshot) {
+        final data = docSnapshot.data();
+        if (data == null) {
+          throw StateError(
+            'User not found for user ${authService.authenticatedUser.uid}',
+          );
+        }
+        return data;
+      });
+
   Future<UserModel> get currentUser async {
     final doc = await _userCollection
         .doc(authService.authenticatedUser.uid)

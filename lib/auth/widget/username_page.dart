@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:remembeer/auth/service/auth_service.dart';
 import 'package:remembeer/common/widget/page_template.dart';
 import 'package:remembeer/ioc/ioc_container.dart';
+import 'package:remembeer/user/service/user_service.dart';
 
 class UserNamePage extends StatefulWidget {
   const UserNamePage({super.key});
@@ -11,7 +11,7 @@ class UserNamePage extends StatefulWidget {
 }
 
 class _UserNamePageState extends State<UserNamePage> {
-  final _authService = get<AuthService>();
+  final _userService = get<UserService>();
 
   final _formKey = GlobalKey<FormState>();
   final _usernameController = TextEditingController();
@@ -19,7 +19,14 @@ class _UserNamePageState extends State<UserNamePage> {
   @override
   void initState() {
     super.initState();
-    _usernameController.text = _authService.userName;
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    final user = await _userService.currentUser;
+    if (mounted) {
+      _usernameController.text = user.username;
+    }
   }
 
   @override
@@ -88,7 +95,7 @@ class _UserNamePageState extends State<UserNamePage> {
   Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
       final newUsername = _usernameController.text.trim();
-      await _authService.updateUsername(newUsername: newUsername);
+      await _userService.updateUsername(newUsername: newUsername);
       if (mounted) {
         Navigator.of(context).pop();
       }
