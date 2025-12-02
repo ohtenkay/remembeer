@@ -11,6 +11,7 @@ import 'package:remembeer/user/widget/search_user_page.dart';
 import 'package:remembeer/user/widget/username_page.dart';
 import 'package:remembeer/user_stats/model/user_stats.dart';
 import 'package:remembeer/user_stats/service/user_stats_service.dart';
+import 'package:rxdart/rxdart.dart';
 
 const _ICON_SIZE = 30.0;
 
@@ -36,8 +37,13 @@ class ProfilePage extends StatelessWidget {
     return PageTemplate(
       title: isCurrentUser ? null : const Text('Profile'),
       child: AsyncBuilder(
-        stream: userStatsStream,
-        builder: (context, userStats) {
+        stream: Rx.combineLatest2(userStatsStream, userStream, (
+          UserStats stats,
+          UserModel user,
+        ) {
+          return (stats: stats, user: user);
+        }),
+        builder: (context, data) {
           return SingleChildScrollView(
             padding: const EdgeInsets.symmetric(
               horizontal: 10.0,
@@ -48,13 +54,13 @@ class ProfilePage extends StatelessWidget {
               children: [
                 _buildProfileHeader(
                   context: context,
-                  userStream: userStream,
+                  user: data.user,
                   isCurrentUser: isCurrentUser,
                 ),
                 const SizedBox(height: 30),
-                _buildTopRow(userStats),
+                _buildTopRow(userStats: data.stats, user: data.user),
                 const SizedBox(height: 30),
-                _buildConsumptionStats(userStats),
+                _buildConsumptionStats(data.stats),
               ],
             ),
           );
@@ -65,40 +71,35 @@ class ProfilePage extends StatelessWidget {
 
   Widget _buildProfileHeader({
     required BuildContext context,
-    required Stream<UserModel> userStream,
+    required UserModel user,
     required bool isCurrentUser,
   }) {
-    return AsyncBuilder(
-      stream: userStream,
-      builder: (context, user) {
-        return Column(
-          children: [
-            CircleAvatar(
-              radius: 60,
-              backgroundImage: AssetImage('assets/avatars/${user.avatarName}'),
-            ),
-            const SizedBox(height: 16),
-            InkWell(
-              onTap: isCurrentUser
-                  ? () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute<void>(
-                          builder: (context) => const UserNamePage(),
-                        ),
-                      );
-                    }
-                  : null,
-              child: _buildUsernameLabel(user),
-            ),
-            const SizedBox(height: 12),
-            _buildProfileButton(
-              context: context,
-              user: user,
-              isCurrentUser: isCurrentUser,
-            ),
-          ],
-        );
-      },
+    return Column(
+      children: [
+        CircleAvatar(
+          radius: 60,
+          backgroundImage: AssetImage('assets/avatars/${user.avatarName}'),
+        ),
+        const SizedBox(height: 16),
+        InkWell(
+          onTap: isCurrentUser
+              ? () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (context) => const UserNamePage(),
+                    ),
+                  );
+                }
+              : null,
+          child: _buildUsernameLabel(user),
+        ),
+        const SizedBox(height: 12),
+        _buildProfileButton(
+          context: context,
+          user: user,
+          isCurrentUser: isCurrentUser,
+        ),
+      ],
     );
   }
 
@@ -229,7 +230,7 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  Widget _buildTopRow(UserStats userStats) {
+  Widget _buildTopRow({required UserStats userStats, required UserModel user}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
@@ -243,10 +244,9 @@ class ProfilePage extends StatelessWidget {
         ),
         const SizedBox(width: 12),
         _buildStatCard(
-          // TODO(metju-ac): replace with real value
           icon: Icons.people_alt,
           color: Colors.blue.shade700,
-          value: '12',
+          value: user.friends.length.toString(),
           label: 'Friends',
         ),
       ],
