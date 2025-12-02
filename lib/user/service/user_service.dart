@@ -35,6 +35,20 @@ class UserService {
     return userController.searchUsersByUsernameOrEmail(trimmedQuery);
   }
 
+  Stream<List<UserModel>> friendsFor(String userId) {
+    return userController.userStreamFor(userId).switchMap((user) {
+      if (user.friends.isEmpty) {
+        return Stream.value([]);
+      }
+
+      final friendStreams = user.friends
+          .map(userController.userStreamFor)
+          .toList();
+
+      return Rx.combineLatestList(friendStreams);
+    });
+  }
+
   Future<void> createDefaultUser() async {
     final defaultUser = UserModel(
       id: authService.authenticatedUser.uid,

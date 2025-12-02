@@ -7,6 +7,7 @@ import 'package:remembeer/friend_request/model/friendship_status.dart';
 import 'package:remembeer/ioc/ioc_container.dart';
 import 'package:remembeer/user/model/user_model.dart';
 import 'package:remembeer/user/service/user_service.dart';
+import 'package:remembeer/user/widget/friends_list_page.dart';
 import 'package:remembeer/user/widget/search_user_page.dart';
 import 'package:remembeer/user/widget/username_page.dart';
 import 'package:remembeer/user_stats/model/user_stats.dart';
@@ -58,7 +59,11 @@ class ProfilePage extends StatelessWidget {
                   isCurrentUser: isCurrentUser,
                 ),
                 const SizedBox(height: 30),
-                _buildTopRow(userStats: data.stats, user: data.user),
+                _buildTopRow(
+                  context: context,
+                  userStats: data.stats,
+                  user: data.user,
+                ),
                 const SizedBox(height: 30),
                 _buildConsumptionStats(data.stats),
               ],
@@ -192,45 +197,53 @@ class ProfilePage extends StatelessWidget {
     required Color color,
     required String value,
     required String label,
+    VoidCallback? onTap,
   }) {
     return Expanded(
       child: Card(
         color: Colors.white,
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                icon,
-                color: color,
-                size: 32,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                value,
-                style: const TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.w900,
+        child: InkWell(
+          onTap: onTap,
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  icon,
+                  color: color,
+                  size: 32,
                 ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                label,
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey.shade600,
-                  fontWeight: FontWeight.w500,
+                const SizedBox(height: 8),
+                Text(
+                  value,
+                  style: const TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.w900,
+                  ),
                 ),
-              ),
-            ],
+                const SizedBox(height: 4),
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.grey.shade600,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  Widget _buildTopRow({required UserStats userStats, required UserModel user}) {
+  Widget _buildTopRow({
+    required BuildContext context,
+    required UserStats userStats,
+    required UserModel user,
+  }) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
@@ -248,6 +261,11 @@ class ProfilePage extends StatelessWidget {
           color: Colors.blue.shade700,
           value: user.friends.length.toString(),
           label: 'Friends',
+          onTap: () => Navigator.of(context).push(
+            MaterialPageRoute<void>(
+              builder: (context) => FriendsListPage(userId: user.id),
+            ),
+          ),
         ),
       ],
     );
