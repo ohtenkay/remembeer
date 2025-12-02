@@ -135,7 +135,7 @@ class ProfilePage extends StatelessWidget {
         switch (status) {
           case FriendshipStatus.friends:
             onPressed = () {
-              print('Remove friend ${user.id}');
+              _userService.removeFriend(user.id);
             };
             icon = Icons.person_remove;
             label = 'Remove friend';
@@ -149,7 +149,7 @@ class ProfilePage extends StatelessWidget {
             break;
           case FriendshipStatus.requestReceived:
             onPressed = () {
-              print('Accept friend request from ${user.id}');
+              _userService.acceptFriendRequest(user.id);
             };
             icon = Icons.check_circle;
             label = 'Accept request';

@@ -110,4 +110,16 @@ class UserController {
 
     return _userCollection.doc(user.id).set(user);
   }
+
+  WriteBatch createBatch() {
+    return FirebaseFirestore.instance.batch();
+  }
+
+  void createOrUpdateInBatch({
+    required UserModel user,
+    required WriteBatch batch,
+  }) {
+    final docRef = _userCollection.doc(user.id);
+    batch.set(docRef, user);
+  }
 }

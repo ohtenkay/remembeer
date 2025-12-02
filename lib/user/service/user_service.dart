@@ -68,11 +68,66 @@ class UserService {
 
   Future<void> revokeFriendRequest(String otherUserId) async {
     final request = await friendRequestController
-        .getRequestBetween(otherUserId)
+        .getRequestBetween(
+          otherUserId,
+        )
         .first;
-    if (request != null) {
-      await friendRequestController.deleteSingle(request);
+
+    if (request == null) {
+      throw StateError(
+        'No friend request found between current user and $otherUserId to revoke.',
+      );
     }
+
+    await friendRequestController.deleteSingle(request);
+  }
+
+  Future<void> acceptFriendRequest(String otherUserId) async {
+    final request = await friendRequestController
+        .getRequestBetween(
+          otherUserId,
+        )
+        .first;
+    if (request == null) {
+      throw StateError(
+        'No friend request found between current user and $otherUserId to accept.',
+      );
+    }
+
+    final currentUser = await userController.currentUser;
+    final otherUser = await userController.getUserById(otherUserId);
+
+    final updatedCurrentUser = currentUser.addFriend(otherUserId);
+    final updatedOtherUser = otherUser.addFriend(currentUser.id);
+
+    final batch = friendRequestController.createBatch();
+
+    userController.createOrUpdateInBatch(
+      user: updatedCurrentUser,
+      batch: batch,
+    );
+    userController.createOrUpdateInBatch(user: updatedOtherUser, batch: batch);
+    friendRequestController.deleteSingleInBatch(entity: request, batch: batch);
+
+    await batch.commit();
+  }
+
+  Future<void> removeFriend(String otherUserId) async {
+    final currentUser = await userController.currentUser;
+    final otherUser = await userController.getUserById(otherUserId);
+
+    final updatedCurrentUser = currentUser.removeFriend(otherUserId);
+    final updatedOtherUser = otherUser.removeFriend(currentUser.id);
+
+    final batch = userController.createBatch();
+
+    userController.createOrUpdateInBatch(
+      user: updatedCurrentUser,
+      batch: batch,
+    );
+    userController.createOrUpdateInBatch(user: updatedOtherUser, batch: batch);
+
+    await batch.commit();
   }
 
   Stream<FriendshipStatus> friendshipStatus(String otherUserId) {

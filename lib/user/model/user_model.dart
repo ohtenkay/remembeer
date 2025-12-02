@@ -39,4 +39,14 @@ class UserModel {
       friends: friends ?? this.friends,
     );
   }
+
+  UserModel addFriend(String friendId) {
+    final updatedFriends = Set<String>.from(friends)..add(friendId);
+    return copyWith(friends: updatedFriends);
+  }
+
+  UserModel removeFriend(String friendId) {
+    final updatedFriends = Set<String>.from(friends)..remove(friendId);
+    return copyWith(friends: updatedFriends);
+  }
 }
