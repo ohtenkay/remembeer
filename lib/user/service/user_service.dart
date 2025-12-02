@@ -1,5 +1,6 @@
 import 'package:remembeer/auth/service/auth_service.dart';
 import 'package:remembeer/friend_request/controller/friend_request_controller.dart';
+import 'package:remembeer/friend_request/model/friend_request.dart';
 import 'package:remembeer/friend_request/model/friend_request_create.dart';
 import 'package:remembeer/friend_request/model/friendship_status.dart';
 import 'package:remembeer/user/controller/user_controller.dart';
@@ -34,6 +35,9 @@ class UserService {
     }
     return userController.searchUsersByUsernameOrEmail(trimmedQuery);
   }
+
+  Stream<List<FriendRequest>> pendingFriendRequests() =>
+      friendRequestController.pendingFriendRequests();
 
   Stream<List<UserModel>> friendsFor(String userId) {
     return userController.userStreamFor(userId).switchMap((user) {
@@ -124,6 +128,10 @@ class UserService {
     friendRequestController.deleteSingleInBatch(entity: request, batch: batch);
 
     await batch.commit();
+  }
+
+  Future<void> denyFriendRequest(FriendRequest request) async {
+    await friendRequestController.deleteSingle(request);
   }
 
   Future<void> removeFriend(String otherUserId) async {

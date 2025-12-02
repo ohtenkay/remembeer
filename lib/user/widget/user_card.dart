@@ -13,18 +13,24 @@ class UserCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      child: ListTile(
-        leading: CircleAvatar(
-          backgroundImage: AssetImage('assets/avatars/${user.avatarName}'),
+      child: Padding(
+        padding: const EdgeInsets.all(4.0),
+        child: ListTile(
+          leading: CircleAvatar(
+            backgroundImage: AssetImage('assets/avatars/${user.avatarName}'),
+          ),
+          title: Text(
+            user.username,
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+          onTap: () {
+            Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (context) => ProfilePage(userId: user.id),
+              ),
+            );
+          },
         ),
-        title: Text(user.username),
-        onTap: () {
-          Navigator.of(context).push(
-            MaterialPageRoute<void>(
-              builder: (context) => ProfilePage(userId: user.id),
-            ),
-          );
-        },
       ),
     );
   }

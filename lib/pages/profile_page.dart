@@ -3,7 +3,9 @@ import 'package:remembeer/common/widget/async_builder.dart';
 import 'package:remembeer/common/widget/drink_icon.dart';
 import 'package:remembeer/common/widget/page_template.dart';
 import 'package:remembeer/drink_type/model/drink_category.dart';
+import 'package:remembeer/friend_request/model/friend_request.dart';
 import 'package:remembeer/friend_request/model/friendship_status.dart';
+import 'package:remembeer/friend_request/widget/friend_requests_page.dart';
 import 'package:remembeer/ioc/ioc_container.dart';
 import 'package:remembeer/user/model/user_model.dart';
 import 'package:remembeer/user/service/user_service.dart';
@@ -99,38 +101,60 @@ class ProfilePage extends StatelessWidget {
           child: _buildUsernameLabel(user),
         ),
         const SizedBox(height: 12),
-        _buildProfileButton(
-          context: context,
-          user: user,
-          isCurrentUser: isCurrentUser,
+        if (isCurrentUser)
+          _buildCurrentUserActions(context)
+        else
+          _buildOtherUserActions(context, user),
+      ],
+    );
+  }
+
+  Widget _buildCurrentUserActions(BuildContext context) {
+    return Column(
+      children: [
+        AsyncBuilder<List<FriendRequest>>(
+          stream: _userService.pendingFriendRequests(),
+          builder: (context, requests) {
+            if (requests.isEmpty) {
+              return const SizedBox.shrink();
+            }
+
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 8.0),
+              child: ElevatedButton.icon(
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (context) => FriendRequestsPage(),
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.person_add_alt_1),
+                label: Text('View ${requests.length} friend request(s)'),
+              ),
+            );
+          },
+        ),
+        ElevatedButton.icon(
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (context) => const SearchUserPage(),
+              ),
+            );
+          },
+          icon: const Icon(Icons.search),
+          label: const Text('Search for friends'),
+          style: ElevatedButton.styleFrom(
+            foregroundColor: Colors.white,
+            backgroundColor: Theme.of(context).primaryColor,
+          ),
         ),
       ],
     );
   }
 
-  Widget _buildProfileButton({
-    required BuildContext context,
-    required UserModel user,
-    required bool isCurrentUser,
-  }) {
-    if (isCurrentUser) {
-      return ElevatedButton.icon(
-        onPressed: () {
-          Navigator.of(context).push(
-            MaterialPageRoute<void>(
-              builder: (context) => const SearchUserPage(),
-            ),
-          );
-        },
-        icon: const Icon(Icons.search),
-        label: const Text('Search for friends'),
-        style: ElevatedButton.styleFrom(
-          foregroundColor: Colors.white,
-          backgroundColor: Theme.of(context).primaryColor,
-        ),
-      );
-    }
-
+  Widget _buildOtherUserActions(BuildContext context, UserModel user) {
     return AsyncBuilder(
       stream: _userService.friendshipStatus(user.id),
       builder: (context, status) {
@@ -140,30 +164,22 @@ class ProfilePage extends StatelessWidget {
 
         switch (status) {
           case FriendshipStatus.friends:
-            onPressed = () {
-              _userService.removeFriend(user.id);
-            };
+            onPressed = () => _userService.removeFriend(user.id);
             icon = Icons.person_remove;
             label = 'Remove friend';
             break;
           case FriendshipStatus.requestSent:
-            onPressed = () {
-              _userService.revokeFriendRequest(user.id);
-            };
+            onPressed = () => _userService.revokeFriendRequest(user.id);
             icon = Icons.cancel_schedule_send;
             label = 'Revoke sent request';
             break;
           case FriendshipStatus.requestReceived:
-            onPressed = () {
-              _userService.acceptFriendRequest(user.id);
-            };
+            onPressed = () => _userService.acceptFriendRequest(user.id);
             icon = Icons.check_circle;
             label = 'Accept request';
             break;
           case FriendshipStatus.notFriends:
-            onPressed = () {
-              _userService.sendFriendRequest(user.id);
-            };
+            onPressed = () => _userService.sendFriendRequest(user.id);
             icon = Icons.person_add;
             label = 'Add as friend';
             break;
