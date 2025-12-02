@@ -71,4 +71,36 @@ abstract class Controller<T extends Entity, U extends ValueObject> {
         .doc(entity.id)
         .update(entity.toJson().withoutId().withServerUpdateTimestamp());
   }
+
+  WriteBatch createBatch() {
+    return FirebaseFirestore.instance.batch();
+  }
+
+  void createSingleInBatch({required U dto, required WriteBatch batch}) {
+    final docRef = writeCollection.doc();
+    batch.set(
+      docRef,
+      dto.toJson().withServerCreateTimestamps().withUserId(
+        authService.authenticatedUser,
+      ),
+    );
+  }
+
+  void updateSingleInBatch({required T entity, required WriteBatch batch}) {
+    _assertNotGlobal(entity);
+    final docRef = writeCollection.doc(entity.id);
+    batch.update(
+      docRef,
+      entity.toJson().withoutId().withServerUpdateTimestamp(),
+    );
+  }
+
+  void deleteSingleInBatch({required T entity, required WriteBatch batch}) {
+    _assertNotGlobal(entity);
+    final docRef = writeCollection.doc(entity.id);
+    batch.update(
+      docRef,
+      entity.toJson().withoutId().withServerDeleteTimestamps(),
+    );
+  }
 }
