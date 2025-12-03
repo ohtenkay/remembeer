@@ -16,6 +16,10 @@ class DrinkList extends StatelessWidget {
       builder: (context, drinks) {
         return Expanded(
           child: ListView.builder(
+            padding: EdgeInsets.symmetric(
+              horizontal: 8,
+              vertical: 4,
+            ),
             itemCount: drinks.length,
             itemBuilder: (context, index) {
               final drink = drinks[index];

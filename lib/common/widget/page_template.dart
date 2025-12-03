@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 
+const _defaultPadding = EdgeInsets.all(8.0);
+
 class PageTemplate extends StatelessWidget {
   final Widget? title;
   final Widget child;
   final Widget? floatingActionButton;
+  final EdgeInsetsGeometry padding;
 
   const PageTemplate({
     super.key,
     this.title,
     required this.child,
     this.floatingActionButton,
+    this.padding = _defaultPadding,
   });
 
   @override
@@ -22,7 +26,7 @@ class PageTemplate extends StatelessWidget {
               title: title,
             )
           : null,
-      body: Padding(padding: const EdgeInsets.all(8.0), child: child),
+      body: Padding(padding: padding, child: child),
       floatingActionButton: floatingActionButton,
     );
   }
