@@ -1,27 +1,41 @@
 import 'package:flutter/material.dart';
-import 'package:remembeer/auth/service/auth_service.dart';
-import 'package:remembeer/auth/widget/username_page.dart';
 import 'package:remembeer/common/widget/async_builder.dart';
 import 'package:remembeer/common/widget/drink_icon.dart';
 import 'package:remembeer/common/widget/page_template.dart';
 import 'package:remembeer/drink_type/model/drink_category.dart';
 import 'package:remembeer/ioc/ioc_container.dart';
+import 'package:remembeer/user/model/user_model.dart';
+import 'package:remembeer/user/service/user_service.dart';
+import 'package:remembeer/user/widget/search_user_page.dart';
+import 'package:remembeer/user/widget/username_page.dart';
 import 'package:remembeer/user_stats/model/user_stats.dart';
 import 'package:remembeer/user_stats/service/user_stats_service.dart';
 
 const _ICON_SIZE = 30.0;
 
 class ProfilePage extends StatelessWidget {
-  ProfilePage({super.key});
+  final String? userId;
 
-  final _authService = get<AuthService>();
+  ProfilePage({super.key, this.userId});
+
+  final _userService = get<UserService>();
   final _userStatsService = get<UserStatsService>();
 
   @override
   Widget build(BuildContext context) {
+    final isCurrentUser = userId == null;
+
+    final userStream = isCurrentUser
+        ? _userService.currentUserStream
+        : _userService.userStreamFor(userId!);
+    final userStatsStream = isCurrentUser
+        ? _userStatsService.userStatsStream
+        : _userStatsService.userStatsStreamFor(userId!);
+
     return PageTemplate(
+      title: isCurrentUser ? null : const Text('Profile'),
       child: AsyncBuilder(
-        stream: _userStatsService.userStatsStream,
+        stream: userStatsStream,
         builder: (context, userStats) {
           return SingleChildScrollView(
             padding: const EdgeInsets.symmetric(
@@ -31,7 +45,11 @@ class ProfilePage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                _buildProfileHeader(context),
+                _buildProfileHeader(
+                  context: context,
+                  userStream: userStream,
+                  isCurrentUser: isCurrentUser,
+                ),
                 const SizedBox(height: 30),
                 _buildTopRow(userStats),
                 const SizedBox(height: 30),
@@ -44,44 +62,91 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  Widget _buildProfileHeader(BuildContext context) {
-    return Column(
-      children: [
-        const CircleAvatar(
-          radius: 60,
-          backgroundImage: AssetImage('assets/avatars/jirka_kara.png'),
-        ),
-        const SizedBox(height: 16),
-        InkWell(
-          onTap: () {
-            Navigator.of(context).push(
-              MaterialPageRoute<void>(
-                builder: (context) => const UserNamePage(),
-              ),
-            );
-          },
-          // TODO(metju-ac): is this the right solution?
-          child: AsyncBuilder(
-            stream: _authService.authStateChanges,
-            builder: (context, _) {
-              return Text(
-                _authService.userName,
-                style: const TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.w800,
-                ),
-              );
-            },
+  Widget _buildProfileHeader({
+    required BuildContext context,
+    required Stream<UserModel> userStream,
+    required bool isCurrentUser,
+  }) {
+    return AsyncBuilder(
+      stream: userStream,
+      builder: (context, user) {
+        return Column(
+          children: [
+            CircleAvatar(
+              radius: 60,
+              backgroundImage: AssetImage('assets/avatars/${user.avatarName}'),
+            ),
+            const SizedBox(height: 16),
+            InkWell(
+              onTap: isCurrentUser
+                  ? () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute<void>(
+                          builder: (context) => const UserNamePage(),
+                        ),
+                      );
+                    }
+                  : null,
+              child: _buildUsernameLabel(user),
+            ),
+            const SizedBox(height: 12),
+            _buildProfileButton(
+              context: context,
+              user: user,
+              isCurrentUser: isCurrentUser,
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildProfileButton({
+    required BuildContext context,
+    required UserModel user,
+    required bool isCurrentUser,
+  }) {
+    final VoidCallback onPressed;
+    final IconData icon;
+    final String label;
+
+    if (isCurrentUser) {
+      onPressed = () {
+        Navigator.of(context).push(
+          MaterialPageRoute<void>(
+            builder: (context) => const SearchUserPage(),
           ),
-        ),
-        Text(
-          _authService.authenticatedUser.email!,
-          style: const TextStyle(
-            fontSize: 16,
-            color: Colors.grey,
-          ),
-        ),
-      ],
+        );
+      };
+      icon = Icons.search;
+      label = 'Search for friends';
+    } else {
+      onPressed = () {
+        // TODO(metju-ac): Implement add friend functionality
+        print('Add friend ${user.id}');
+      };
+      icon = Icons.person_add;
+      label = 'Add as friend';
+    }
+
+    return ElevatedButton.icon(
+      onPressed: onPressed,
+      icon: Icon(icon),
+      label: Text(label),
+      style: ElevatedButton.styleFrom(
+        foregroundColor: Colors.white,
+        backgroundColor: Theme.of(context).primaryColor,
+      ),
+    );
+  }
+
+  Widget _buildUsernameLabel(UserModel user) {
+    return Text(
+      user.username,
+      style: const TextStyle(
+        fontSize: 28,
+        fontWeight: FontWeight.w800,
+      ),
     );
   }
 

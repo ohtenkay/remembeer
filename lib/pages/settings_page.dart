@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:remembeer/auth/service/auth_service.dart';
-import 'package:remembeer/auth/widget/username_page.dart';
 import 'package:remembeer/common/widget/page_template.dart';
 import 'package:remembeer/drink_type/widget/custom_drink_types_page.dart';
 import 'package:remembeer/ioc/ioc_container.dart';
+import 'package:remembeer/user/widget/username_page.dart';
 import 'package:remembeer/user_settings/widget/default_drink_page.dart';
 
 class SettingsPage extends StatelessWidget {
