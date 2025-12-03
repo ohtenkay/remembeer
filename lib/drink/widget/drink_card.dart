@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:remembeer/common/widget/drink_icon.dart';
 import 'package:remembeer/drink/model/drink.dart';
-import 'package:remembeer/drink/widget/update_drink_page.dart';
+import 'package:remembeer/drink/page/update_drink_page.dart';
 
 class DrinkCard extends StatelessWidget {
   final Drink drink;
