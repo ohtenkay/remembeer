@@ -163,22 +163,22 @@ class ProfilePage extends StatelessWidget {
         final String label;
 
         switch (status) {
-          case FriendshipStatus.friends:
+          case FriendshipStatus.Friends:
             onPressed = () => _userService.removeFriend(user.id);
             icon = Icons.person_remove;
             label = 'Remove friend';
             break;
-          case FriendshipStatus.requestSent:
+          case FriendshipStatus.RequestSent:
             onPressed = () => _userService.revokeFriendRequest(user.id);
             icon = Icons.cancel_schedule_send;
             label = 'Revoke sent request';
             break;
-          case FriendshipStatus.requestReceived:
+          case FriendshipStatus.RequestReceived:
             onPressed = () => _userService.acceptFriendRequest(user.id);
             icon = Icons.check_circle;
             label = 'Accept request';
             break;
-          case FriendshipStatus.notFriends:
+          case FriendshipStatus.NotFriends:
             onPressed = () => _userService.sendFriendRequest(user.id);
             icon = Icons.person_add;
             label = 'Add as friend';
