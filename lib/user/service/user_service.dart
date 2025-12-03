@@ -18,8 +18,13 @@ class UserService {
   Stream<UserModel> userStreamFor(String userId) =>
       userController.userStreamFor(userId);
 
-  Future<List<UserModel>> searchUsersByUsername(String query) =>
-      userController.searchUsersByUsername(query);
+  Future<List<UserModel>> searchUsersByUsernameOrEmail(String query) async {
+    final trimmedQuery = query.trim();
+    if (trimmedQuery.isEmpty) {
+      return [];
+    }
+    return userController.searchUsersByUsernameOrEmail(trimmedQuery);
+  }
 
   Future<void> createDefaultUser() async {
     final defaultUser = UserModel(

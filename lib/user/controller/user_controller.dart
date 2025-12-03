@@ -57,7 +57,7 @@ class UserController {
     return data;
   }
 
-  Future<List<UserModel>> searchUsersByUsername(String query) async {
+  Future<List<UserModel>> searchUsersByUsernameOrEmail(String query) async {
     final queryLower = query.toLowerCase();
 
     final usernameQuery = _userCollection

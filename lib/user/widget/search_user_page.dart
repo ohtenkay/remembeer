@@ -26,16 +26,11 @@ class _SearchUserPageState extends State<SearchUserPage> {
   }
 
   void _onSearchChanged() {
-    final query = _searchController.text.trim();
-    if (query.isNotEmpty) {
-      setState(() {
-        _searchResults = _userService.searchUsersByUsername(query);
-      });
-    } else {
-      setState(() {
-        _searchResults = null;
-      });
-    }
+    setState(() {
+      _searchResults = _userService.searchUsersByUsernameOrEmail(
+        _searchController.text,
+      );
+    });
   }
 
   @override
