@@ -58,14 +58,14 @@ class DateSelector extends StatelessWidget {
   }
 
   IconButton _buildChevron(Direction direction) {
-    final icon = switch (direction) {
-      Direction.Left => Icons.chevron_left,
-      Direction.Right => Icons.chevron_right,
+    final (icon, moveFunction) = switch (direction) {
+      Direction.Left => (Icons.chevron_left, _dateService.previousDay),
+      Direction.Right => (Icons.chevron_right, _dateService.nextDay),
     };
 
     return IconButton(
       icon: Icon(icon),
-      onPressed: _dateService.previousDay,
+      onPressed: moveFunction,
       padding: EdgeInsets.zero,
       constraints: const BoxConstraints(),
     );
