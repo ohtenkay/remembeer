@@ -1,21 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:remembeer/common/widget/date_selector.dart';
 import 'package:remembeer/common/widget/page_template.dart';
 import 'package:remembeer/drink/action/drink_notifications.dart';
 import 'package:remembeer/drink/page/add_drink_page.dart';
 import 'package:remembeer/drink/service/drink_service.dart';
+import 'package:remembeer/drink/widget/date_selector.dart';
 import 'package:remembeer/drink/widget/drink_list.dart';
 import 'package:remembeer/ioc/ioc_container.dart';
 
-class DrinkPage extends StatefulWidget {
+class DrinkPage extends StatelessWidget {
   const DrinkPage({super.key});
-
-  @override
-  State<DrinkPage> createState() => _DrinkPageState();
-}
-
-class _DrinkPageState extends State<DrinkPage> {
-  DateTime _selectedDate = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
@@ -54,14 +47,7 @@ class _DrinkPageState extends State<DrinkPage> {
       ),
       child: Column(
         children: [
-          DateSelector(
-            selectedDate: _selectedDate,
-            onDateChanged: (date) {
-              setState(() {
-                _selectedDate = date;
-              });
-            },
-          ),
+          DateSelector(),
           DrinkList(),
         ],
       ),
