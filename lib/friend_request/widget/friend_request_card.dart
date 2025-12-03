@@ -15,7 +15,7 @@ class FriendRequestCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AsyncBuilder(
-      future: _userService.getUserById(request.userId),
+      future: _userService.userById(request.userId),
       builder: (context, sender) {
         return Card(
           child: Padding(

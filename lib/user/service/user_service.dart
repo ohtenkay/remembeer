@@ -22,8 +22,7 @@ class UserService {
 
   Stream<UserModel> get currentUserStream => userController.currentUserStream;
 
-  Future<UserModel> getUserById(String userId) =>
-      userController.getUserById(userId);
+  Future<UserModel> userById(String userId) => userController.userById(userId);
 
   Stream<UserModel> userStreamFor(String userId) =>
       userController.userStreamFor(userId);
@@ -113,7 +112,7 @@ class UserService {
     }
 
     final currentUser = await userController.currentUser;
-    final otherUser = await userController.getUserById(otherUserId);
+    final otherUser = await userController.userById(otherUserId);
 
     final updatedCurrentUser = currentUser.addFriend(otherUserId);
     final updatedOtherUser = otherUser.addFriend(currentUser.id);
@@ -136,7 +135,7 @@ class UserService {
 
   Future<void> removeFriend(String otherUserId) async {
     final currentUser = await userController.currentUser;
-    final otherUser = await userController.getUserById(otherUserId);
+    final otherUser = await userController.userById(otherUserId);
 
     final updatedCurrentUser = currentUser.removeFriend(otherUserId);
     final updatedOtherUser = otherUser.removeFriend(currentUser.id);

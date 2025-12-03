@@ -31,7 +31,7 @@ class UserController {
         return data;
       });
 
-  Future<UserModel> getUserById(String userId) async {
+  Future<UserModel> userById(String userId) async {
     final doc = await _userCollection.doc(userId).get();
 
     final data = doc.data();
