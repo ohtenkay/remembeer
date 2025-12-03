@@ -3,7 +3,6 @@ import 'package:intl/intl.dart';
 import 'package:remembeer/common/widget/async_builder.dart';
 import 'package:remembeer/drink/model/direction.dart';
 import 'package:remembeer/drink/service/date_service.dart';
-import 'package:remembeer/drink/widget/calendar_drawer.dart';
 import 'package:remembeer/ioc/ioc_container.dart';
 
 class DateSelector extends StatelessWidget {
@@ -17,7 +16,7 @@ class DateSelector extends StatelessWidget {
       stream: _dateService.selectedDateStream,
       builder: (context, datetime) {
         return GestureDetector(
-          onTap: () => _showCalendarDrawer(context, datetime),
+          onTap: () => _showDatePicker(context, datetime),
           onHorizontalDragEnd: (details) {
             if (details.primaryVelocity == null) {
               return;
@@ -72,18 +71,21 @@ class DateSelector extends StatelessWidget {
     );
   }
 
-  void _showCalendarDrawer(BuildContext context, DateTime selectedDate) {
-    showModalBottomSheet<void>(
+  Future<void> _showDatePicker(
+    BuildContext context,
+    DateTime selectedDate,
+  ) async {
+    // TODO(ohtenkay): Try out a package like https://pub.dev/packages/syncfusion_flutter_datepicker
+    final pickedDate = await showDatePicker(
       context: context,
-      isScrollControlled: true,
-      builder: (context) => CalendarDrawer(
-        selectedDate: selectedDate,
-        onDateSelected: (date) {
-          _dateService.setDate(date);
-          Navigator.of(context).pop();
-        },
-      ),
+      initialDate: selectedDate,
+      firstDate: DateTime(2020),
+      lastDate: DateTime(2030),
     );
+
+    if (pickedDate != null) {
+      _dateService.setDate(pickedDate);
+    }
   }
 
   String _formatDate(DateTime date) {
