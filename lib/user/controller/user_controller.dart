@@ -31,6 +31,19 @@ class UserController {
         return data;
       });
 
+  Future<UserModel> userById(String userId) async {
+    final doc = await _userCollection.doc(userId).get();
+
+    final data = doc.data();
+    if (data == null) {
+      throw StateError(
+        'User not found for user $userId',
+      );
+    }
+
+    return data;
+  }
+
   Stream<UserModel> userStreamFor(String userId) =>
       _userCollection.doc(userId).snapshots().map((docSnapshot) {
         final data = docSnapshot.data();
@@ -96,5 +109,17 @@ class UserController {
     }
 
     return _userCollection.doc(user.id).set(user);
+  }
+
+  WriteBatch createBatch() {
+    return FirebaseFirestore.instance.batch();
+  }
+
+  void createOrUpdateInBatch({
+    required UserModel user,
+    required WriteBatch batch,
+  }) {
+    final docRef = _userCollection.doc(user.id);
+    batch.set(docRef, user);
   }
 }

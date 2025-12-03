@@ -3,13 +3,18 @@ import 'package:remembeer/common/widget/async_builder.dart';
 import 'package:remembeer/common/widget/drink_icon.dart';
 import 'package:remembeer/common/widget/page_template.dart';
 import 'package:remembeer/drink_type/model/drink_category.dart';
+import 'package:remembeer/friend_request/model/friend_request.dart';
+import 'package:remembeer/friend_request/model/friendship_status.dart';
+import 'package:remembeer/friend_request/widget/friend_requests_page.dart';
 import 'package:remembeer/ioc/ioc_container.dart';
 import 'package:remembeer/user/model/user_model.dart';
 import 'package:remembeer/user/service/user_service.dart';
+import 'package:remembeer/user/widget/friends_list_page.dart';
 import 'package:remembeer/user/widget/search_user_page.dart';
 import 'package:remembeer/user/widget/username_page.dart';
 import 'package:remembeer/user_stats/model/user_stats.dart';
 import 'package:remembeer/user_stats/service/user_stats_service.dart';
+import 'package:rxdart/rxdart.dart';
 
 const _ICON_SIZE = 30.0;
 
@@ -35,8 +40,13 @@ class ProfilePage extends StatelessWidget {
     return PageTemplate(
       title: isCurrentUser ? null : const Text('Profile'),
       child: AsyncBuilder(
-        stream: userStatsStream,
-        builder: (context, userStats) {
+        stream: Rx.combineLatest2(userStatsStream, userStream, (
+          UserStats stats,
+          UserModel user,
+        ) {
+          return (stats: stats, user: user);
+        }),
+        builder: (context, data) {
           return SingleChildScrollView(
             padding: const EdgeInsets.symmetric(
               horizontal: 10.0,
@@ -47,13 +57,17 @@ class ProfilePage extends StatelessWidget {
               children: [
                 _buildProfileHeader(
                   context: context,
-                  userStream: userStream,
+                  user: data.user,
                   isCurrentUser: isCurrentUser,
                 ),
                 const SizedBox(height: 30),
-                _buildTopRow(userStats),
+                _buildTopRow(
+                  context: context,
+                  userStats: data.stats,
+                  user: data.user,
+                ),
                 const SizedBox(height: 30),
-                _buildConsumptionStats(userStats),
+                _buildConsumptionStats(data.stats),
               ],
             ),
           );
@@ -64,79 +78,123 @@ class ProfilePage extends StatelessWidget {
 
   Widget _buildProfileHeader({
     required BuildContext context,
-    required Stream<UserModel> userStream,
-    required bool isCurrentUser,
-  }) {
-    return AsyncBuilder(
-      stream: userStream,
-      builder: (context, user) {
-        return Column(
-          children: [
-            CircleAvatar(
-              radius: 60,
-              backgroundImage: AssetImage('assets/avatars/${user.avatarName}'),
-            ),
-            const SizedBox(height: 16),
-            InkWell(
-              onTap: isCurrentUser
-                  ? () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute<void>(
-                          builder: (context) => const UserNamePage(),
-                        ),
-                      );
-                    }
-                  : null,
-              child: _buildUsernameLabel(user),
-            ),
-            const SizedBox(height: 12),
-            _buildProfileButton(
-              context: context,
-              user: user,
-              isCurrentUser: isCurrentUser,
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  Widget _buildProfileButton({
-    required BuildContext context,
     required UserModel user,
     required bool isCurrentUser,
   }) {
-    final VoidCallback onPressed;
-    final IconData icon;
-    final String label;
+    return Column(
+      children: [
+        CircleAvatar(
+          radius: 60,
+          backgroundImage: AssetImage('assets/avatars/${user.avatarName}'),
+        ),
+        const SizedBox(height: 16),
+        InkWell(
+          onTap: isCurrentUser
+              ? () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (context) => const UserNamePage(),
+                    ),
+                  );
+                }
+              : null,
+          child: _buildUsernameLabel(user),
+        ),
+        const SizedBox(height: 12),
+        if (isCurrentUser)
+          _buildCurrentUserActions(context)
+        else
+          _buildOtherUserActions(context, user),
+      ],
+    );
+  }
 
-    if (isCurrentUser) {
-      onPressed = () {
-        Navigator.of(context).push(
-          MaterialPageRoute<void>(
-            builder: (context) => const SearchUserPage(),
+  Widget _buildCurrentUserActions(BuildContext context) {
+    return Column(
+      children: [
+        AsyncBuilder<List<FriendRequest>>(
+          stream: _userService.pendingFriendRequests(),
+          builder: (context, requests) {
+            if (requests.isEmpty) {
+              return const SizedBox.shrink();
+            }
+
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 8.0),
+              child: ElevatedButton.icon(
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (context) => FriendRequestsPage(),
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.person_add_alt_1),
+                label: Text('View ${requests.length} friend request(s)'),
+              ),
+            );
+          },
+        ),
+        ElevatedButton.icon(
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (context) => const SearchUserPage(),
+              ),
+            );
+          },
+          icon: const Icon(Icons.search),
+          label: const Text('Search for friends'),
+          style: ElevatedButton.styleFrom(
+            foregroundColor: Colors.white,
+            backgroundColor: Theme.of(context).primaryColor,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildOtherUserActions(BuildContext context, UserModel user) {
+    return AsyncBuilder(
+      stream: _userService.friendshipStatus(user.id),
+      builder: (context, status) {
+        final VoidCallback onPressed;
+        final IconData icon;
+        final String label;
+
+        switch (status) {
+          case FriendshipStatus.Friends:
+            onPressed = () => _userService.removeFriend(user.id);
+            icon = Icons.person_remove;
+            label = 'Remove friend';
+            break;
+          case FriendshipStatus.RequestSent:
+            onPressed = () => _userService.revokeFriendRequest(user.id);
+            icon = Icons.cancel_schedule_send;
+            label = 'Revoke sent request';
+            break;
+          case FriendshipStatus.RequestReceived:
+            onPressed = () => _userService.acceptFriendRequest(user.id);
+            icon = Icons.check_circle;
+            label = 'Accept request';
+            break;
+          case FriendshipStatus.NotFriends:
+            onPressed = () => _userService.sendFriendRequest(user.id);
+            icon = Icons.person_add;
+            label = 'Add as friend';
+            break;
+        }
+
+        return ElevatedButton.icon(
+          onPressed: onPressed,
+          icon: Icon(icon),
+          label: Text(label),
+          style: ElevatedButton.styleFrom(
+            foregroundColor: Colors.white,
+            backgroundColor: Theme.of(context).primaryColor,
           ),
         );
-      };
-      icon = Icons.search;
-      label = 'Search for friends';
-    } else {
-      onPressed = () {
-        // TODO(metju-ac): Implement add friend functionality
-        print('Add friend ${user.id}');
-      };
-      icon = Icons.person_add;
-      label = 'Add as friend';
-    }
-
-    return ElevatedButton.icon(
-      onPressed: onPressed,
-      icon: Icon(icon),
-      label: Text(label),
-      style: ElevatedButton.styleFrom(
-        foregroundColor: Colors.white,
-        backgroundColor: Theme.of(context).primaryColor,
-      ),
+      },
     );
   }
 
@@ -155,45 +213,53 @@ class ProfilePage extends StatelessWidget {
     required Color color,
     required String value,
     required String label,
+    VoidCallback? onTap,
   }) {
     return Expanded(
       child: Card(
         color: Colors.white,
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                icon,
-                color: color,
-                size: 32,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                value,
-                style: const TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.w900,
+        child: InkWell(
+          onTap: onTap,
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  icon,
+                  color: color,
+                  size: 32,
                 ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                label,
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey.shade600,
-                  fontWeight: FontWeight.w500,
+                const SizedBox(height: 8),
+                Text(
+                  value,
+                  style: const TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.w900,
+                  ),
                 ),
-              ),
-            ],
+                const SizedBox(height: 4),
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.grey.shade600,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  Widget _buildTopRow(UserStats userStats) {
+  Widget _buildTopRow({
+    required BuildContext context,
+    required UserStats userStats,
+    required UserModel user,
+  }) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
@@ -207,11 +273,15 @@ class ProfilePage extends StatelessWidget {
         ),
         const SizedBox(width: 12),
         _buildStatCard(
-          // TODO(metju-ac): replace with real value
           icon: Icons.people_alt,
           color: Colors.blue.shade700,
-          value: '12',
+          value: user.friends.length.toString(),
           label: 'Friends',
+          onTap: () => Navigator.of(context).push(
+            MaterialPageRoute<void>(
+              builder: (context) => FriendsListPage(userId: user.id),
+            ),
+          ),
         ),
       ],
     );
