@@ -88,8 +88,11 @@ class DateSelector extends StatelessWidget {
     }
   }
 
-  String _formatDate(DateTime date) {
-    return switch (date.difference(DateTime.now()).inDays) {
+  String _formatDate(DateTime datetime) {
+    final date = DateUtils.dateOnly(datetime);
+    final nowDate = DateUtils.dateOnly(DateTime.now());
+
+    return switch (date.difference(nowDate).inDays) {
       0 => 'Today',
       -1 => 'Yesterday',
       1 => 'Tomorrow',
