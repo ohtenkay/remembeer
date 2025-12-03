@@ -1,30 +1,28 @@
 import 'package:rxdart/rxdart.dart';
 
 class DateService {
-  final BehaviorSubject<DateTime> _selectedDate =
+  final BehaviorSubject<DateTime> _selectedDateSubject =
       BehaviorSubject<DateTime>.seeded(DateTime.now());
 
-  Stream<DateTime> get selectedDateStream => _selectedDate.stream;
-
-  DateTime get selectedDate => _selectedDate.value;
+  Stream<DateTime> get selectedDateStream => _selectedDateSubject.stream;
 
   void setDate(DateTime date) {
-    _selectedDate.add(date);
+    _selectedDateSubject.add(date);
   }
 
   void nextDay() {
-    _selectedDate.add(_selectedDate.value.add(const Duration(days: 1)));
+    _selectedDateSubject.add(
+      _selectedDateSubject.value.add(const Duration(days: 1)),
+    );
   }
 
   void previousDay() {
-    _selectedDate.add(_selectedDate.value.subtract(const Duration(days: 1)));
-  }
-
-  void goToToday() {
-    _selectedDate.add(DateTime.now());
+    _selectedDateSubject.add(
+      _selectedDateSubject.value.subtract(const Duration(days: 1)),
+    );
   }
 
   void dispose() {
-    _selectedDate.close();
+    _selectedDateSubject.close();
   }
 }

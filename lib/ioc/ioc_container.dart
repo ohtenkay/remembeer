@@ -40,6 +40,7 @@ class IoCContainer {
       DrinkService(
         drinkController: get<DrinkController>(),
         userSettingsService: get<UserSettingsService>(),
+        dateService: get<DateService>(),
       ),
     );
     get.registerSingleton(
