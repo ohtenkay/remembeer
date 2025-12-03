@@ -15,6 +15,9 @@ class UserService {
 
   Stream<UserModel> get currentUserStream => userController.currentUserStream;
 
+  Future<UserModel> getUserById(String userId) =>
+      userController.getUserById(userId);
+
   Stream<UserModel> userStreamFor(String userId) =>
       userController.userStreamFor(userId);
 
