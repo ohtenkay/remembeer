@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:remembeer/drink_type/model/drink_category.dart';
 import 'package:remembeer/drink_type/model/drink_type.dart';
-import 'package:remembeer/drink_type/widget/drink_type_dropdown.dart';
+import 'package:remembeer/drink_type/widget/drink_type_picker.dart';
 
 const _SPACING = SizedBox(height: 16);
 
@@ -33,7 +33,7 @@ class DrinkForm extends StatefulWidget {
 class _DrinkFormState extends State<DrinkForm> {
   final _formKey = GlobalKey<FormState>();
 
-  late DrinkType? _selectedDrinkType = widget.initialDrinkType;
+  late DrinkType _selectedDrinkType = widget.initialDrinkType;
   late DateTime _selectedConsumedAt = widget.initialConsumedAt;
   final _volumeController = TextEditingController();
   final _consumedAtController = TextEditingController();
@@ -117,7 +117,7 @@ class _DrinkFormState extends State<DrinkForm> {
   }
 
   Widget _buildDrinkTypeDropdown() {
-    return DrinkTypeDropdown(
+    return DrinkTypePicker(
       selectedDrinkType: _selectedDrinkType,
       onChanged: (newValue) {
         setState(() {
@@ -158,11 +158,7 @@ class _DrinkFormState extends State<DrinkForm> {
   }
 
   Widget _buildPredefinedVolumesRow() {
-    if (_selectedDrinkType == null) {
-      return const SizedBox.shrink();
-    }
-
-    final volumes = _selectedDrinkType!.category.predefinedVolumes;
+    final volumes = _selectedDrinkType.category.predefinedVolumes;
     final buttons = <Widget>[];
     // TODO(metju-ac): improve this logic when doing UI, consider Wrap component
     volumes.forEach((name, volume) {
@@ -219,7 +215,7 @@ class _DrinkFormState extends State<DrinkForm> {
     if (_formKey.currentState!.validate()) {
       final volume = int.parse(_volumeController.text);
       await widget.onSubmit(
-        _selectedDrinkType!,
+        _selectedDrinkType,
         _selectedConsumedAt,
         volume,
       );
