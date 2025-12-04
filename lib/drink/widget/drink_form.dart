@@ -17,7 +17,6 @@ class DrinkForm extends StatefulWidget {
     int volumeInMilliliters,
   )
   onSubmit;
-  final Future<void> Function()? onDelete;
 
   const DrinkForm({
     super.key,
@@ -25,7 +24,6 @@ class DrinkForm extends StatefulWidget {
     required this.initialConsumedAt,
     required this.initialVolume,
     required this.onSubmit,
-    this.onDelete,
   });
 
   @override
@@ -213,21 +211,6 @@ class _DrinkFormState extends State<DrinkForm> {
           ),
           child: const Text('Submit'),
         ),
-        if (widget.onDelete != null) ...[
-          const SizedBox(height: 8),
-          ElevatedButton(
-            onPressed: () async {
-              if (widget.onDelete != null) {
-                await widget.onDelete!();
-              }
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
-              padding: const EdgeInsets.all(30.0),
-            ),
-            child: const Text('Delete'),
-          ),
-        ],
       ],
     );
   }

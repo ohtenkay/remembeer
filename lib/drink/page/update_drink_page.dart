@@ -37,12 +37,6 @@ class UpdateDrinkPage extends StatelessWidget {
                 Navigator.of(context).pop();
               }
             },
-        onDelete: () async {
-          await _drinkController.deleteSingle(drinkToUpdate);
-          if (context.mounted) {
-            Navigator.of(context).pop();
-          }
-        },
       ),
     );
   }

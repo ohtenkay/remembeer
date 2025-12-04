@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
 import 'package:remembeer/auth/service/auth_service.dart';
 import 'package:remembeer/drink/controller/drink_controller.dart';
+import 'package:remembeer/drink/service/date_service.dart';
 import 'package:remembeer/drink/service/drink_service.dart';
 import 'package:remembeer/drink_type/controller/drink_type_controller.dart';
 import 'package:remembeer/friend_request/controller/friend_request_controller.dart';
@@ -28,6 +29,7 @@ class IoCContainer {
     get.registerSingleton(
       UserSettingsController(authService: get<AuthService>()),
     );
+    get.registerSingleton(DateService());
     get.registerSingleton(
       UserSettingsService(
         authService: get<AuthService>(),
@@ -38,6 +40,7 @@ class IoCContainer {
       DrinkService(
         drinkController: get<DrinkController>(),
         userSettingsService: get<UserSettingsService>(),
+        dateService: get<DateService>(),
       ),
     );
     get.registerSingleton(

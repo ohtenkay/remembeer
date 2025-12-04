@@ -1,0 +1,45 @@
+import 'package:flutter/material.dart';
+import 'package:remembeer/common/widget/async_builder.dart';
+import 'package:remembeer/ioc/ioc_container.dart';
+import 'package:remembeer/user_stats/model/user_stats.dart';
+import 'package:remembeer/user_stats/service/user_stats_service.dart';
+
+class StreakIndicator extends StatelessWidget {
+  StreakIndicator({super.key});
+
+  final _userStatsService = get<UserStatsService>();
+
+  @override
+  Widget build(BuildContext context) {
+    return AsyncBuilder(
+      stream: _userStatsService.userStatsStream,
+      builder: (context, userStats) => _buildStreak(userStats),
+    );
+  }
+
+  Widget _buildStreak(UserStats userStats) {
+    final color = userStats.isStreakActive
+        ? Colors.orange.shade700
+        : Colors.grey;
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(
+          Icons.local_fire_department,
+          color: color,
+          size: 32,
+        ),
+        const SizedBox(width: 8),
+        Text(
+          '${userStats.streakDays}',
+          style: TextStyle(
+            fontSize: 28,
+            fontWeight: FontWeight.bold,
+            color: color,
+          ),
+        ),
+      ],
+    );
+  }
+}
