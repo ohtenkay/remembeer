@@ -38,16 +38,14 @@ class DrinkCard extends StatelessWidget {
             ),
           ],
         ),
-        trailing: IconButton(
-          onPressed: () {
-            Navigator.of(context).push(
-              MaterialPageRoute<void>(
-                builder: (context) => UpdateDrinkPage(drinkToUpdate: drink),
-              ),
-            );
-          },
-          icon: const Icon(Icons.chevron_right),
-        ),
+        trailing: const Icon(Icons.chevron_right),
+        onTap: () {
+          Navigator.of(context).push(
+            MaterialPageRoute<void>(
+              builder: (context) => UpdateDrinkPage(drinkToUpdate: drink),
+            ),
+          );
+        },
       ),
     );
   }
