@@ -14,9 +14,13 @@ class DrinkList extends StatelessWidget {
     return AsyncBuilder(
       stream: _drinkService.drinksForSelectedDateStream,
       builder: (context, drinks) {
+        if (drinks.isEmpty) {
+          return Expanded(child: _buildEmptyState(context));
+        }
+
         return Expanded(
           child: ListView.builder(
-            padding: EdgeInsets.symmetric(
+            padding: const EdgeInsets.symmetric(
               horizontal: 8,
               vertical: 4,
             ),
@@ -28,6 +32,42 @@ class DrinkList extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+
+  Widget _buildEmptyState(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(32),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.no_drinks_outlined,
+              size: 64,
+              color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'No drinks logged',
+              style: theme.textTheme.titleMedium?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Tap + to add your first drink',
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant.withValues(
+                  alpha: 0.7,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

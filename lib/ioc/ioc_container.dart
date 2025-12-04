@@ -20,6 +20,13 @@ class IoCContainer {
   static void initialize() {
     get.registerSingleton(FirebaseAuth.instance);
     get.registerSingleton(AuthService(firebaseAuth: get<FirebaseAuth>()));
+    get.registerSingleton(DateService());
+
+    _registerControllers();
+    _registerServices();
+  }
+
+  static void _registerControllers() {
     get.registerSingleton(DrinkController(authService: get<AuthService>()));
     get.registerSingleton(DrinkTypeController(authService: get<AuthService>()));
     get.registerSingleton(
@@ -29,17 +36,13 @@ class IoCContainer {
     get.registerSingleton(
       UserSettingsController(authService: get<AuthService>()),
     );
-    get.registerSingleton(DateService());
-    get.registerSingleton(
-      UserSettingsService(
-        authService: get<AuthService>(),
-        userSettingsController: get<UserSettingsController>(),
-      ),
-    );
+  }
+
+  static void _registerServices() {
     get.registerSingleton(
       DrinkService(
         drinkController: get<DrinkController>(),
-        userSettingsService: get<UserSettingsService>(),
+        userSettingsController: get<UserSettingsController>(),
         dateService: get<DateService>(),
       ),
     );
@@ -48,6 +51,12 @@ class IoCContainer {
         authService: get<AuthService>(),
         friendRequestController: get<FriendRequestController>(),
         userController: get<UserController>(),
+      ),
+    );
+    get.registerSingleton(
+      UserSettingsService(
+        authService: get<AuthService>(),
+        userSettingsController: get<UserSettingsController>(),
       ),
     );
     get.registerSingleton(

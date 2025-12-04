@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:remembeer/common/widget/async_builder.dart';
 import 'package:remembeer/common/widget/page_template.dart';
 import 'package:remembeer/drink_type/model/drink_type.dart';
-import 'package:remembeer/drink_type/widget/drink_type_dropdown.dart';
+import 'package:remembeer/drink_type/widget/drink_type_picker.dart';
 import 'package:remembeer/ioc/ioc_container.dart';
 import 'package:remembeer/user_settings/service/user_settings_service.dart';
 
@@ -109,8 +109,8 @@ class _DefaultDrinkPageState extends State<DefaultDrinkPage> {
   }
 
   Widget _buildDrinkTypeDropdown() {
-    return DrinkTypeDropdown(
-      selectedDrinkType: _selectedDrinkType,
+    return DrinkTypePicker(
+      selectedDrinkType: _selectedDrinkType!,
       onChanged: (newValue) {
         setState(() {
           _selectedDrinkType = newValue;
