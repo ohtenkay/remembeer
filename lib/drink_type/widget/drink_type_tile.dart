@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:remembeer/common/widget/drink_icon.dart';
+import 'package:remembeer/drink_type/controller/drink_type_controller.dart';
 import 'package:remembeer/drink_type/model/drink_type.dart';
 import 'package:remembeer/drink_type/widget/update_drink_type_page.dart';
+import 'package:remembeer/ioc/ioc_container.dart';
 
 class DrinkTypeTile extends StatelessWidget {
   final DrinkType drinkType;
 
-  const DrinkTypeTile({super.key, required this.drinkType});
+  DrinkTypeTile({super.key, required this.drinkType});
+
+  final _drinkTypeController = get<DrinkTypeController>();
 
   @override
   Widget build(BuildContext context) {
@@ -14,16 +18,52 @@ class DrinkTypeTile extends StatelessWidget {
       leading: DrinkIcon(category: drinkType.category),
       title: Text(drinkType.name),
       subtitle: Text('ABV: ${drinkType.alcoholPercentage}%'),
-      trailing: IconButton(
-        onPressed: () => {
-          Navigator.of(context).push(
-            MaterialPageRoute<void>(
-              builder: (context) =>
-                  UpdateDrinkTypePage(drinkTypeToUpdate: drinkType),
+      trailing: Transform.translate(
+        offset: const Offset(10, 0),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (context) =>
+                        UpdateDrinkTypePage(drinkTypeToUpdate: drinkType),
+                  ),
+                );
+              },
+              icon: const Icon(Icons.edit),
             ),
+            IconButton(
+              onPressed: () => _showDeleteConfirmation(context),
+              icon: const Icon(Icons.delete, color: Colors.red),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showDeleteConfirmation(BuildContext context) {
+    showDialog<void>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Delete Drink Type'),
+        content: Text('Are you sure you want to delete "${drinkType.name}"?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Cancel'),
           ),
-        },
-        icon: Icon(Icons.chevron_right),
+          TextButton(
+            onPressed: () {
+              _drinkTypeController.deleteSingle(drinkType);
+              Navigator.of(context).pop();
+            },
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            child: const Text('Delete'),
+          ),
+        ],
       ),
     );
   }
