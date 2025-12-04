@@ -12,6 +12,7 @@ import 'package:remembeer/pages/profile_page.dart';
 import 'package:remembeer/pages/settings_page.dart';
 
 const _drinkPageIndex = 2;
+const _activeIconSize = 36.0;
 
 class PageSwitcher extends StatefulWidget {
   const PageSwitcher({super.key});
@@ -89,25 +90,41 @@ class _PageSwitcherState extends State<PageSwitcher> {
       currentIndex: _selectedIndex,
       selectedItemColor: Theme.of(context).colorScheme.primary,
       unselectedItemColor: Colors.grey,
+      showSelectedLabels: false,
+      showUnselectedLabels: false,
       onTap: _onItemTapped,
       items: [
-        BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.person),
+          activeIcon: Icon(Icons.person, size: _activeIconSize),
+          label: 'Profile',
+        ),
         BottomNavigationBarItem(
           icon: Icon(Icons.emoji_events),
+          activeIcon: Icon(Icons.emoji_events, size: _activeIconSize),
           label: 'Leaderboards',
         ),
         BottomNavigationBarItem(
           icon: DrinkIcon(
             category: DrinkCategory.Beer,
-            color: _selectedIndex == _drinkPageIndex
-                ? Theme.of(context).colorScheme.primary
-                : Colors.grey,
+            color: Colors.grey,
+            size: 28,
+          ),
+          activeIcon: DrinkIcon(
+            category: DrinkCategory.Beer,
+            color: Theme.of(context).colorScheme.primary,
+            size: _activeIconSize,
           ),
           label: 'Drink',
         ),
-        BottomNavigationBarItem(icon: Icon(Icons.group), label: 'Activity'),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.group),
+          activeIcon: Icon(Icons.group, size: _activeIconSize),
+          label: 'Activity',
+        ),
         BottomNavigationBarItem(
           icon: Icon(Icons.settings),
+          activeIcon: Icon(Icons.settings, size: _activeIconSize),
           label: 'Settings',
         ),
       ],
