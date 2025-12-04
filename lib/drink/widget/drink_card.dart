@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:remembeer/common/widget/drink_icon.dart';
+import 'package:remembeer/drink/action/drink_notifications.dart';
+import 'package:remembeer/drink/controller/drink_controller.dart';
 import 'package:remembeer/drink/model/drink.dart';
 import 'package:remembeer/drink/page/update_drink_page.dart';
+import 'package:remembeer/ioc/ioc_container.dart';
 
 class DrinkCard extends StatelessWidget {
   final Drink drink;
 
-  const DrinkCard({super.key, required this.drink});
+  DrinkCard({super.key, required this.drink});
+
+  final _drinkController = get<DrinkController>();
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +43,10 @@ class DrinkCard extends StatelessWidget {
             ),
           ],
         ),
-        trailing: const Icon(Icons.chevron_right),
+        trailing: IconButton(
+          onPressed: () => _showDeleteConfirmation(context),
+          icon: const Icon(Icons.delete_outline, color: Colors.red),
+        ),
         onTap: () {
           Navigator.of(context).push(
             MaterialPageRoute<void>(
@@ -46,6 +54,33 @@ class DrinkCard extends StatelessWidget {
             ),
           );
         },
+      ),
+    );
+  }
+
+  void _showDeleteConfirmation(BuildContext context) {
+    showDialog<void>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Delete Drink'),
+        content: Text(
+          'Are you sure you want to delete this ${drink.drinkType.name}?',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              _drinkController.deleteSingle(drink);
+              Navigator.of(context).pop();
+              showDrinkDeleted(context);
+            },
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            child: const Text('Delete'),
+          ),
+        ],
       ),
     );
   }
