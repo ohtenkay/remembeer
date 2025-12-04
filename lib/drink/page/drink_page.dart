@@ -5,6 +5,7 @@ import 'package:remembeer/drink/page/add_drink_page.dart';
 import 'package:remembeer/drink/service/drink_service.dart';
 import 'package:remembeer/drink/widget/date_selector.dart';
 import 'package:remembeer/drink/widget/drink_list.dart';
+import 'package:remembeer/drink/widget/streak_indicator.dart';
 import 'package:remembeer/ioc/ioc_container.dart';
 
 class DrinkPage extends StatelessWidget {
@@ -17,8 +18,8 @@ class DrinkPage extends StatelessWidget {
     return PageTemplate(
       title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: const [
-          Text('Streak placeholder', style: TextStyle(fontSize: 12)),
+        children: [
+          StreakIndicator(),
           Text(
             'Create session placeholder',
             style: TextStyle(fontSize: 12),
