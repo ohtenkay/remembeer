@@ -2,16 +2,16 @@ import 'package:remembeer/drink/controller/drink_controller.dart';
 import 'package:remembeer/drink/model/drink.dart';
 import 'package:remembeer/drink/model/drink_create.dart';
 import 'package:remembeer/drink/service/date_service.dart';
-import 'package:remembeer/user_settings/service/user_settings_service.dart';
+import 'package:remembeer/user_settings/controller/user_settings_controller.dart';
 import 'package:rxdart/rxdart.dart';
 
 class DrinkService {
-  final UserSettingsService userSettingsService;
+  final UserSettingsController userSettingsController;
   final DrinkController drinkController;
   final DateService dateService;
 
   DrinkService({
-    required this.userSettingsService,
+    required this.userSettingsController,
     required this.drinkController,
     required this.dateService,
   });
@@ -35,7 +35,7 @@ class DrinkService {
   }
 
   Future<void> addDefaultDrink() async {
-    final userSettings = await userSettingsService.currentUserSettings;
+    final userSettings = await userSettingsController.currentUserSettings;
     await drinkController.createSingle(
       DrinkCreate(
         consumedAt: DateTime.now(),
