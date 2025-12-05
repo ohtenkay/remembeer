@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:remembeer/common/widget/async_builder.dart';
 import 'package:remembeer/friend_request/model/friend_request.dart';
 import 'package:remembeer/ioc/ioc_container.dart';
-import 'package:remembeer/pages/profile_page.dart';
+import 'package:remembeer/user/page/profile_page.dart';
 import 'package:remembeer/user/service/user_service.dart';
 
 class FriendRequestCard extends StatelessWidget {

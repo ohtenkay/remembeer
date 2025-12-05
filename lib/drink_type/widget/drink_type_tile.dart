@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:remembeer/common/widget/drink_icon.dart';
 import 'package:remembeer/drink_type/controller/drink_type_controller.dart';
 import 'package:remembeer/drink_type/model/drink_type.dart';
-import 'package:remembeer/drink_type/widget/update_drink_type_page.dart';
+import 'package:remembeer/drink_type/page/update_drink_type_page.dart';
 import 'package:remembeer/ioc/ioc_container.dart';
 
 class DrinkTypeTile extends StatelessWidget {
