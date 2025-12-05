@@ -42,10 +42,7 @@ class _LoginPageState extends State<LoginPage> {
             obscureText: true,
           ),
           const SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: _login,
-            child: const Text('Login'),
-          ),
+          ElevatedButton(onPressed: _login, child: const Text('Login')),
           if (_errorMessage.isNotEmpty)
             Padding(
               padding: const EdgeInsets.only(top: 12.0),
@@ -60,14 +57,11 @@ class _LoginPageState extends State<LoginPage> {
           ),
           const SizedBox(height: 10),
           TextButton(
-            onPressed: () =>
-                Navigator.of(
-                  context,
-                ).push(
-                  MaterialPageRoute<void>(
-                    builder: (context) => const RegisterPage(),
-                  ),
-                ),
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (context) => const RegisterPage(),
+              ),
+            ),
             child: const Text('Don\'t have an account? Register'),
           ),
         ],
@@ -107,9 +101,7 @@ class _LoginPageState extends State<LoginPage> {
           title: const Text('Reset Password'),
           content: TextField(
             controller: _emailController,
-            decoration: const InputDecoration(
-              labelText: 'Email',
-            ),
+            decoration: const InputDecoration(labelText: 'Email'),
             keyboardType: TextInputType.emailAddress,
           ),
           actions: <Widget>[

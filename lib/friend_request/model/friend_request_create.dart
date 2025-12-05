@@ -7,9 +7,7 @@ part 'friend_request_create.g.dart';
 class FriendRequestCreate extends ValueObject {
   final String toUserId;
 
-  FriendRequestCreate({
-    required this.toUserId,
-  });
+  FriendRequestCreate({required this.toUserId});
 
   @override
   Map<String, dynamic> toJson() => _$FriendRequestCreateToJson(this);

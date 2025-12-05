@@ -9,10 +9,7 @@ import 'package:remembeer/ioc/ioc_container.dart';
 class DrinkTypePickerSheet extends StatefulWidget {
   final DrinkType selectedDrinkType;
 
-  const DrinkTypePickerSheet({
-    super.key,
-    required this.selectedDrinkType,
-  });
+  const DrinkTypePickerSheet({super.key, required this.selectedDrinkType});
 
   @override
   State<DrinkTypePickerSheet> createState() => _DrinkTypePickerSheetState();
@@ -75,9 +72,7 @@ class _DrinkTypePickerSheetState extends State<DrinkTypePickerSheet> {
               _buildSearchBar(colorScheme),
               _buildCategoryFilters(colorScheme),
               const Divider(height: 1),
-              Expanded(
-                child: _buildDrinkTypeList(scrollController),
-              ),
+              Expanded(child: _buildDrinkTypeList(scrollController)),
             ],
           );
         },
@@ -326,12 +321,7 @@ class _DrinkTypePickerSheetState extends State<DrinkTypePickerSheet> {
           color: drinkType.category.defaultColor.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(12),
         ),
-        child: Center(
-          child: DrinkIcon(
-            category: drinkType.category,
-            size: 26,
-          ),
-        ),
+        child: Center(child: DrinkIcon(category: drinkType.category, size: 26)),
       ),
       title: Text(
         drinkType.name,
@@ -342,22 +332,14 @@ class _DrinkTypePickerSheetState extends State<DrinkTypePickerSheet> {
       ),
       subtitle: Text(
         'ABV: ${drinkType.alcoholPercentage}%',
-        style: TextStyle(
-          fontSize: 12,
-          color: colorScheme.onSurfaceVariant,
-        ),
+        style: TextStyle(fontSize: 12, color: colorScheme.onSurfaceVariant),
       ),
       trailing: isSelected
           ? Icon(Icons.check_circle, color: colorScheme.primary)
-          : Icon(
-              Icons.circle_outlined,
-              color: colorScheme.outlineVariant,
-            ),
+          : Icon(Icons.circle_outlined, color: colorScheme.outlineVariant),
       selected: isSelected,
       selectedTileColor: colorScheme.primaryContainer.withValues(alpha: 0.3),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       onTap: () => Navigator.of(context).pop(drinkType),
     );

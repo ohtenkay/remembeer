@@ -1,12 +1,6 @@
 import 'package:flutter/material.dart';
 
-enum DrinkCategory {
-  Beer,
-  Cider,
-  Cocktail,
-  Spirit,
-  Wine,
-}
+enum DrinkCategory { Beer, Cider, Cocktail, Spirit, Wine }
 
 extension DrinkCategoryExtension on DrinkCategory {
   String get displayName {
@@ -41,27 +35,11 @@ extension DrinkCategoryExtension on DrinkCategory {
 
   Map<String, int> get predefinedVolumes {
     return switch (this) {
-      DrinkCategory.Beer => {
-        'Tuplák': 1000,
-        'Big': 500,
-        'Small': 300,
-      },
-      DrinkCategory.Cider => {
-        'Big': 500,
-        'Small': 300,
-      },
-      DrinkCategory.Cocktail => {
-        'Short Drink': 250,
-        'Long Drink': 400,
-      },
-      DrinkCategory.Spirit => {
-        'Shot': 40,
-        'Small shot': 20,
-      },
-      DrinkCategory.Wine => {
-        'Glass': 200,
-        'Bottle': 750,
-      },
+      DrinkCategory.Beer => {'Tuplák': 1000, 'Big': 500, 'Small': 300},
+      DrinkCategory.Cider => {'Big': 500, 'Small': 300},
+      DrinkCategory.Cocktail => {'Short Drink': 250, 'Long Drink': 400},
+      DrinkCategory.Spirit => {'Shot': 40, 'Small shot': 20},
+      DrinkCategory.Wine => {'Glass': 200, 'Bottle': 750},
     };
   }
 }

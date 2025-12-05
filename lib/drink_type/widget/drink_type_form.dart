@@ -119,9 +119,7 @@ class _DrinkTypeFormState extends State<DrinkTypeForm> {
           onPressed: () async {
             await _submitForm(context);
           },
-          style: ElevatedButton.styleFrom(
-            padding: const EdgeInsets.all(30.0),
-          ),
+          style: ElevatedButton.styleFrom(padding: const EdgeInsets.all(30.0)),
           child: const Text('Submit'),
         ),
         if (widget.onDelete != null) ...[
@@ -174,9 +172,7 @@ class _DrinkTypeFormState extends State<DrinkTypeForm> {
   Future<void> _submitForm(BuildContext context) async {
     if (_formKey.currentState!.validate()) {
       final name = _nameController.text;
-      final alcoholPercentage = double.parse(
-        _alcoholPercentageController.text,
-      );
+      final alcoholPercentage = double.parse(_alcoholPercentageController.text);
       final roundedAlcoholPercentage = (alcoholPercentage * 100).round() / 100;
       await widget.onSubmit(
         name,

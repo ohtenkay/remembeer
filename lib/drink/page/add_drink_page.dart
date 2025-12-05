@@ -24,23 +24,18 @@ class AddDrinkPage extends StatelessWidget {
             initialDrinkType: userSettings.defaultDrinkType,
             initialConsumedAt: DateTime.now(),
             initialVolume: userSettings.defaultDrinkSize,
-            onSubmit:
-                (
-                  drinkType,
-                  consumedAt,
-                  volumeInMilliliters,
-                ) async {
-                  await _drinkController.createSingle(
-                    DrinkCreate(
-                      consumedAt: consumedAt,
-                      drinkType: drinkType,
-                      volumeInMilliliters: volumeInMilliliters,
-                    ),
-                  );
-                  if (context.mounted) {
-                    Navigator.of(context).pop();
-                  }
-                },
+            onSubmit: (drinkType, consumedAt, volumeInMilliliters) async {
+              await _drinkController.createSingle(
+                DrinkCreate(
+                  consumedAt: consumedAt,
+                  drinkType: drinkType,
+                  volumeInMilliliters: volumeInMilliliters,
+                ),
+              );
+              if (context.mounted) {
+                Navigator.of(context).pop();
+              }
+            },
           ),
         );
       },

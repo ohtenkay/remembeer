@@ -11,14 +11,9 @@ class CustomDrinkTypesPage extends StatelessWidget {
     return PageTemplate(
       title: Text('Custom Drink Types'),
       floatingActionButton: FloatingActionButton(
-        onPressed: () =>
-            Navigator.of(
-              context,
-            ).push(
-              MaterialPageRoute<void>(
-                builder: (context) => AddDrinkTypePage(),
-              ),
-            ),
+        onPressed: () => Navigator.of(context).push(
+          MaterialPageRoute<void>(builder: (context) => AddDrinkTypePage()),
+        ),
         child: Icon(Icons.add),
       ),
       child: CustomDrinkTypeList(),

@@ -43,18 +43,16 @@ class FriendRequestController
           ),
         )
         .snapshots()
-        .map(
-          (snapshot) {
-            if (snapshot.docs.length > 1) {
-              throw StateError(
-                'Found ${snapshot.docs.length} pending friend requests between $currentUserId and $otherUserId. Expected at most 1.',
-              );
-            }
-            if (snapshot.docs.isEmpty) {
-              return null;
-            }
-            return snapshot.docs.first.data();
-          },
-        );
+        .map((snapshot) {
+          if (snapshot.docs.length > 1) {
+            throw StateError(
+              'Found ${snapshot.docs.length} pending friend requests between $currentUserId and $otherUserId. Expected at most 1.',
+            );
+          }
+          if (snapshot.docs.isEmpty) {
+            return null;
+          }
+          return snapshot.docs.first.data();
+        });
   }
 }

@@ -36,9 +36,7 @@ class UserController {
 
     final data = doc.data();
     if (data == null) {
-      throw StateError(
-        'User not found for user $userId',
-      );
+      throw StateError('User not found for user $userId');
     }
 
     return data;
@@ -48,9 +46,7 @@ class UserController {
       _userCollection.doc(userId).snapshots().map((docSnapshot) {
         final data = docSnapshot.data();
         if (data == null) {
-          throw StateError(
-            'User not found for user $userId',
-          );
+          throw StateError('User not found for user $userId');
         }
         return data;
       });

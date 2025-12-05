@@ -33,10 +33,7 @@ class SettingsPage extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(4.0),
         child: ElevatedButton.icon(
-          icon: const Icon(
-            Icons.logout,
-            size: 20,
-          ),
+          icon: const Icon(Icons.logout, size: 20),
           style: ElevatedButton.styleFrom(
             backgroundColor: Theme.of(context).colorScheme.error,
             foregroundColor: Theme.of(context).colorScheme.onError,
@@ -60,10 +57,7 @@ class SettingsPage extends StatelessWidget {
       padding: const EdgeInsets.all(4.0),
       child: Text(
         text,
-        style: TextStyle(
-          fontSize: 24,
-          fontWeight: FontWeight.bold,
-        ),
+        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
       ),
     );
   }
@@ -76,11 +70,9 @@ class SettingsPage extends StatelessWidget {
     return ListTile(
       title: Text(title),
       trailing: const Icon(Icons.chevron_right),
-      onTap: () => Navigator.of(context).push(
-        MaterialPageRoute<void>(
-          builder: (_) => destinationPage,
-        ),
-      ),
+      onTap: () => Navigator.of(
+        context,
+      ).push(MaterialPageRoute<void>(builder: (_) => destinationPage)),
     );
   }
 
@@ -123,14 +115,9 @@ class SettingsPage extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10.0),
-        border: Border.all(
-          color: Colors.grey,
-          width: 1.0,
-        ),
+        border: Border.all(color: Colors.grey, width: 1.0),
       ),
-      child: Column(
-        children: children,
-      ),
+      child: Column(children: children),
     );
   }
 }

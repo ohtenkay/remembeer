@@ -70,9 +70,7 @@ class UserService {
       return;
     }
 
-    final updatedUser = currentUser.copyWith(
-      username: newUsername,
-    );
+    final updatedUser = currentUser.copyWith(username: newUsername);
 
     await userController.createOrUpdateUser(updatedUser);
   }
@@ -85,9 +83,7 @@ class UserService {
 
   Future<void> revokeFriendRequest(String otherUserId) async {
     final request = await friendRequestController
-        .getRequestBetween(
-          otherUserId,
-        )
+        .getRequestBetween(otherUserId)
         .first;
 
     if (request == null) {
@@ -101,9 +97,7 @@ class UserService {
 
   Future<void> acceptFriendRequest(String otherUserId) async {
     final request = await friendRequestController
-        .getRequestBetween(
-          otherUserId,
-        )
+        .getRequestBetween(otherUserId)
         .first;
     if (request == null) {
       throw StateError(

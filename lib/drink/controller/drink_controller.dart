@@ -5,10 +5,7 @@ import 'package:remembeer/drink/model/drink_create.dart';
 
 class DrinkController extends Controller<Drink, DrinkCreate> {
   DrinkController({required super.authService})
-    : super(
-        collectionPath: 'drinks',
-        fromJson: Drink.fromJson,
-      );
+    : super(collectionPath: 'drinks', fromJson: Drink.fromJson);
 
   Stream<List<Drink>> drinksStreamFor(String userId) {
     return readCollection

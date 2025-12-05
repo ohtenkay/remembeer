@@ -170,9 +170,7 @@ class _DrinkFormState extends State<DrinkForm> {
       buttons.removeLast();
     }
 
-    return Row(
-      children: buttons,
-    );
+    return Row(children: buttons);
   }
 
   Widget _buildConsumedAtInput() {
@@ -202,9 +200,7 @@ class _DrinkFormState extends State<DrinkForm> {
           onPressed: () async {
             await _submitForm();
           },
-          style: ElevatedButton.styleFrom(
-            padding: const EdgeInsets.all(30.0),
-          ),
+          style: ElevatedButton.styleFrom(padding: const EdgeInsets.all(30.0)),
           child: const Text('Submit'),
         ),
       ],
@@ -214,11 +210,7 @@ class _DrinkFormState extends State<DrinkForm> {
   Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
       final volume = int.parse(_volumeController.text);
-      await widget.onSubmit(
-        _selectedDrinkType,
-        _selectedConsumedAt,
-        volume,
-      );
+      await widget.onSubmit(_selectedDrinkType, _selectedConsumedAt, volume);
     }
   }
 }

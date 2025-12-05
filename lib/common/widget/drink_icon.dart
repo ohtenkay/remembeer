@@ -26,10 +26,7 @@ class DrinkIcon extends StatelessWidget {
       height: size,
       child: SvgPicture.asset(
         iconPath,
-        colorFilter: ColorFilter.mode(
-          color,
-          BlendMode.srcIn,
-        ),
+        colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
       ),
     );
   }

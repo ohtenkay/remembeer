@@ -25,11 +25,7 @@ class StreakIndicator extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(
-          Icons.local_fire_department,
-          color: color,
-          size: 32,
-        ),
+        Icon(Icons.local_fire_department, color: color, size: 32),
         const SizedBox(width: 8),
         Text(
           '${userStats.streakDays}',

@@ -46,10 +46,7 @@ class _RegisterPageState extends State<RegisterPage> {
             obscureText: true,
           ),
           const SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: _register,
-            child: const Text('Register'),
-          ),
+          ElevatedButton(onPressed: _register, child: const Text('Register')),
           if (_errorMessage.isNotEmpty)
             Padding(
               padding: const EdgeInsets.only(top: 12.0),

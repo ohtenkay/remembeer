@@ -19,9 +19,8 @@ class DrinkTypePicker extends StatelessWidget {
       isScrollControlled: true,
       useSafeArea: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => DrinkTypePickerSheet(
-        selectedDrinkType: selectedDrinkType,
-      ),
+      builder: (context) =>
+          DrinkTypePickerSheet(selectedDrinkType: selectedDrinkType),
     ).then((selectedDrink) {
       if (selectedDrink != null) {
         onChanged(selectedDrink);

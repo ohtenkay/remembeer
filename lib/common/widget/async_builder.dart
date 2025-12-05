@@ -47,9 +47,6 @@ class AsyncBuilder<T> extends StatelessWidget {
       return StreamBuilder<T>(stream: stream, builder: _handleSnapshot);
     }
 
-    return FutureBuilder<T>(
-      future: future,
-      builder: _handleSnapshot,
-    );
+    return FutureBuilder<T>(future: future, builder: _handleSnapshot);
   }
 }

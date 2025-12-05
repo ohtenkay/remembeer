@@ -55,9 +55,7 @@ class _SearchUserPageState extends State<SearchUserPage> {
             ),
           ),
           const SizedBox(height: 16),
-          Expanded(
-            child: _buildSearchResults(),
-          ),
+          Expanded(child: _buildSearchResults()),
         ],
       ),
     );

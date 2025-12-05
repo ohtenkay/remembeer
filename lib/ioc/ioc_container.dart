@@ -60,9 +60,7 @@ class IoCContainer {
       ),
     );
     get.registerSingleton(
-      UserStatsService(
-        drinkController: get<DrinkController>(),
-      ),
+      UserStatsService(drinkController: get<DrinkController>()),
     );
   }
 }

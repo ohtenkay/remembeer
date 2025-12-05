@@ -5,10 +5,7 @@ import 'package:remembeer/user/model/user_model.dart';
 class UserCard extends StatelessWidget {
   final UserModel user;
 
-  const UserCard({
-    super.key,
-    required this.user,
-  });
+  const UserCard({super.key, required this.user});
 
   @override
   Widget build(BuildContext context) {

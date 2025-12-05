@@ -8,9 +8,7 @@ const _BEER_VOLUME_ML = 500;
 class UserStatsService {
   final DrinkController drinkController;
 
-  UserStatsService({
-    required this.drinkController,
-  });
+  UserStatsService({required this.drinkController});
 
   Stream<UserStats> _mapDrinksToStats(Stream<List<Drink>> drinksStream) {
     return drinksStream.map((drinks) {

@@ -20,23 +20,18 @@ class UpdateDrinkPage extends StatelessWidget {
         initialDrinkType: drinkToUpdate.drinkType,
         initialConsumedAt: drinkToUpdate.consumedAt,
         initialVolume: drinkToUpdate.volumeInMilliliters,
-        onSubmit:
-            (
-              drinkType,
-              consumedAt,
-              volumeInMilliliters,
-            ) async {
-              await _drinkController.updateSingle(
-                drinkToUpdate.copyWith(
-                  consumedAt: consumedAt,
-                  drinkType: drinkType,
-                  volumeInMilliliters: volumeInMilliliters,
-                ),
-              );
-              if (context.mounted) {
-                Navigator.of(context).pop();
-              }
-            },
+        onSubmit: (drinkType, consumedAt, volumeInMilliliters) async {
+          await _drinkController.updateSingle(
+            drinkToUpdate.copyWith(
+              consumedAt: consumedAt,
+              drinkType: drinkType,
+              volumeInMilliliters: volumeInMilliliters,
+            ),
+          );
+          if (context.mounted) {
+            Navigator.of(context).pop();
+          }
+        },
       ),
     );
   }

@@ -201,10 +201,7 @@ class ProfilePage extends StatelessWidget {
   Widget _buildUsernameLabel(UserModel user) {
     return Text(
       user.username,
-      style: const TextStyle(
-        fontSize: 28,
-        fontWeight: FontWeight.w800,
-      ),
+      style: const TextStyle(fontSize: 28, fontWeight: FontWeight.w800),
     );
   }
 
@@ -225,11 +222,7 @@ class ProfilePage extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(
-                  icon,
-                  color: color,
-                  size: 32,
-                ),
+                Icon(icon, color: color, size: 32),
                 const SizedBox(height: 8),
                 Text(
                   value,
@@ -298,18 +291,10 @@ class ProfilePage extends StatelessWidget {
         children: [
           icon,
           const SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              label,
-              style: const TextStyle(fontSize: 16),
-            ),
-          ),
+          Expanded(child: Text(label, style: const TextStyle(fontSize: 16))),
           Text(
             value,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w700,
-            ),
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
           ),
         ],
       ),
@@ -326,27 +311,18 @@ class ProfilePage extends StatelessWidget {
       children: [
         Text(
           title,
-          style: const TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w700,
-          ),
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
         ),
         const Divider(color: Colors.black26, height: 20, thickness: 1),
         _buildStatTile(
           label: 'Beers Consumed',
           value: beersConsumed.toStringAsFixed(1),
-          icon: const DrinkIcon(
-            category: DrinkCategory.Beer,
-            size: _ICON_SIZE,
-          ),
+          icon: const DrinkIcon(category: DrinkCategory.Beer, size: _ICON_SIZE),
         ),
         _buildStatTile(
           label: 'Alcohol Consumed (ml)',
           value: alcoholConsumed.toStringAsFixed(0),
-          icon: const DrinkIcon(
-            category: DrinkCategory.Wine,
-            size: _ICON_SIZE,
-          ),
+          icon: const DrinkIcon(category: DrinkCategory.Wine, size: _ICON_SIZE),
         ),
       ],
     );
@@ -358,10 +334,7 @@ class ProfilePage extends StatelessWidget {
       children: [
         const Text(
           'Consumption Stats',
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 16),
         Card(
