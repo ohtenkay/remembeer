@@ -24,5 +24,4 @@ Future<void> seedDatabase() async {
   }
 
   await batch.commit();
-  print('[Seeder] Successfully seeded ${drinkTypesJson.length} drink types.');
 }
