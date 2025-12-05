@@ -113,11 +113,9 @@ class UserService {
 
     final batch = friendRequestController.createBatch();
 
-    userController.createOrUpdateInBatch(
-      user: updatedCurrentUser,
-      batch: batch,
-    );
-    userController.createOrUpdateInBatch(user: updatedOtherUser, batch: batch);
+    userController
+      ..createOrUpdateInBatch(user: updatedCurrentUser, batch: batch)
+      ..createOrUpdateInBatch(user: updatedOtherUser, batch: batch);
     friendRequestController.deleteSingleInBatch(entity: request, batch: batch);
 
     await batch.commit();
@@ -136,11 +134,9 @@ class UserService {
 
     final batch = userController.createBatch();
 
-    userController.createOrUpdateInBatch(
-      user: updatedCurrentUser,
-      batch: batch,
-    );
-    userController.createOrUpdateInBatch(user: updatedOtherUser, batch: batch);
+    userController
+      ..createOrUpdateInBatch(user: updatedCurrentUser, batch: batch)
+      ..createOrUpdateInBatch(user: updatedOtherUser, batch: batch);
 
     await batch.commit();
   }

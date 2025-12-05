@@ -21,10 +21,11 @@ class DrinkService {
       drinkController.userRelatedEntitiesStream,
       dateService.selectedDateStream,
       (drinks, selectedDate) {
-        final filtered = drinks
-            .where((drink) => _isSameDay(drink.consumedAt, selectedDate))
-            .toList();
-        filtered.sort((a, b) => b.consumedAt.compareTo(a.consumedAt));
+        final filtered =
+            drinks
+                .where((drink) => _isSameDay(drink.consumedAt, selectedDate))
+                .toList()
+              ..sort((a, b) => b.consumedAt.compareTo(a.consumedAt));
         return filtered;
       },
     );

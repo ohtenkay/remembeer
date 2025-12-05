@@ -162,8 +162,9 @@ class _DrinkFormState extends State<DrinkForm> {
     final buttons = <Widget>[];
     // TODO(metju-ac): improve this logic when doing UI, consider Wrap component
     volumes.forEach((name, volume) {
-      buttons.add(_buildVolumeButton(name: name, volume: volume));
-      buttons.add(const SizedBox(width: 8));
+      buttons
+        ..add(_buildVolumeButton(name: name, volume: volume))
+        ..add(const SizedBox(width: 8));
     });
 
     if (buttons.isNotEmpty) {
