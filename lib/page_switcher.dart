@@ -27,7 +27,7 @@ class _PageSwitcherState extends State<PageSwitcher> {
 
   final _drinkService = get<DrinkService>();
 
-  static final List<Widget> _pages = <Widget>[
+  static final _pages = <Widget>[
     ProfilePage(),
     const LeaderboardsPage(),
     const DrinkPage(),
@@ -94,18 +94,18 @@ class _PageSwitcherState extends State<PageSwitcher> {
       showUnselectedLabels: false,
       onTap: _onItemTapped,
       items: [
-        BottomNavigationBarItem(
+        const BottomNavigationBarItem(
           icon: Icon(Icons.person),
           activeIcon: Icon(Icons.person, size: _activeIconSize),
           label: 'Profile',
         ),
-        BottomNavigationBarItem(
+        const BottomNavigationBarItem(
           icon: Icon(Icons.emoji_events),
           activeIcon: Icon(Icons.emoji_events, size: _activeIconSize),
           label: 'Leaderboards',
         ),
         BottomNavigationBarItem(
-          icon: DrinkIcon(
+          icon: const DrinkIcon(
             category: DrinkCategory.Beer,
             color: Colors.grey,
             size: 28,
@@ -117,12 +117,12 @@ class _PageSwitcherState extends State<PageSwitcher> {
           ),
           label: 'Drink',
         ),
-        BottomNavigationBarItem(
+        const BottomNavigationBarItem(
           icon: Icon(Icons.group),
           activeIcon: Icon(Icons.group, size: _activeIconSize),
           label: 'Activity',
         ),
-        BottomNavigationBarItem(
+        const BottomNavigationBarItem(
           icon: Icon(Icons.settings),
           activeIcon: Icon(Icons.settings, size: _activeIconSize),
           label: 'Settings',

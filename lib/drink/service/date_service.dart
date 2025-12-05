@@ -1,8 +1,7 @@
 import 'package:rxdart/rxdart.dart';
 
 class DateService {
-  final BehaviorSubject<DateTime> _selectedDateSubject =
-      BehaviorSubject<DateTime>.seeded(DateTime.now());
+  final _selectedDateSubject = BehaviorSubject<DateTime>.seeded(DateTime.now());
 
   Stream<DateTime> get selectedDateStream => _selectedDateSubject.stream;
 

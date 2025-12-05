@@ -29,7 +29,6 @@ class AsyncBuilder<T> extends StatelessWidget {
 
   Widget _handleSnapshot(BuildContext context, AsyncSnapshot<T> snapshot) {
     if (snapshot.hasError) {
-      // ignore: null_check_on_nullable_type_parameter
       return errorBuilder(context, snapshot.error!);
     }
 

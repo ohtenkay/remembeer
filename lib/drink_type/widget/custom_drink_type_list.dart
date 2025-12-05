@@ -15,7 +15,7 @@ class CustomDrinkTypeList extends StatelessWidget {
       stream: _drinkTypeController.userRelatedEntitiesStream,
       builder: (builder, customDrinkTypes) {
         return ListView.separated(
-          separatorBuilder: (_, _) => Divider(),
+          separatorBuilder: (_, _) => const Divider(),
           itemCount: customDrinkTypes.length,
           itemBuilder: (context, index) {
             final drinkType = customDrinkTypes[index];

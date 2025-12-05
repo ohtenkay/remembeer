@@ -9,12 +9,12 @@ class CustomDrinkTypesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PageTemplate(
-      title: Text('Custom Drink Types'),
+      title: const Text('Custom Drink Types'),
       floatingActionButton: FloatingActionButton(
         onPressed: () => Navigator.of(context).push(
           MaterialPageRoute<void>(builder: (context) => AddDrinkTypePage()),
         ),
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
       child: CustomDrinkTypeList(),
     );

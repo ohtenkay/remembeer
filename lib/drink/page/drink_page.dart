@@ -20,7 +20,10 @@ class DrinkPage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           StreakIndicator(),
-          Text('Create session placeholder', style: TextStyle(fontSize: 12)),
+          const Text(
+            'Create session placeholder',
+            style: TextStyle(fontSize: 12),
+          ),
         ],
       ),
       padding: EdgeInsets.zero,

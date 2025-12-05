@@ -16,7 +16,7 @@ class _LoginPageState extends State<LoginPage> {
   final AuthService _authService = get<AuthService>();
   late final TextEditingController _emailController;
   late final TextEditingController _passwordController;
-  String _errorMessage = '';
+  var _errorMessage = '';
 
   @override
   void initState() {
@@ -62,7 +62,7 @@ class _LoginPageState extends State<LoginPage> {
                 builder: (context) => const RegisterPage(),
               ),
             ),
-            child: const Text('Don\'t have an account? Register'),
+            child: const Text("Don't have an account? Register"),
           ),
         ],
       ),
@@ -96,7 +96,7 @@ class _LoginPageState extends State<LoginPage> {
   Future<void> _showPasswordResetDialog(BuildContext context) async {
     return showDialog<void>(
       context: context,
-      builder: (BuildContext context) {
+      builder: (context) {
         return AlertDialog(
           title: const Text('Reset Password'),
           content: TextField(

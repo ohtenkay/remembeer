@@ -19,7 +19,7 @@ class _DrinkTypePickerSheetState extends State<DrinkTypePickerSheet> {
   final _drinkTypeController = get<DrinkTypeController>();
 
   final _searchController = TextEditingController();
-  String _searchQuery = '';
+  var _searchQuery = '';
   Set<DrinkCategory> _selectedCategories = {};
 
   @override
@@ -256,7 +256,7 @@ class _DrinkTypePickerSheetState extends State<DrinkTypePickerSheet> {
         }
 
         final sortedCategories = DrinkCategory.values
-            .where((category) => groupedDrinks.containsKey(category))
+            .where(groupedDrinks.containsKey)
             .toList();
 
         return ListView.builder(
@@ -303,7 +303,7 @@ class _DrinkTypePickerSheetState extends State<DrinkTypePickerSheet> {
             ],
           ),
         ),
-        ...drinks.map((drink) => _buildDrinkTile(drink)),
+        ...drinks.map(_buildDrinkTile),
       ],
     );
   }

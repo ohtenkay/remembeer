@@ -57,7 +57,7 @@ class SettingsPage extends StatelessWidget {
       padding: const EdgeInsets.all(4.0),
       child: Text(
         text,
-        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
       ),
     );
   }
@@ -83,7 +83,7 @@ class SettingsPage extends StatelessWidget {
         _buildSettingsCard(
           context: context,
           title: 'Custom drinks',
-          destinationPage: CustomDrinkTypesPage(),
+          destinationPage: const CustomDrinkTypesPage(),
         ),
         const Divider(height: 1),
         _buildSettingsCard(
@@ -102,7 +102,7 @@ class SettingsPage extends StatelessWidget {
         _buildSettingsCard(
           context: context,
           title: 'Change username',
-          destinationPage: UserNamePage(),
+          destinationPage: const UserNamePage(),
         ),
       ],
     );
@@ -115,7 +115,7 @@ class SettingsPage extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10.0),
-        border: Border.all(color: Colors.grey, width: 1.0),
+        border: Border.all(color: Colors.grey),
       ),
       child: Column(children: children),
     );

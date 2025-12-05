@@ -178,10 +178,10 @@ class _DrinkFormState extends State<DrinkForm> {
       controller: _consumedAtController,
       readOnly: true,
       onTap: _selectConsumedAt,
-      decoration: InputDecoration(
+      decoration: const InputDecoration(
         labelText: 'Consumed at',
         border: OutlineInputBorder(),
-        suffixIcon: const Icon(Icons.calendar_today),
+        suffixIcon: Icon(Icons.calendar_today),
       ),
       validator: (value) {
         if (value == null || value.isEmpty) {

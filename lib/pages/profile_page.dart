@@ -40,10 +40,7 @@ class ProfilePage extends StatelessWidget {
     return PageTemplate(
       title: isCurrentUser ? null : const Text('Profile'),
       child: AsyncBuilder(
-        stream: Rx.combineLatest2(userStatsStream, userStream, (
-          UserStats stats,
-          UserModel user,
-        ) {
+        stream: Rx.combineLatest2(userStatsStream, userStream, (stats, user) {
           return (stats: stats, user: user);
         }),
         builder: (context, data) {
@@ -167,22 +164,18 @@ class ProfilePage extends StatelessWidget {
             onPressed = () => _userService.removeFriend(user.id);
             icon = Icons.person_remove;
             label = 'Remove friend';
-            break;
           case FriendshipStatus.RequestSent:
             onPressed = () => _userService.revokeFriendRequest(user.id);
             icon = Icons.cancel_schedule_send;
             label = 'Revoke sent request';
-            break;
           case FriendshipStatus.RequestReceived:
             onPressed = () => _userService.acceptFriendRequest(user.id);
             icon = Icons.check_circle;
             label = 'Accept request';
-            break;
           case FriendshipStatus.NotFriends:
             onPressed = () => _userService.sendFriendRequest(user.id);
             icon = Icons.person_add;
             label = 'Add as friend';
-            break;
         }
 
         return ElevatedButton.icon(
