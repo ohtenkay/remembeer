@@ -18,6 +18,7 @@ class _CreateLeaderboardPageState extends State<CreateLeaderboardPage> {
 
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
+  var _isSubmitting = false;
 
   @override
   void dispose() {
@@ -67,7 +68,7 @@ class _CreateLeaderboardPageState extends State<CreateLeaderboardPage> {
 
   Widget _buildCreateButton() {
     return ElevatedButton(
-      onPressed: _submitForm,
+      onPressed: _isSubmitting ? null : _submitForm,
       style: ElevatedButton.styleFrom(padding: const EdgeInsets.all(16.0)),
       child: const Text(
         'Create Leaderboard',
@@ -78,8 +79,11 @@ class _CreateLeaderboardPageState extends State<CreateLeaderboardPage> {
 
   Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
+      setState(() => _isSubmitting = true);
+
       final name = _nameController.text.trim();
       await _leaderboardService.createLeaderboard(name);
+
       if (mounted) {
         Navigator.of(context).pop();
       }
