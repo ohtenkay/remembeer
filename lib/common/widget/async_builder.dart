@@ -32,12 +32,12 @@ class AsyncBuilder<T> extends StatelessWidget {
       return errorBuilder(context, snapshot.error!);
     }
 
-    if (!snapshot.hasData) {
+    final data = snapshot.data;
+    if (data == null) {
       return waitingBuilder(context);
     }
 
-    // ignore: null_check_on_nullable_type_parameter
-    return builder(context, snapshot.data!);
+    return builder(context, data);
   }
 
   @override
