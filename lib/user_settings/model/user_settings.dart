@@ -21,10 +21,7 @@ class UserSettings {
 
   Map<String, dynamic> toJson() => _$UserSettingsToJson(this);
 
-  UserSettings copyWith({
-    DrinkType? defaultDrinkType,
-    int? defaultDrinkSize,
-  }) {
+  UserSettings copyWith({DrinkType? defaultDrinkType, int? defaultDrinkSize}) {
     return UserSettings(
       id: id,
       defaultDrinkType: defaultDrinkType ?? this.defaultDrinkType,

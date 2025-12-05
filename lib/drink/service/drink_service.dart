@@ -20,11 +20,12 @@ class DrinkService {
     return Rx.combineLatest2(
       drinkController.userRelatedEntitiesStream,
       dateService.selectedDateStream,
-      (List<Drink> drinks, DateTime selectedDate) {
-        final filtered = drinks
-            .where((drink) => _isSameDay(drink.consumedAt, selectedDate))
-            .toList();
-        filtered.sort((a, b) => b.consumedAt.compareTo(a.consumedAt));
+      (drinks, selectedDate) {
+        final filtered =
+            drinks
+                .where((drink) => _isSameDay(drink.consumedAt, selectedDate))
+                .toList()
+              ..sort((a, b) => b.consumedAt.compareTo(a.consumedAt));
         return filtered;
       },
     );

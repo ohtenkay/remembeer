@@ -4,7 +4,7 @@ import 'package:remembeer/drink_type/model/drink_category.dart';
 import 'package:remembeer/drink_type/model/drink_type.dart';
 import 'package:remembeer/drink_type/widget/drink_type_picker.dart';
 
-const _SPACING = SizedBox(height: 16);
+const _spacing = SizedBox(height: 16);
 
 // TODO(metju-ac): add location
 class DrinkForm extends StatefulWidget {
@@ -62,11 +62,11 @@ class _DrinkFormState extends State<DrinkForm> {
             child: ListView(
               children: [
                 _buildDrinkTypeDropdown(),
-                _SPACING,
+                _spacing,
                 _buildVolumeInput(),
                 const SizedBox(height: 8),
                 _buildPredefinedVolumesRow(),
-                _SPACING,
+                _spacing,
                 _buildConsumedAtInput(),
               ],
             ),
@@ -162,17 +162,16 @@ class _DrinkFormState extends State<DrinkForm> {
     final buttons = <Widget>[];
     // TODO(metju-ac): improve this logic when doing UI, consider Wrap component
     volumes.forEach((name, volume) {
-      buttons.add(_buildVolumeButton(name: name, volume: volume));
-      buttons.add(const SizedBox(width: 8));
+      buttons
+        ..add(_buildVolumeButton(name: name, volume: volume))
+        ..add(const SizedBox(width: 8));
     });
 
     if (buttons.isNotEmpty) {
       buttons.removeLast();
     }
 
-    return Row(
-      children: buttons,
-    );
+    return Row(children: buttons);
   }
 
   Widget _buildConsumedAtInput() {
@@ -180,10 +179,10 @@ class _DrinkFormState extends State<DrinkForm> {
       controller: _consumedAtController,
       readOnly: true,
       onTap: _selectConsumedAt,
-      decoration: InputDecoration(
+      decoration: const InputDecoration(
         labelText: 'Consumed at',
         border: OutlineInputBorder(),
-        suffixIcon: const Icon(Icons.calendar_today),
+        suffixIcon: Icon(Icons.calendar_today),
       ),
       validator: (value) {
         if (value == null || value.isEmpty) {
@@ -202,9 +201,7 @@ class _DrinkFormState extends State<DrinkForm> {
           onPressed: () async {
             await _submitForm();
           },
-          style: ElevatedButton.styleFrom(
-            padding: const EdgeInsets.all(30.0),
-          ),
+          style: ElevatedButton.styleFrom(padding: const EdgeInsets.all(30.0)),
           child: const Text('Submit'),
         ),
       ],
@@ -214,11 +211,7 @@ class _DrinkFormState extends State<DrinkForm> {
   Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
       final volume = int.parse(_volumeController.text);
-      await widget.onSubmit(
-        _selectedDrinkType,
-        _selectedConsumedAt,
-        volume,
-      );
+      await widget.onSubmit(_selectedDrinkType, _selectedConsumedAt, volume);
     }
   }
 }

@@ -20,7 +20,7 @@ class DrinkPage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           StreakIndicator(),
-          Text(
+          const Text(
             'Create session placeholder',
             style: TextStyle(fontSize: 12),
           ),
@@ -36,23 +36,13 @@ class DrinkPage extends StatelessWidget {
           }
         },
         child: FloatingActionButton(
-          onPressed: () =>
-              Navigator.of(
-                context,
-              ).push(
-                MaterialPageRoute<void>(
-                  builder: (context) => AddDrinkPage(),
-                ),
-              ),
+          onPressed: () => Navigator.of(
+            context,
+          ).push(MaterialPageRoute<void>(builder: (context) => AddDrinkPage())),
           child: const Icon(Icons.add),
         ),
       ),
-      child: Column(
-        children: [
-          DateSelector(),
-          DrinkList(),
-        ],
-      ),
+      child: Column(children: [DateSelector(), DrinkList()]),
     );
   }
 }

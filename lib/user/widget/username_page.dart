@@ -44,11 +44,7 @@ class _UserNamePageState extends State<UserNamePage> {
           Expanded(
             child: Form(
               key: _formKey,
-              child: Column(
-                children: [
-                  _buildUsernameInput(),
-                ],
-              ),
+              child: Column(children: [_buildUsernameInput()]),
             ),
           ),
           _buildSaveButton(),
@@ -62,9 +58,7 @@ class _UserNamePageState extends State<UserNamePage> {
       onPressed: () async {
         await _submitForm();
       },
-      style: ElevatedButton.styleFrom(
-        padding: const EdgeInsets.all(16.0),
-      ),
+      style: ElevatedButton.styleFrom(padding: const EdgeInsets.all(16.0)),
       child: const Text(
         'Save Changes',
         style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),

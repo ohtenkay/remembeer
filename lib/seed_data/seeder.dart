@@ -14,7 +14,7 @@ Future<void> seedDatabase() async {
   final content = await rootBundle.loadString(
     'assets/seed_data/drink_types.json',
   );
-  final List<dynamic> drinkTypesJson = jsonDecode(content);
+  final drinkTypesJson = jsonDecode(content) as List<dynamic>;
 
   for (final drinkTypeJson in drinkTypesJson) {
     final drinkType = DrinkType.fromJson(drinkTypeJson as Map<String, dynamic>);
@@ -24,5 +24,4 @@ Future<void> seedDatabase() async {
   }
 
   await batch.commit();
-  print('[Seeder] Successfully seeded ${drinkTypesJson.length} drink types.');
 }

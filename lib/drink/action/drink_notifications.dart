@@ -41,27 +41,15 @@ class _AnimatedTopSnackBarState extends State<_AnimatedTopSnackBar>
       vsync: this,
     );
 
-    _slideAnimation =
-        Tween<Offset>(
-          begin: const Offset(0, -1),
-          end: Offset.zero,
-        ).animate(
-          CurvedAnimation(
-            parent: _controller,
-            curve: Curves.easeOut,
-          ),
-        );
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0, -1),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
 
-    _fadeAnimation =
-        Tween<double>(
-          begin: 0,
-          end: 1,
-        ).animate(
-          CurvedAnimation(
-            parent: _controller,
-            curve: Curves.easeOut,
-          ),
-        );
+    _fadeAnimation = Tween<double>(
+      begin: 0,
+      end: 1,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
 
     _controller.forward();
 

@@ -18,51 +18,52 @@ class IoCContainer {
   IoCContainer._();
 
   static void initialize() {
-    get.registerSingleton(FirebaseAuth.instance);
-    get.registerSingleton(AuthService(firebaseAuth: get<FirebaseAuth>()));
-    get.registerSingleton(DateService());
+    get
+      ..registerSingleton(FirebaseAuth.instance)
+      ..registerSingleton(AuthService(firebaseAuth: get<FirebaseAuth>()))
+      ..registerSingleton(DateService());
 
     _registerControllers();
     _registerServices();
   }
 
   static void _registerControllers() {
-    get.registerSingleton(DrinkController(authService: get<AuthService>()));
-    get.registerSingleton(DrinkTypeController(authService: get<AuthService>()));
-    get.registerSingleton(
-      FriendRequestController(authService: get<AuthService>()),
-    );
-    get.registerSingleton(UserController(authService: get<AuthService>()));
-    get.registerSingleton(
-      UserSettingsController(authService: get<AuthService>()),
-    );
+    get
+      ..registerSingleton(DrinkController(authService: get<AuthService>()))
+      ..registerSingleton(DrinkTypeController(authService: get<AuthService>()))
+      ..registerSingleton(
+        FriendRequestController(authService: get<AuthService>()),
+      )
+      ..registerSingleton(UserController(authService: get<AuthService>()))
+      ..registerSingleton(
+        UserSettingsController(authService: get<AuthService>()),
+      );
   }
 
   static void _registerServices() {
-    get.registerSingleton(
-      DrinkService(
-        drinkController: get<DrinkController>(),
-        userSettingsController: get<UserSettingsController>(),
-        dateService: get<DateService>(),
-      ),
-    );
-    get.registerSingleton(
-      UserService(
-        authService: get<AuthService>(),
-        friendRequestController: get<FriendRequestController>(),
-        userController: get<UserController>(),
-      ),
-    );
-    get.registerSingleton(
-      UserSettingsService(
-        authService: get<AuthService>(),
-        userSettingsController: get<UserSettingsController>(),
-      ),
-    );
-    get.registerSingleton(
-      UserStatsService(
-        drinkController: get<DrinkController>(),
-      ),
-    );
+    get
+      ..registerSingleton(
+        DrinkService(
+          drinkController: get<DrinkController>(),
+          userSettingsController: get<UserSettingsController>(),
+          dateService: get<DateService>(),
+        ),
+      )
+      ..registerSingleton(
+        UserService(
+          authService: get<AuthService>(),
+          friendRequestController: get<FriendRequestController>(),
+          userController: get<UserController>(),
+        ),
+      )
+      ..registerSingleton(
+        UserSettingsService(
+          authService: get<AuthService>(),
+          userSettingsController: get<UserSettingsController>(),
+        ),
+      )
+      ..registerSingleton(
+        UserStatsService(drinkController: get<DrinkController>()),
+      );
   }
 }

@@ -21,9 +21,7 @@ class FriendsListPage extends StatelessWidget {
         stream: _userService.friendsFor(userId),
         builder: (context, friends) {
           if (friends.isEmpty) {
-            return const Center(
-              child: Text('This user has no friends yet.'),
-            );
+            return const Center(child: Text('This user has no friends yet.'));
           }
 
           return ListView.builder(

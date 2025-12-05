@@ -29,16 +29,15 @@ class AsyncBuilder<T> extends StatelessWidget {
 
   Widget _handleSnapshot(BuildContext context, AsyncSnapshot<T> snapshot) {
     if (snapshot.hasError) {
-      // ignore: null_check_on_nullable_type_parameter
       return errorBuilder(context, snapshot.error!);
     }
 
-    if (!snapshot.hasData) {
+    final data = snapshot.data;
+    if (data == null) {
       return waitingBuilder(context);
     }
 
-    // ignore: null_check_on_nullable_type_parameter
-    return builder(context, snapshot.data!);
+    return builder(context, data);
   }
 
   @override
@@ -47,9 +46,6 @@ class AsyncBuilder<T> extends StatelessWidget {
       return StreamBuilder<T>(stream: stream, builder: _handleSnapshot);
     }
 
-    return FutureBuilder<T>(
-      future: future,
-      builder: _handleSnapshot,
-    );
+    return FutureBuilder<T>(future: future, builder: _handleSnapshot);
   }
 }

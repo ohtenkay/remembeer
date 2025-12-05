@@ -3,14 +3,12 @@ import 'package:remembeer/drink/model/drink.dart';
 import 'package:remembeer/drink_type/model/drink_category.dart';
 import 'package:remembeer/user_stats/model/user_stats.dart';
 
-const _BEER_VOLUME_ML = 500;
+const _beerVolumeMl = 500;
 
 class UserStatsService {
   final DrinkController drinkController;
 
-  UserStatsService({
-    required this.drinkController,
-  });
+  UserStatsService({required this.drinkController});
 
   Stream<UserStats> _mapDrinksToStats(Stream<List<Drink>> drinksStream) {
     return drinksStream.map((drinks) {
@@ -44,10 +42,10 @@ class UserStatsService {
 
   double _calculateEquivalentBeers(List<Drink> drinks) {
     return drinks
-        .where((drink) => drink.drinkType.category == DrinkCategory.Beer)
+        .where((drink) => drink.drinkType.category == DrinkCategory.beer)
         .fold<double>(
           0.0,
-          (sum, beer) => sum + (beer.volumeInMilliliters / _BEER_VOLUME_ML),
+          (sum, beer) => sum + (beer.volumeInMilliliters / _beerVolumeMl),
         );
   }
 

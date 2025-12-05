@@ -7,9 +7,7 @@ import 'package:remembeer/ioc/ioc_container.dart';
 import 'package:remembeer/user_settings/service/user_settings_service.dart';
 
 class DefaultDrinkPage extends StatefulWidget {
-  const DefaultDrinkPage({
-    super.key,
-  });
+  const DefaultDrinkPage({super.key});
 
   @override
   State<DefaultDrinkPage> createState() => _DefaultDrinkPageState();
@@ -75,9 +73,7 @@ class _DefaultDrinkPageState extends State<DefaultDrinkPage> {
           onPressed: () async {
             await _saveSettings();
           },
-          style: ElevatedButton.styleFrom(
-            padding: const EdgeInsets.all(30.0),
-          ),
+          style: ElevatedButton.styleFrom(padding: const EdgeInsets.all(30.0)),
           child: const Text('Save'),
         ),
       ],

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:remembeer/drink_type/model/drink_category.dart';
 
-const _SPACING = SizedBox(height: 16);
+const _spacing = SizedBox(height: 16);
 
 class DrinkTypeForm extends StatefulWidget {
   final String initialName;
@@ -60,9 +60,9 @@ class _DrinkTypeFormState extends State<DrinkTypeForm> {
             child: ListView(
               children: [
                 _buildNameInput(),
-                _SPACING,
+                _spacing,
                 _buildAlcoholPercentageInput(),
-                _SPACING,
+                _spacing,
                 _buildDrinkCategoryDropdown(),
               ],
             ),
@@ -119,9 +119,7 @@ class _DrinkTypeFormState extends State<DrinkTypeForm> {
           onPressed: () async {
             await _submitForm(context);
           },
-          style: ElevatedButton.styleFrom(
-            padding: const EdgeInsets.all(30.0),
-          ),
+          style: ElevatedButton.styleFrom(padding: const EdgeInsets.all(30.0)),
           child: const Text('Submit'),
         ),
         if (widget.onDelete != null) ...[
@@ -174,9 +172,7 @@ class _DrinkTypeFormState extends State<DrinkTypeForm> {
   Future<void> _submitForm(BuildContext context) async {
     if (_formKey.currentState!.validate()) {
       final name = _nameController.text;
-      final alcoholPercentage = double.parse(
-        _alcoholPercentageController.text,
-      );
+      final alcoholPercentage = double.parse(_alcoholPercentageController.text);
       final roundedAlcoholPercentage = (alcoholPercentage * 100).round() / 100;
       await widget.onSubmit(
         name,

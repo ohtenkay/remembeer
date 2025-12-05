@@ -6,8 +6,6 @@ class LeaderboardsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const PageTemplate(
-      child: Center(child: Text('Leaderboards Page')),
-    );
+    return const PageTemplate(child: Center(child: Text('Leaderboards Page')));
   }
 }

@@ -22,10 +22,7 @@ class DrinkCard extends StatelessWidget {
         leading: DrinkIcon(category: drink.drinkType.category),
         title: Text(
           drink.drinkType.name,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
-          ),
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
         ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -37,10 +34,7 @@ class DrinkCard extends StatelessWidget {
               DateFormat('dd MMM. yyyy, H:mm').format(drink.consumedAt),
             ),
             const SizedBox(height: 2),
-            _buildInfoRow(
-              Icons.local_drink,
-              '${drink.volumeInMilliliters} ml',
-            ),
+            _buildInfoRow(Icons.local_drink, '${drink.volumeInMilliliters} ml'),
           ],
         ),
         trailing: IconButton(
@@ -90,10 +84,7 @@ class DrinkCard extends StatelessWidget {
       children: [
         Icon(icon, size: 14, color: Colors.grey[700]),
         const SizedBox(width: 4),
-        Text(
-          text,
-          style: TextStyle(color: Colors.grey[700]),
-        ),
+        Text(text, style: TextStyle(color: Colors.grey[700])),
       ],
     );
   }

@@ -16,7 +16,7 @@ class _LoginPageState extends State<LoginPage> {
   final AuthService _authService = get<AuthService>();
   late final TextEditingController _emailController;
   late final TextEditingController _passwordController;
-  String _errorMessage = '';
+  var _errorMessage = '';
 
   @override
   void initState() {
@@ -42,10 +42,7 @@ class _LoginPageState extends State<LoginPage> {
             obscureText: true,
           ),
           const SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: _login,
-            child: const Text('Login'),
-          ),
+          ElevatedButton(onPressed: _login, child: const Text('Login')),
           if (_errorMessage.isNotEmpty)
             Padding(
               padding: const EdgeInsets.only(top: 12.0),
@@ -60,15 +57,12 @@ class _LoginPageState extends State<LoginPage> {
           ),
           const SizedBox(height: 10),
           TextButton(
-            onPressed: () =>
-                Navigator.of(
-                  context,
-                ).push(
-                  MaterialPageRoute<void>(
-                    builder: (context) => const RegisterPage(),
-                  ),
-                ),
-            child: const Text('Don\'t have an account? Register'),
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (context) => const RegisterPage(),
+              ),
+            ),
+            child: const Text("Don't have an account? Register"),
           ),
         ],
       ),
@@ -102,14 +96,12 @@ class _LoginPageState extends State<LoginPage> {
   Future<void> _showPasswordResetDialog(BuildContext context) async {
     return showDialog<void>(
       context: context,
-      builder: (BuildContext context) {
+      builder: (context) {
         return AlertDialog(
           title: const Text('Reset Password'),
           content: TextField(
             controller: _emailController,
-            decoration: const InputDecoration(
-              labelText: 'Email',
-            ),
+            decoration: const InputDecoration(labelText: 'Email'),
             keyboardType: TextInputType.emailAddress,
           ),
           actions: <Widget>[

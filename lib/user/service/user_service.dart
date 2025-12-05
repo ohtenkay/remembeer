@@ -70,9 +70,7 @@ class UserService {
       return;
     }
 
-    final updatedUser = currentUser.copyWith(
-      username: newUsername,
-    );
+    final updatedUser = currentUser.copyWith(username: newUsername);
 
     await userController.createOrUpdateUser(updatedUser);
   }
@@ -85,9 +83,7 @@ class UserService {
 
   Future<void> revokeFriendRequest(String otherUserId) async {
     final request = await friendRequestController
-        .getRequestBetween(
-          otherUserId,
-        )
+        .getRequestBetween(otherUserId)
         .first;
 
     if (request == null) {
@@ -101,9 +97,7 @@ class UserService {
 
   Future<void> acceptFriendRequest(String otherUserId) async {
     final request = await friendRequestController
-        .getRequestBetween(
-          otherUserId,
-        )
+        .getRequestBetween(otherUserId)
         .first;
     if (request == null) {
       throw StateError(
@@ -119,11 +113,9 @@ class UserService {
 
     final batch = friendRequestController.createBatch();
 
-    userController.createOrUpdateInBatch(
-      user: updatedCurrentUser,
-      batch: batch,
-    );
-    userController.createOrUpdateInBatch(user: updatedOtherUser, batch: batch);
+    userController
+      ..createOrUpdateInBatch(user: updatedCurrentUser, batch: batch)
+      ..createOrUpdateInBatch(user: updatedOtherUser, batch: batch);
     friendRequestController.deleteSingleInBatch(entity: request, batch: batch);
 
     await batch.commit();
@@ -142,11 +134,9 @@ class UserService {
 
     final batch = userController.createBatch();
 
-    userController.createOrUpdateInBatch(
-      user: updatedCurrentUser,
-      batch: batch,
-    );
-    userController.createOrUpdateInBatch(user: updatedOtherUser, batch: batch);
+    userController
+      ..createOrUpdateInBatch(user: updatedCurrentUser, batch: batch)
+      ..createOrUpdateInBatch(user: updatedOtherUser, batch: batch);
 
     await batch.commit();
   }
@@ -157,16 +147,16 @@ class UserService {
       friendRequestController.getRequestBetween(otherUserId),
       (currentUser, request) {
         if (currentUser.friends.contains(otherUserId)) {
-          return FriendshipStatus.Friends;
+          return FriendshipStatus.friends;
         }
 
         if (request == null) {
-          return FriendshipStatus.NotFriends;
+          return FriendshipStatus.notFriends;
         }
 
         return (request.userId == currentUser.id)
-            ? FriendshipStatus.RequestSent
-            : FriendshipStatus.RequestReceived;
+            ? FriendshipStatus.requestSent
+            : FriendshipStatus.requestReceived;
       },
     );
   }

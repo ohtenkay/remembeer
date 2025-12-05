@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-const String idField = 'id';
-const String userIdField = 'userId';
-const String createdAtField = 'createdAt';
-const String updatedAtField = 'updatedAt';
-const String deletedAtField = 'deletedAt';
+const idField = 'id';
+const userIdField = 'userId';
+const createdAtField = 'createdAt';
+const updatedAtField = 'updatedAt';
+const deletedAtField = 'deletedAt';
 
 extension JsonFirestoreHelper on Map<String, dynamic> {
   Map<String, dynamic> withId(String id) {

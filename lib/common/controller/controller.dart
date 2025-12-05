@@ -5,7 +5,7 @@ import 'package:remembeer/common/extension/json_firestore_helper.dart';
 import 'package:remembeer/common/model/entity.dart';
 import 'package:remembeer/common/model/value_object.dart';
 
-const String globalUserId = 'global';
+const globalUserId = 'global';
 
 abstract class Controller<T extends Entity, U extends ValueObject> {
   @protected

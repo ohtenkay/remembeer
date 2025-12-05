@@ -16,7 +16,7 @@ import 'package:remembeer/user_stats/model/user_stats.dart';
 import 'package:remembeer/user_stats/service/user_stats_service.dart';
 import 'package:rxdart/rxdart.dart';
 
-const _ICON_SIZE = 30.0;
+const _iconSize = 30.0;
 
 class ProfilePage extends StatelessWidget {
   final String? userId;
@@ -40,10 +40,7 @@ class ProfilePage extends StatelessWidget {
     return PageTemplate(
       title: isCurrentUser ? null : const Text('Profile'),
       child: AsyncBuilder(
-        stream: Rx.combineLatest2(userStatsStream, userStream, (
-          UserStats stats,
-          UserModel user,
-        ) {
+        stream: Rx.combineLatest2(userStatsStream, userStream, (stats, user) {
           return (stats: stats, user: user);
         }),
         builder: (context, data) {
@@ -163,26 +160,22 @@ class ProfilePage extends StatelessWidget {
         final String label;
 
         switch (status) {
-          case FriendshipStatus.Friends:
+          case FriendshipStatus.friends:
             onPressed = () => _userService.removeFriend(user.id);
             icon = Icons.person_remove;
             label = 'Remove friend';
-            break;
-          case FriendshipStatus.RequestSent:
+          case FriendshipStatus.requestSent:
             onPressed = () => _userService.revokeFriendRequest(user.id);
             icon = Icons.cancel_schedule_send;
             label = 'Revoke sent request';
-            break;
-          case FriendshipStatus.RequestReceived:
+          case FriendshipStatus.requestReceived:
             onPressed = () => _userService.acceptFriendRequest(user.id);
             icon = Icons.check_circle;
             label = 'Accept request';
-            break;
-          case FriendshipStatus.NotFriends:
+          case FriendshipStatus.notFriends:
             onPressed = () => _userService.sendFriendRequest(user.id);
             icon = Icons.person_add;
             label = 'Add as friend';
-            break;
         }
 
         return ElevatedButton.icon(
@@ -201,10 +194,7 @@ class ProfilePage extends StatelessWidget {
   Widget _buildUsernameLabel(UserModel user) {
     return Text(
       user.username,
-      style: const TextStyle(
-        fontSize: 28,
-        fontWeight: FontWeight.w800,
-      ),
+      style: const TextStyle(fontSize: 28, fontWeight: FontWeight.w800),
     );
   }
 
@@ -225,11 +215,7 @@ class ProfilePage extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(
-                  icon,
-                  color: color,
-                  size: 32,
-                ),
+                Icon(icon, color: color, size: 32),
                 const SizedBox(height: 8),
                 Text(
                   value,
@@ -298,18 +284,10 @@ class ProfilePage extends StatelessWidget {
         children: [
           icon,
           const SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              label,
-              style: const TextStyle(fontSize: 16),
-            ),
-          ),
+          Expanded(child: Text(label, style: const TextStyle(fontSize: 16))),
           Text(
             value,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w700,
-            ),
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
           ),
         ],
       ),
@@ -326,27 +304,18 @@ class ProfilePage extends StatelessWidget {
       children: [
         Text(
           title,
-          style: const TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w700,
-          ),
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
         ),
         const Divider(color: Colors.black26, height: 20, thickness: 1),
         _buildStatTile(
           label: 'Beers Consumed',
           value: beersConsumed.toStringAsFixed(1),
-          icon: const DrinkIcon(
-            category: DrinkCategory.Beer,
-            size: _ICON_SIZE,
-          ),
+          icon: const DrinkIcon(category: DrinkCategory.beer, size: _iconSize),
         ),
         _buildStatTile(
           label: 'Alcohol Consumed (ml)',
           value: alcoholConsumed.toStringAsFixed(0),
-          icon: const DrinkIcon(
-            category: DrinkCategory.Wine,
-            size: _ICON_SIZE,
-          ),
+          icon: const DrinkIcon(category: DrinkCategory.wine, size: _iconSize),
         ),
       ],
     );
@@ -358,10 +327,7 @@ class ProfilePage extends StatelessWidget {
       children: [
         const Text(
           'Consumption Stats',
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 16),
         Card(

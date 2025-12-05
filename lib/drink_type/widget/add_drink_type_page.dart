@@ -18,7 +18,7 @@ class AddDrinkTypePage extends StatelessWidget {
       child: DrinkTypeForm(
         initialName: '',
         initialAlcoholPercentage: 6.9,
-        initialDrinkCategory: DrinkCategory.Beer,
+        initialDrinkCategory: DrinkCategory.beer,
         onSubmit: (name, alcoholPercentage, drinkCategory) async {
           await _drinkTypeController.createSingle(
             DrinkTypeCreate(
