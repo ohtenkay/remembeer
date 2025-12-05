@@ -3,140 +3,140 @@
     "id": "global-beer",
     "userId": "global",
     "name": "Beer",
-    "category": "Beer",
+    "category": "beer",
     "alcoholPercentage": 4.5
   },
   {
     "id": "global-plzinka",
     "userId": "global",
     "name": "Pilsner Urquell",
-    "category": "Beer",
+    "category": "beer",
     "alcoholPercentage": 4.4
   },
   {
     "id": "global-radegast-10",
     "userId": "global",
     "name": "Radegast 10",
-    "category": "Beer",
+    "category": "beer",
     "alcoholPercentage": 4.1
   },
   {
     "id": "global-radegast-12",
     "userId": "global",
     "name": "Radegast 12",
-    "category": "Beer",
+    "category": "beer",
     "alcoholPercentage": 5.1
   },
   {
     "id": "global-starobrno-statl",
     "userId": "global",
     "name": "Starobrno Statl",
-    "category": "Beer",
+    "category": "beer",
     "alcoholPercentage": 5.0
   },
   {
     "id": "global-kozel-11",
     "userId": "global",
     "name": "Kozel 11",
-    "category": "Beer",
+    "category": "beer",
     "alcoholPercentage": 4.6
   },
   {
     "id": "global-svijany-11",
     "userId": "global",
     "name": "Svijany 11",
-    "category": "Beer",
+    "category": "beer",
     "alcoholPercentage": 4.8
   },
   {
     "id": "global-putnik",
     "userId": "global",
     "name": "Putnik",
-    "category": "Beer",
+    "category": "beer",
     "alcoholPercentage": 5.0
   },
   {
     "id": "global-branik-11",
     "userId": "global",
     "name": "Brankar 11",
-    "category": "Beer",
+    "category": "beer",
     "alcoholPercentage": 4.8
   },
   {
     "id": "global-strongbow",
     "userId": "global",
     "name": "Strongbow",
-    "category": "Cider",
+    "category": "cider",
     "alcoholPercentage": 4.5
   },
   {
     "id": "global-skinny-bitch",
     "userId": "global",
     "name": "Skinny Bitch",
-    "category": "Cocktail",
+    "category": "cocktail",
     "alcoholPercentage": 15.0
   },
   {
     "id": "global-mojito",
     "userId": "global",
     "name": "Mojito",
-    "category": "Cocktail",
+    "category": "cocktail",
     "alcoholPercentage": 12.0
   },
   {
     "id": "global-long-island-iced-tea",
     "userId": "global",
     "name": "Long Island Iced Tea",
-    "category": "Cocktail",
+    "category": "cocktail",
     "alcoholPercentage": 22.0
   },
   {
     "id": "global-alpsky-ryzlink",
     "userId": "global",
     "name": "Alpský Ryzlink",
-    "category": "Cocktail",
+    "category": "cocktail",
     "alcoholPercentage": 69.0
   },
   {
     "id": "global-whiskey",
     "userId": "global",
     "name": "Whiskey",
-    "category": "Spirit",
+    "category": "spirit",
     "alcoholPercentage": 40.0
   },
   {
     "id": "global-vodka",
     "userId": "global",
     "name": "Vodka",
-    "category": "Spirit",
+    "category": "spirit",
     "alcoholPercentage": 40.0
   },
   {
     "id": "global-tequila",
     "userId": "global",
     "name": "Tequila",
-    "category": "Spirit",
+    "category": "spirit",
     "alcoholPercentage": 38.0
   },
   {
     "id": "global-slivovice",
     "userId": "global",
     "name": "Slivovice",
-    "category": "Spirit",
+    "category": "spirit",
     "alcoholPercentage": 50.0
   },
   {
     "id": "global-wine",
     "userId": "global",
     "name": "Wine",
-    "category": "Wine",
+    "category": "wine",
     "alcoholPercentage": 12.0
   },
   {
     "id": "global-sklepmistr",
     "userId": "global",
     "name": "Sklepmistr",
-    "category": "Wine",
+    "category": "wine",
     "alcoholPercentage": 11.0
   }
 ]
