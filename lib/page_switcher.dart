@@ -29,7 +29,7 @@ class _PageSwitcherState extends State<PageSwitcher> {
 
   static final _pages = <Widget>[
     ProfilePage(),
-    const LeaderboardsPage(),
+    LeaderboardsPage(),
     const DrinkPage(),
     const ActivityPage(),
     SettingsPage(),
