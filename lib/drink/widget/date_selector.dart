@@ -36,7 +36,7 @@ class DateSelector extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _buildChevron(Direction.Left),
+                _buildChevron(Direction.left),
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -48,7 +48,7 @@ class DateSelector extends StatelessWidget {
                     ),
                   ],
                 ),
-                _buildChevron(Direction.Right),
+                _buildChevron(Direction.right),
               ],
             ),
           ),
@@ -59,8 +59,8 @@ class DateSelector extends StatelessWidget {
 
   IconButton _buildChevron(Direction direction) {
     final (icon, moveFunction) = switch (direction) {
-      Direction.Left => (Icons.chevron_left, _dateService.previousDay),
-      Direction.Right => (Icons.chevron_right, _dateService.nextDay),
+      Direction.left => (Icons.chevron_left, _dateService.previousDay),
+      Direction.right => (Icons.chevron_right, _dateService.nextDay),
     };
 
     return IconButton(

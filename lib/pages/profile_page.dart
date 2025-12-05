@@ -160,19 +160,19 @@ class ProfilePage extends StatelessWidget {
         final String label;
 
         switch (status) {
-          case FriendshipStatus.Friends:
+          case FriendshipStatus.friends:
             onPressed = () => _userService.removeFriend(user.id);
             icon = Icons.person_remove;
             label = 'Remove friend';
-          case FriendshipStatus.RequestSent:
+          case FriendshipStatus.requestSent:
             onPressed = () => _userService.revokeFriendRequest(user.id);
             icon = Icons.cancel_schedule_send;
             label = 'Revoke sent request';
-          case FriendshipStatus.RequestReceived:
+          case FriendshipStatus.requestReceived:
             onPressed = () => _userService.acceptFriendRequest(user.id);
             icon = Icons.check_circle;
             label = 'Accept request';
-          case FriendshipStatus.NotFriends:
+          case FriendshipStatus.notFriends:
             onPressed = () => _userService.sendFriendRequest(user.id);
             icon = Icons.person_add;
             label = 'Add as friend';
@@ -310,12 +310,12 @@ class ProfilePage extends StatelessWidget {
         _buildStatTile(
           label: 'Beers Consumed',
           value: beersConsumed.toStringAsFixed(1),
-          icon: const DrinkIcon(category: DrinkCategory.Beer, size: _ICON_SIZE),
+          icon: const DrinkIcon(category: DrinkCategory.beer, size: _ICON_SIZE),
         ),
         _buildStatTile(
           label: 'Alcohol Consumed (ml)',
           value: alcoholConsumed.toStringAsFixed(0),
-          icon: const DrinkIcon(category: DrinkCategory.Wine, size: _ICON_SIZE),
+          icon: const DrinkIcon(category: DrinkCategory.wine, size: _ICON_SIZE),
         ),
       ],
     );

@@ -106,12 +106,12 @@ class _PageSwitcherState extends State<PageSwitcher> {
         ),
         BottomNavigationBarItem(
           icon: const DrinkIcon(
-            category: DrinkCategory.Beer,
+            category: DrinkCategory.beer,
             color: Colors.grey,
             size: 28,
           ),
           activeIcon: DrinkIcon(
-            category: DrinkCategory.Beer,
+            category: DrinkCategory.beer,
             color: Theme.of(context).colorScheme.primary,
             size: _activeIconSize,
           ),

@@ -151,16 +151,16 @@ class UserService {
       friendRequestController.getRequestBetween(otherUserId),
       (currentUser, request) {
         if (currentUser.friends.contains(otherUserId)) {
-          return FriendshipStatus.Friends;
+          return FriendshipStatus.friends;
         }
 
         if (request == null) {
-          return FriendshipStatus.NotFriends;
+          return FriendshipStatus.notFriends;
         }
 
         return (request.userId == currentUser.id)
-            ? FriendshipStatus.RequestSent
-            : FriendshipStatus.RequestReceived;
+            ? FriendshipStatus.requestSent
+            : FriendshipStatus.requestReceived;
       },
     );
   }

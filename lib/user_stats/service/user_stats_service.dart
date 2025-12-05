@@ -42,7 +42,7 @@ class UserStatsService {
 
   double _calculateEquivalentBeers(List<Drink> drinks) {
     return drinks
-        .where((drink) => drink.drinkType.category == DrinkCategory.Beer)
+        .where((drink) => drink.drinkType.category == DrinkCategory.beer)
         .fold<double>(
           0.0,
           (sum, beer) => sum + (beer.volumeInMilliliters / _BEER_VOLUME_ML),

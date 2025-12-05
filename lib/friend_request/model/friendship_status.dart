@@ -1,1 +1,1 @@
-enum FriendshipStatus { Friends, RequestSent, RequestReceived, NotFriends }
+enum FriendshipStatus { friends, requestSent, requestReceived, notFriends }

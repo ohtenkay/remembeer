@@ -8,7 +8,7 @@ const _DEFAULT_DRINK = DrinkType(
   id: 'global-beer',
   userId: 'global',
   name: 'Beer',
-  category: DrinkCategory.Beer,
+  category: DrinkCategory.beer,
   alcoholPercentage: 4.5,
 );
 const _DEFAULT_DRINK_SIZE = 500;
