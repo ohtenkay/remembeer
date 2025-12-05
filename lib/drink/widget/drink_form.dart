@@ -4,7 +4,7 @@ import 'package:remembeer/drink_type/model/drink_category.dart';
 import 'package:remembeer/drink_type/model/drink_type.dart';
 import 'package:remembeer/drink_type/widget/drink_type_picker.dart';
 
-const _SPACING = SizedBox(height: 16);
+const _spacing = SizedBox(height: 16);
 
 // TODO(metju-ac): add location
 class DrinkForm extends StatefulWidget {
@@ -62,11 +62,11 @@ class _DrinkFormState extends State<DrinkForm> {
             child: ListView(
               children: [
                 _buildDrinkTypeDropdown(),
-                _SPACING,
+                _spacing,
                 _buildVolumeInput(),
                 const SizedBox(height: 8),
                 _buildPredefinedVolumesRow(),
-                _SPACING,
+                _spacing,
                 _buildConsumedAtInput(),
               ],
             ),

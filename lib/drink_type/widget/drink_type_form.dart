@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:remembeer/drink_type/model/drink_category.dart';
 
-const _SPACING = SizedBox(height: 16);
+const _spacing = SizedBox(height: 16);
 
 class DrinkTypeForm extends StatefulWidget {
   final String initialName;
@@ -60,9 +60,9 @@ class _DrinkTypeFormState extends State<DrinkTypeForm> {
             child: ListView(
               children: [
                 _buildNameInput(),
-                _SPACING,
+                _spacing,
                 _buildAlcoholPercentageInput(),
-                _SPACING,
+                _spacing,
                 _buildDrinkCategoryDropdown(),
               ],
             ),

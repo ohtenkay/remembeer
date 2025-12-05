@@ -16,7 +16,7 @@ import 'package:remembeer/user_stats/model/user_stats.dart';
 import 'package:remembeer/user_stats/service/user_stats_service.dart';
 import 'package:rxdart/rxdart.dart';
 
-const _ICON_SIZE = 30.0;
+const _iconSize = 30.0;
 
 class ProfilePage extends StatelessWidget {
   final String? userId;
@@ -310,12 +310,12 @@ class ProfilePage extends StatelessWidget {
         _buildStatTile(
           label: 'Beers Consumed',
           value: beersConsumed.toStringAsFixed(1),
-          icon: const DrinkIcon(category: DrinkCategory.beer, size: _ICON_SIZE),
+          icon: const DrinkIcon(category: DrinkCategory.beer, size: _iconSize),
         ),
         _buildStatTile(
           label: 'Alcohol Consumed (ml)',
           value: alcoholConsumed.toStringAsFixed(0),
-          icon: const DrinkIcon(category: DrinkCategory.wine, size: _ICON_SIZE),
+          icon: const DrinkIcon(category: DrinkCategory.wine, size: _iconSize),
         ),
       ],
     );

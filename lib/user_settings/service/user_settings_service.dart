@@ -4,14 +4,14 @@ import 'package:remembeer/drink_type/model/drink_type.dart';
 import 'package:remembeer/user_settings/controller/user_settings_controller.dart';
 import 'package:remembeer/user_settings/model/user_settings.dart';
 
-const _DEFAULT_DRINK = DrinkType(
+const _defaultDrink = DrinkType(
   id: 'global-beer',
   userId: 'global',
   name: 'Beer',
   category: DrinkCategory.beer,
   alcoholPercentage: 4.5,
 );
-const _DEFAULT_DRINK_SIZE = 500;
+const _defaultDrinkSize = 500;
 
 class UserSettingsService {
   final AuthService authService;
@@ -31,8 +31,8 @@ class UserSettingsService {
   Future<void> createDefaultUserSettings() async {
     final defaultUserSettings = UserSettings(
       id: authService.authenticatedUser.uid,
-      defaultDrinkType: _DEFAULT_DRINK,
-      defaultDrinkSize: _DEFAULT_DRINK_SIZE,
+      defaultDrinkType: _defaultDrink,
+      defaultDrinkSize: _defaultDrinkSize,
     );
 
     await userSettingsController.createOrUpdateUserSettings(
