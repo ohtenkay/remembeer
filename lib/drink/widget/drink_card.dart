@@ -29,9 +29,8 @@ class DrinkCard extends StatelessWidget {
           children: [
             const SizedBox(height: 4),
             _buildInfoRow(
-              Icons.calendar_today,
-              // TODO(metju-ac): show only time after adding date selector
-              DateFormat('dd MMM. yyyy, H:mm').format(drink.consumedAt),
+              Icons.access_time,
+              DateFormat('H:mm').format(drink.consumedAt),
             ),
             const SizedBox(height: 2),
             _buildInfoRow(Icons.local_drink, '${drink.volumeInMilliliters} ml'),
