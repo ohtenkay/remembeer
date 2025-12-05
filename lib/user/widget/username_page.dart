@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:remembeer/common/widget/page_template.dart';
 import 'package:remembeer/ioc/ioc_container.dart';
 import 'package:remembeer/user/service/user_service.dart';
+
+const _maxUsernameLength = 20;
 
 class UserNamePage extends StatefulWidget {
   const UserNamePage({super.key});
@@ -69,6 +72,8 @@ class _UserNamePageState extends State<UserNamePage> {
   Widget _buildUsernameInput() {
     return TextFormField(
       controller: _usernameController,
+      maxLength: _maxUsernameLength,
+      inputFormatters: [LengthLimitingTextInputFormatter(_maxUsernameLength)],
       decoration: const InputDecoration(
         labelText: 'Username',
         border: OutlineInputBorder(),
