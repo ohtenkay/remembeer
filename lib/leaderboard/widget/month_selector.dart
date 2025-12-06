@@ -16,33 +16,49 @@ class MonthSelector extends StatelessWidget {
     return AsyncBuilder<SelectedMonth>(
       stream: _monthService.selectedMonthStream,
       builder: (context, selectedMonth) {
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            IconButton(
-              onPressed: _monthService.previousMonth,
-              icon: const Icon(Icons.chevron_left),
-            ),
-            Container(
-              width: 160,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              decoration: BoxDecoration(
-                color: theme.colorScheme.surfaceContainerHighest,
-                borderRadius: BorderRadius.circular(8),
+        return GestureDetector(
+          onHorizontalDragEnd: (details) {
+            if (details.primaryVelocity == null) {
+              return;
+            }
+
+            if (details.primaryVelocity! > 0) {
+              _monthService.previousMonth();
+            } else if (details.primaryVelocity! < 0) {
+              _monthService.nextMonth();
+            }
+          },
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              IconButton(
+                onPressed: _monthService.previousMonth,
+                icon: const Icon(Icons.chevron_left),
               ),
-              child: Text(
-                selectedMonth.displayName,
-                style: theme.textTheme.titleMedium,
-                textAlign: TextAlign.center,
+              Container(
+                width: 160,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.surfaceContainerHighest,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  selectedMonth.displayName,
+                  style: theme.textTheme.titleMedium,
+                  textAlign: TextAlign.center,
+                ),
               ),
-            ),
-            IconButton(
-              onPressed: selectedMonth.isCurrentMonth
-                  ? null
-                  : _monthService.nextMonth,
-              icon: const Icon(Icons.chevron_right),
-            ),
-          ],
+              IconButton(
+                onPressed: selectedMonth.isCurrentMonth
+                    ? null
+                    : _monthService.nextMonth,
+                icon: const Icon(Icons.chevron_right),
+              ),
+            ],
+          ),
         );
       },
     );
