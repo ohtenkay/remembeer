@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:remembeer/pages/profile_page.dart';
 import 'package:remembeer/user/model/user_model.dart';
+import 'package:remembeer/user/page/profile_page.dart';
 
 class UserCard extends StatelessWidget {
   final UserModel user;
