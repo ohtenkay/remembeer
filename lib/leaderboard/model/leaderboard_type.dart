@@ -1,0 +1,1 @@
+enum LeaderboardType { beers, alcohol }
