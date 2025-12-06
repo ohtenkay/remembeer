@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:remembeer/common/enum/swipe_direction.dart';
 import 'package:remembeer/common/widget/async_builder.dart';
-import 'package:remembeer/drink/model/direction.dart';
 import 'package:remembeer/drink/service/date_service.dart';
 import 'package:remembeer/ioc/ioc_container.dart';
 
@@ -36,7 +36,7 @@ class DateSelector extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _buildChevron(Direction.left),
+                _buildChevron(SwipeDirection.left),
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -48,7 +48,7 @@ class DateSelector extends StatelessWidget {
                     ),
                   ],
                 ),
-                _buildChevron(Direction.right),
+                _buildChevron(SwipeDirection.right),
               ],
             ),
           ),
@@ -57,10 +57,10 @@ class DateSelector extends StatelessWidget {
     );
   }
 
-  IconButton _buildChevron(Direction direction) {
+  IconButton _buildChevron(SwipeDirection direction) {
     final (icon, moveFunction) = switch (direction) {
-      Direction.left => (Icons.chevron_left, _dateService.previousDay),
-      Direction.right => (Icons.chevron_right, _dateService.nextDay),
+      SwipeDirection.left => (Icons.chevron_left, _dateService.previousDay),
+      SwipeDirection.right => (Icons.chevron_right, _dateService.nextDay),
     };
 
     return IconButton(
