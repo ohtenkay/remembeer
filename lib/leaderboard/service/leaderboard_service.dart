@@ -5,7 +5,7 @@ import 'package:remembeer/leaderboard/controller/leaderboard_controller.dart';
 import 'package:remembeer/leaderboard/model/leaderboard.dart';
 import 'package:remembeer/leaderboard/model/leaderboard_create.dart';
 
-const _inviteCodeLength = 8;
+const inviteCodeLength = 8;
 const _inviteCodeChars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 
 class LeaderboardService {
@@ -81,7 +81,7 @@ class LeaderboardService {
 
   String _generateRandomCode() {
     return List.generate(
-      _inviteCodeLength,
+      inviteCodeLength,
       (_) => _inviteCodeChars[_random.nextInt(_inviteCodeChars.length)],
     ).join();
   }
