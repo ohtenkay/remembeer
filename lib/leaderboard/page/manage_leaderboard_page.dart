@@ -4,6 +4,7 @@ import 'package:remembeer/common/widget/page_template.dart';
 import 'package:remembeer/ioc/ioc_container.dart';
 import 'package:remembeer/leaderboard/model/leaderboard.dart';
 import 'package:remembeer/leaderboard/page/update_leaderboard_name_page.dart';
+import 'package:remembeer/leaderboard/service/leaderboard_service.dart';
 import 'package:remembeer/leaderboard/widget/member_card.dart';
 import 'package:remembeer/user/controller/user_controller.dart';
 import 'package:remembeer/user/model/user_model.dart';
@@ -14,6 +15,7 @@ class ManageLeaderboardPage extends StatelessWidget {
   ManageLeaderboardPage({super.key, required this.leaderboard});
 
   final _userController = get<UserController>();
+  final _leaderboardService = get<LeaderboardService>();
 
   @override
   Widget build(BuildContext context) {
@@ -24,6 +26,8 @@ class ManageLeaderboardPage extends StatelessWidget {
           _buildHeader(context),
           const SizedBox(height: 24),
           _buildMembersSection(context),
+          const SizedBox(height: 16),
+          _buildDeleteButton(context),
         ],
       ),
     );
@@ -113,6 +117,53 @@ class ManageLeaderboardPage extends StatelessWidget {
           },
         );
       },
+    );
+  }
+
+  Widget _buildDeleteButton(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return OutlinedButton.icon(
+      onPressed: () => _showDeleteConfirmationDialog(context),
+      style: OutlinedButton.styleFrom(
+        foregroundColor: theme.colorScheme.error,
+        side: BorderSide(color: theme.colorScheme.error),
+      ),
+      icon: const Icon(Icons.delete),
+      label: const Text('Delete Leaderboard'),
+    );
+  }
+
+  void _showDeleteConfirmationDialog(BuildContext context) {
+    final theme = Theme.of(context);
+
+    showDialog<void>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Delete Leaderboard'),
+        content: Text(
+          'Are you sure you want to delete "${leaderboard.name}"? '
+          'This action cannot be undone.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () async {
+              await _leaderboardService.deleteLeaderboard(leaderboard.id);
+              if (context.mounted) {
+                Navigator.of(context).popUntil((route) => route.isFirst);
+              }
+            },
+            style: FilledButton.styleFrom(
+              backgroundColor: theme.colorScheme.error,
+            ),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
     );
   }
 }

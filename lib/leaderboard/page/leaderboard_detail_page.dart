@@ -105,10 +105,7 @@ class _LeaderboardDetailPageState extends State<LeaderboardDetailPage> {
             onPressed: () async {
               await _leaderboardService.leaveLeaderboard(widget.leaderboard.id);
               if (context.mounted) {
-                Navigator.of(context).pop();
-              }
-              if (mounted) {
-                Navigator.of(this.context).pop();
+                Navigator.of(context).popUntil((route) => route.isFirst);
               }
             },
             child: const Text('Leave'),

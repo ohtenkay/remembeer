@@ -69,6 +69,16 @@ class LeaderboardService {
     await leaderboardController.updateSingle(updatedLeaderboard);
   }
 
+  Future<void> deleteLeaderboard(String leaderboardId) async {
+    final leaderboard = await leaderboardController.findById(leaderboardId);
+
+    if (leaderboard.userId != authService.authenticatedUser.uid) {
+      throw StateError('Only the owner can delete the leaderboard.');
+    }
+
+    await leaderboardController.deleteSingle(leaderboard);
+  }
+
   Future<void> leaveLeaderboard(String leaderboardId) async {
     final leaderboard = await leaderboardController.findById(leaderboardId);
     final currentUserId = authService.authenticatedUser.uid;
