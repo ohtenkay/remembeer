@@ -9,7 +9,7 @@ part of 'leaderboard_create.dart';
 LeaderboardCreate _$LeaderboardCreateFromJson(Map<String, dynamic> json) =>
     LeaderboardCreate(
       name: json['name'] as String,
-      userIds: (json['userIds'] as List<dynamic>)
+      memberIds: (json['memberIds'] as List<dynamic>)
           .map((e) => e as String)
           .toSet(),
       inviteCode: json['inviteCode'] as String,
@@ -18,6 +18,6 @@ LeaderboardCreate _$LeaderboardCreateFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$LeaderboardCreateToJson(LeaderboardCreate instance) =>
     <String, dynamic>{
       'name': instance.name,
-      'userIds': instance.userIds.toList(),
+      'memberIds': instance.memberIds.toList(),
       'inviteCode': instance.inviteCode,
     };

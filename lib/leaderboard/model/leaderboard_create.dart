@@ -6,12 +6,12 @@ part 'leaderboard_create.g.dart';
 @JsonSerializable()
 class LeaderboardCreate extends ValueObject {
   final String name;
-  final Set<String> userIds;
+  final Set<String> memberIds;
   final String inviteCode;
 
   LeaderboardCreate({
     required this.name,
-    required this.userIds,
+    required this.memberIds,
     required this.inviteCode,
   });
 

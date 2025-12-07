@@ -44,7 +44,7 @@ class LeaderboardService {
     await leaderboardController.createSingle(
       LeaderboardCreate(
         name: name,
-        userIds: {currentUserId},
+        memberIds: {currentUserId},
         inviteCode: inviteCode,
       ),
     );
@@ -73,16 +73,16 @@ class LeaderboardService {
     final leaderboard = await leaderboardController.findById(leaderboardId);
     final currentUserId = authService.authenticatedUser.uid;
 
-    if (leaderboard.userIds.contains(currentUserId)) {
+    if (leaderboard.memberIds.contains(currentUserId)) {
       return true;
     }
 
-    if (leaderboard.userIds.length >= maxLeaderboardMembers) {
+    if (leaderboard.memberIds.length >= maxLeaderboardMembers) {
       return false;
     }
 
     final updatedLeaderboard = leaderboard.copyWith(
-      userIds: {...leaderboard.userIds, currentUserId},
+      memberIds: {...leaderboard.memberIds, currentUserId},
     );
 
     await leaderboardController.updateSingle(updatedLeaderboard);
@@ -124,10 +124,10 @@ class LeaderboardService {
     required int year,
     required int month,
   }) {
-    final userIds = leaderboard.userIds.toList();
+    final memberIds = leaderboard.memberIds.toList();
 
     // TODO(metju-ac): Optimize this by storing the monthly stats in firestore
-    final statsStreams = userIds.map(
+    final statsStreams = memberIds.map(
       (userId) => userStatsService.monthlyStatsStreamFor(
         userId: userId,
         year: year,
@@ -138,10 +138,10 @@ class LeaderboardService {
     return Rx.combineLatestList(statsStreams).asyncMap((statsList) async {
       final entries = <LeaderboardEntry>[];
 
-      for (var i = 0; i < userIds.length; i++) {
-        final userId = userIds[i];
+      for (var i = 0; i < memberIds.length; i++) {
+        final memberId = memberIds[i];
         final stats = statsList[i];
-        final user = await userController.userById(userId);
+        final user = await userController.userById(memberId);
 
         entries.add(
           LeaderboardEntry(

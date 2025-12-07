@@ -74,7 +74,7 @@ class ManageLeaderboardPage extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Text(
-              'Members (${leaderboard.userIds.length})',
+              'Members (${leaderboard.memberIds.length})',
               style: theme.textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
@@ -97,13 +97,13 @@ class ManageLeaderboardPage extends StatelessWidget {
   }
 
   Widget _buildMembersList() {
-    final userIds = leaderboard.userIds.toList();
+    final memberIds = leaderboard.memberIds.toList();
     final ownerId = leaderboard.userId;
 
     return ListView.builder(
-      itemCount: userIds.length,
+      itemCount: memberIds.length,
       itemBuilder: (context, index) {
-        final userId = userIds[index];
+        final userId = memberIds[index];
         final isOwner = userId == ownerId;
 
         return AsyncBuilder<UserModel>(
