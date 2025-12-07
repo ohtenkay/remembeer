@@ -103,3 +103,7 @@ void showDefaultDrinkAdded(BuildContext context) {
 void showDrinkDeleted(BuildContext context) {
   _showTopSnackBar(context, 'Drink deleted!');
 }
+
+void showInvitationCodeCopied(BuildContext context) {
+  _showTopSnackBar(context, 'Invitation code copied to clipboard!');
+}
