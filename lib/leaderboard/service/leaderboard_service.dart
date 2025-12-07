@@ -8,6 +8,7 @@ import 'package:remembeer/leaderboard/model/leaderboard_entry.dart';
 import 'package:remembeer/leaderboard/service/month_service.dart';
 import 'package:remembeer/user/controller/user_controller.dart';
 import 'package:remembeer/user_stats/service/user_stats_service.dart';
+import 'package:rxdart/rxdart.dart';
 
 const inviteCodeLength = 8;
 const _inviteCodeChars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -83,8 +84,8 @@ class LeaderboardService {
   }
 
   Stream<List<LeaderboardEntry>> standingsStreamFor(Leaderboard leaderboard) {
-    return monthService.selectedMonthStream.asyncMap(
-      (selectedMonth) => _getStandings(
+    return monthService.selectedMonthStream.switchMap(
+      (selectedMonth) => _standingsStreamForMonth(
         leaderboard: leaderboard,
         year: selectedMonth.year,
         month: selectedMonth.month,
@@ -92,31 +93,62 @@ class LeaderboardService {
     );
   }
 
-  Future<List<LeaderboardEntry>> _getStandings({
+  Stream<LeaderboardEntry?> currentUserStandingStreamFor(
+    Leaderboard leaderboard,
+  ) {
+    final now = DateTime.now();
+    final currentUserId = authService.authenticatedUser.uid;
+
+    return _standingsStreamForMonth(
+      leaderboard: leaderboard,
+      year: now.year,
+      month: now.month,
+    ).map(
+      (standings) =>
+          standings.where((e) => e.user.id == currentUserId).firstOrNull,
+    );
+  }
+
+  Stream<List<LeaderboardEntry>> _standingsStreamForMonth({
     required Leaderboard leaderboard,
     required int year,
     required int month,
-  }) async {
-    final entries = <LeaderboardEntry>[];
+  }) {
+    final userIds = leaderboard.userIds.toList();
 
-    for (final userId in leaderboard.userIds) {
-      final user = await userController.userById(userId);
-      // TODO(metju-ac): Optimize this by storing the monthly stats in firestore
-      final stats = await userStatsService
-          .monthlyStatsStreamFor(userId: userId, year: year, month: month)
-          .first;
+    // TODO(metju-ac): Optimize this by storing the monthly stats in firestore
+    final statsStreams = userIds.map(
+      (userId) => userStatsService.monthlyStatsStreamFor(
+        userId: userId,
+        year: year,
+        month: month,
+      ),
+    );
 
-      entries.add(
-        LeaderboardEntry(
-          user: user,
-          beersConsumed: stats.beersConsumed,
-          alcoholConsumedMl: stats.alcoholConsumedMl,
-          rankByBeers: 0,
-          rankByAlcohol: 0,
-        ),
-      );
-    }
+    return Rx.combineLatestList(statsStreams).asyncMap((statsList) async {
+      final entries = <LeaderboardEntry>[];
 
+      for (var i = 0; i < userIds.length; i++) {
+        final userId = userIds[i];
+        final stats = statsList[i];
+        final user = await userController.userById(userId);
+
+        entries.add(
+          LeaderboardEntry(
+            user: user,
+            beersConsumed: stats.beersConsumed,
+            alcoholConsumedMl: stats.alcoholConsumedMl,
+            rankByBeers: 0,
+            rankByAlcohol: 0,
+          ),
+        );
+      }
+
+      return _computeRanks(entries);
+    });
+  }
+
+  List<LeaderboardEntry> _computeRanks(List<LeaderboardEntry> entries) {
     entries.sort((a, b) => b.beersConsumed.compareTo(a.beersConsumed));
     final byBeersRanks = <String, int>{};
     for (var i = 0; i < entries.length; i++) {
