@@ -5,6 +5,7 @@ import 'package:remembeer/ioc/ioc_container.dart';
 import 'package:remembeer/leaderboard/model/leaderboard.dart';
 import 'package:remembeer/leaderboard/model/leaderboard_entry.dart';
 import 'package:remembeer/leaderboard/model/leaderboard_type.dart';
+import 'package:remembeer/leaderboard/page/manage_leaderboard_page.dart';
 import 'package:remembeer/leaderboard/service/leaderboard_service.dart';
 import 'package:remembeer/leaderboard/service/month_service.dart';
 import 'package:remembeer/leaderboard/widget/month_selector.dart';
@@ -60,7 +61,15 @@ class _LeaderboardDetailPageState extends State<LeaderboardDetailPage> {
   Widget _buildConfigButton(BuildContext context) {
     return Align(
       alignment: Alignment.centerRight,
-      child: IconButton(onPressed: () {}, icon: const Icon(Icons.settings)),
+      child: IconButton(
+        onPressed: () => Navigator.of(context).push(
+          MaterialPageRoute<void>(
+            builder: (context) =>
+                ManageLeaderboardPage(leaderboard: widget.leaderboard),
+          ),
+        ),
+        icon: const Icon(Icons.settings),
+      ),
     );
   }
 
