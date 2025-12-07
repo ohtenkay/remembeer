@@ -37,6 +37,9 @@ class LeaderboardService {
   Future<Leaderboard?> findByInviteCode(String inviteCode) =>
       leaderboardController.findByInviteCode(inviteCode);
 
+  Stream<Leaderboard> streamById(String id) =>
+      leaderboardController.streamById(id);
+
   Future<void> createLeaderboard(String name) async {
     final inviteCode = await _generateUniqueInviteCode();
     final currentUserId = authService.authenticatedUser.uid;
@@ -151,13 +154,18 @@ class LeaderboardService {
   }
 
   Stream<List<LeaderboardEntry>> standingsStreamFor(Leaderboard leaderboard) {
-    return monthService.selectedMonthStream.switchMap(
-      (selectedMonth) => _standingsStreamForMonth(
-        leaderboard: leaderboard,
+    return Rx.combineLatest2(
+      leaderboardController.streamById(leaderboard.id),
+      monthService.selectedMonthStream,
+      (leaderboard, selectedMonth) => (leaderboard, selectedMonth),
+    ).switchMap((record) {
+      final (leaderboard, selectedMonth) = record;
+      return _standingsStreamForMemberIds(
+        memberIds: leaderboard.memberIds.toList(),
         year: selectedMonth.year,
         month: selectedMonth.month,
-      ),
-    );
+      );
+    });
   }
 
   Stream<LeaderboardEntry?> currentUserStandingStreamFor(
@@ -166,22 +174,30 @@ class LeaderboardService {
     final now = DateTime.now();
     final currentUserId = authService.authenticatedUser.uid;
 
-    return _standingsStreamForMonth(
-      leaderboard: leaderboard,
-      year: now.year,
-      month: now.month,
-    ).map(
-      (standings) =>
-          standings.where((e) => e.user.id == currentUserId).firstOrNull,
-    );
+    return leaderboardController
+        .streamById(leaderboard.id)
+        .switchMap(
+          (leaderboard) =>
+              _standingsStreamForMemberIds(
+                memberIds: leaderboard.memberIds.toList(),
+                year: now.year,
+                month: now.month,
+              ).map(
+                (standings) => standings
+                    .where((e) => e.user.id == currentUserId)
+                    .firstOrNull,
+              ),
+        );
   }
 
-  Stream<List<LeaderboardEntry>> _standingsStreamForMonth({
-    required Leaderboard leaderboard,
+  Stream<List<LeaderboardEntry>> _standingsStreamForMemberIds({
+    required List<String> memberIds,
     required int year,
     required int month,
   }) {
-    final memberIds = leaderboard.memberIds.toList();
+    if (memberIds.isEmpty) {
+      return Stream.value([]);
+    }
 
     // TODO(metju-ac): Optimize this by storing the monthly stats in firestore
     final statsStreams = memberIds.map(

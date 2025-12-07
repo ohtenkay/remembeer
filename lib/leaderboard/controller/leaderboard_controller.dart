@@ -30,6 +30,16 @@ class LeaderboardController extends Controller<Leaderboard, LeaderboardCreate> {
     return data;
   }
 
+  Stream<Leaderboard> streamById(String id) {
+    return readCollection.doc(id).snapshots().map((snapshot) {
+      final data = snapshot.data();
+      if (data == null || data.deletedAt != null) {
+        throw StateError('Leaderboard with id $id not found.');
+      }
+      return data;
+    });
+  }
+
   Future<Leaderboard?> findByInviteCode(String inviteCode) async {
     final snapshot = await readCollection
         .where(deletedAtField, isNull: true)
