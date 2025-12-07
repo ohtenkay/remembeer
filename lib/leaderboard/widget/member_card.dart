@@ -4,8 +4,14 @@ import 'package:remembeer/user/model/user_model.dart';
 class MemberCard extends StatelessWidget {
   final UserModel user;
   final bool isOwner;
+  final VoidCallback onRemove;
 
-  const MemberCard({super.key, required this.user, required this.isOwner});
+  const MemberCard({
+    super.key,
+    required this.user,
+    required this.isOwner,
+    required this.onRemove,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +53,7 @@ class MemberCard extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        IconButton(onPressed: () {}, icon: const Icon(Icons.person_remove)),
+        IconButton(onPressed: onRemove, icon: const Icon(Icons.person_remove)),
         IconButton(
           onPressed: () {},
           icon: const Icon(Icons.block),

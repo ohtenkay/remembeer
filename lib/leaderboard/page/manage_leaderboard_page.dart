@@ -113,10 +113,44 @@ class ManageLeaderboardPage extends StatelessWidget {
         return AsyncBuilder<UserModel>(
           future: _userController.userById(userId),
           builder: (context, user) {
-            return MemberCard(user: user, isOwner: isOwner);
+            return MemberCard(
+              user: user,
+              isOwner: isOwner,
+              onRemove: () => _showRemoveConfirmationDialog(context, user),
+            );
           },
         );
       },
+    );
+  }
+
+  void _showRemoveConfirmationDialog(BuildContext context, UserModel user) {
+    showDialog<void>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Remove Member'),
+        content: Text(
+          'Are you sure you want to remove "${user.username}" from the leaderboard?',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () async {
+              await _leaderboardService.removeMember(
+                leaderboardId: leaderboard.id,
+                memberId: user.id,
+              );
+              if (context.mounted) {
+                Navigator.of(context).pop();
+              }
+            },
+            child: const Text('Remove'),
+          ),
+        ],
+      ),
     );
   }
 
