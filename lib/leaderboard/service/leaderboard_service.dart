@@ -69,6 +69,24 @@ class LeaderboardService {
     await leaderboardController.updateSingle(updatedLeaderboard);
   }
 
+  Future<void> leaveLeaderboard(String leaderboardId) async {
+    final leaderboard = await leaderboardController.findById(leaderboardId);
+    final currentUserId = authService.authenticatedUser.uid;
+
+    if (leaderboard.userId == currentUserId) {
+      throw StateError('The owner cannot leave their own leaderboard.');
+    }
+
+    final updatedMemberIds = Set<String>.from(leaderboard.memberIds)
+      ..remove(currentUserId);
+
+    final updatedLeaderboard = leaderboard.copyWith(
+      memberIds: updatedMemberIds,
+    );
+
+    await leaderboardController.updateSingle(updatedLeaderboard);
+  }
+
   Future<bool> joinLeaderboard(String leaderboardId) async {
     final leaderboard = await leaderboardController.findById(leaderboardId);
     final currentUserId = authService.authenticatedUser.uid;
