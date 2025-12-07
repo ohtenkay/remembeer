@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:remembeer/common/action/notifications.dart';
 import 'package:remembeer/common/widget/async_builder.dart';
 import 'package:remembeer/common/widget/page_template.dart';
 import 'package:remembeer/ioc/ioc_container.dart';
@@ -47,7 +49,7 @@ class _LeaderboardDetailPageState extends State<LeaderboardDetailPage> {
       ),
       child: Column(
         children: [
-          if (isOwner) _buildConfigButton(context),
+          _buildActionButtons(context, isOwner),
           MonthSelector(),
           const SizedBox(height: 8),
           _buildSortToggle(),
@@ -58,17 +60,79 @@ class _LeaderboardDetailPageState extends State<LeaderboardDetailPage> {
     );
   }
 
-  Widget _buildConfigButton(BuildContext context) {
-    return Align(
-      alignment: Alignment.centerRight,
-      child: IconButton(
-        onPressed: () => Navigator.of(context).push(
-          MaterialPageRoute<void>(
-            builder: (context) =>
-                ManageLeaderboardPage(leaderboard: widget.leaderboard),
-          ),
+  Widget _buildActionButtons(BuildContext context, bool isOwner) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        IconButton(
+          onPressed: () => _showInviteCodeDialog(context),
+          icon: const Icon(Icons.share),
         ),
-        icon: const Icon(Icons.settings),
+        if (isOwner)
+          IconButton(
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (context) =>
+                    ManageLeaderboardPage(leaderboard: widget.leaderboard),
+              ),
+            ),
+            icon: const Icon(Icons.settings),
+          )
+        else
+          const SizedBox(width: 48),
+      ],
+    );
+  }
+
+  void _showInviteCodeDialog(BuildContext context) {
+    final theme = Theme.of(context);
+    final inviteCode = widget.leaderboard.inviteCode;
+
+    showDialog<void>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Invite Code'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'Share this code with friends to invite them:',
+              style: theme.textTheme.bodyMedium,
+            ),
+            const SizedBox(height: 16),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+              decoration: BoxDecoration(
+                color: theme.colorScheme.surfaceContainerHighest,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: SelectableText(
+                inviteCode,
+                style: theme.textTheme.headlineMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 4,
+                ),
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Close'),
+          ),
+          FilledButton.icon(
+            onPressed: () async {
+              await Clipboard.setData(ClipboardData(text: inviteCode));
+              if (context.mounted) {
+                Navigator.of(context).pop();
+                showInvitationCodeCopied(context);
+              }
+            },
+            icon: const Icon(Icons.copy),
+            label: const Text('Copy'),
+          ),
+        ],
       ),
     );
   }
