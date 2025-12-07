@@ -47,6 +47,11 @@ class LeaderboardCard extends StatelessWidget {
   Widget _buildStandingInfo(BuildContext context, ThemeData theme) {
     return AsyncBuilder(
       stream: _leaderboardService.currentUserStandingStreamFor(leaderboard),
+      waitingBuilder: (_) => const SizedBox(
+        width: 24,
+        height: 24,
+        child: CircularProgressIndicator(strokeWidth: 2),
+      ),
       builder: (context, leaderboardEntry) {
         if (leaderboardEntry == null) {
           return const Icon(Icons.chevron_right);
