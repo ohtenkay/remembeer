@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:remembeer/auth/service/auth_service.dart';
+import 'package:remembeer/ioc/ioc_container.dart';
 import 'package:remembeer/leaderboard/model/leaderboard_entry.dart';
 import 'package:remembeer/leaderboard/model/leaderboard_type.dart';
 import 'package:remembeer/user/page/profile_page.dart';
@@ -7,7 +9,9 @@ class StandingCard extends StatelessWidget {
   final LeaderboardEntry entry;
   final LeaderboardType sortType;
 
-  const StandingCard({super.key, required this.entry, required this.sortType});
+  StandingCard({super.key, required this.entry, required this.sortType});
+
+  final _authService = get<AuthService>();
 
   @override
   Widget build(BuildContext context) {
@@ -32,11 +36,7 @@ class StandingCard extends StatelessWidget {
           : null,
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
-        onTap: () => Navigator.of(context).push(
-          MaterialPageRoute<void>(
-            builder: (context) => ProfilePage(userId: entry.user.id),
-          ),
-        ),
+        onTap: _navigateToUserPage(context),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           child: Row(
@@ -89,5 +89,16 @@ class StandingCard extends StatelessWidget {
       default:
         return (null, null);
     }
+  }
+
+  VoidCallback? _navigateToUserPage(BuildContext context) {
+    final isCurrentUser = entry.user.id == _authService.authenticatedUser.uid;
+    if (isCurrentUser) return null;
+
+    return () => Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (context) => ProfilePage(userId: entry.user.id),
+      ),
+    );
   }
 }
