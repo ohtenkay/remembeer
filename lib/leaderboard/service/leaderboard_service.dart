@@ -56,6 +56,10 @@ class LeaderboardService {
   }) async {
     final leaderboard = await leaderboardController.findById(leaderboardId);
 
+    if (leaderboard.userId != authService.authenticatedUser.uid) {
+      throw StateError('Only the owner can update the leaderboard name.');
+    }
+
     if (leaderboard.name == newName) {
       return;
     }

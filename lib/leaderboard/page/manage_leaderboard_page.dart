@@ -3,6 +3,7 @@ import 'package:remembeer/common/widget/async_builder.dart';
 import 'package:remembeer/common/widget/page_template.dart';
 import 'package:remembeer/ioc/ioc_container.dart';
 import 'package:remembeer/leaderboard/model/leaderboard.dart';
+import 'package:remembeer/leaderboard/page/update_leaderboard_name_page.dart';
 import 'package:remembeer/leaderboard/widget/member_card.dart';
 import 'package:remembeer/user/controller/user_controller.dart';
 import 'package:remembeer/user/model/user_model.dart';
@@ -45,7 +46,7 @@ class ManageLeaderboardPage extends StatelessWidget {
         ),
         const SizedBox(height: 16),
         InkWell(
-          onTap: () {},
+          onTap: () => _navigateToUpdateName(context),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -82,6 +83,15 @@ class ManageLeaderboardPage extends StatelessWidget {
           const SizedBox(height: 8),
           Expanded(child: _buildMembersList()),
         ],
+      ),
+    );
+  }
+
+  void _navigateToUpdateName(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (context) =>
+            UpdateLeaderboardNamePage(leaderboard: leaderboard),
       ),
     );
   }
