@@ -10,7 +10,7 @@ class LeaderboardController extends Controller<Leaderboard, LeaderboardCreate> {
   Stream<List<Leaderboard>> get myLeaderboardsStream {
     return readCollection
         .where(deletedAtField, isNull: true)
-        .where('userIds', arrayContains: authService.authenticatedUser.uid)
+        .where('memberIds', arrayContains: authService.authenticatedUser.uid)
         .snapshots()
         .map(
           (querySnapshot) => List.unmodifiable(
