@@ -79,8 +79,42 @@ class _LeaderboardDetailPageState extends State<LeaderboardDetailPage> {
             icon: const Icon(Icons.settings),
           )
         else
-          const SizedBox(width: 48),
+          IconButton(
+            onPressed: () => _showLeaveConfirmationDialog(context),
+            icon: const Icon(Icons.logout),
+            color: Theme.of(context).colorScheme.error,
+          ),
       ],
+    );
+  }
+
+  void _showLeaveConfirmationDialog(BuildContext context) {
+    showDialog<void>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Leave Leaderboard'),
+        content: Text(
+          'Are you sure you want to leave "${widget.leaderboard.name}"?',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () async {
+              await _leaderboardService.leaveLeaderboard(widget.leaderboard.id);
+              if (context.mounted) {
+                Navigator.of(context).pop();
+              }
+              if (mounted) {
+                Navigator.of(this.context).pop();
+              }
+            },
+            child: const Text('Leave'),
+          ),
+        ],
+      ),
     );
   }
 
