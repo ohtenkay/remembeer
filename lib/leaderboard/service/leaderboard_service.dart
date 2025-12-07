@@ -11,6 +11,7 @@ import 'package:remembeer/user_stats/service/user_stats_service.dart';
 import 'package:rxdart/rxdart.dart';
 
 const inviteCodeLength = 8;
+const maxLeaderboardMembers = 200;
 const _inviteCodeChars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 
 class LeaderboardService {
@@ -64,12 +65,16 @@ class LeaderboardService {
     await leaderboardController.updateSingle(updatedLeaderboard);
   }
 
-  Future<void> joinLeaderboard(String leaderboardId) async {
+  Future<bool> joinLeaderboard(String leaderboardId) async {
     final leaderboard = await leaderboardController.findById(leaderboardId);
     final currentUserId = authService.authenticatedUser.uid;
 
     if (leaderboard.userIds.contains(currentUserId)) {
-      return;
+      return true;
+    }
+
+    if (leaderboard.userIds.length >= maxLeaderboardMembers) {
+      return false;
     }
 
     final updatedLeaderboard = leaderboard.copyWith(
@@ -77,6 +82,7 @@ class LeaderboardService {
     );
 
     await leaderboardController.updateSingle(updatedLeaderboard);
+    return true;
   }
 
   bool isOwner(Leaderboard leaderboard) {

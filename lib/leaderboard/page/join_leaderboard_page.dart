@@ -155,10 +155,19 @@ class _JoinLeaderboardPageState extends State<JoinLeaderboardPage> {
   Future<void> _joinLeaderboard() async {
     if (_foundLeaderboard == null) return;
 
-    await _leaderboardService.joinLeaderboard(_foundLeaderboard!.id);
+    final success = await _leaderboardService.joinLeaderboard(
+      _foundLeaderboard!.id,
+    );
 
-    if (mounted) {
+    if (!mounted) return;
+
+    if (success) {
       Navigator.of(context).pop();
+    } else {
+      setState(() {
+        _foundLeaderboard = null;
+        _errorMessage = 'Leaderboard is full.';
+      });
     }
   }
 }
