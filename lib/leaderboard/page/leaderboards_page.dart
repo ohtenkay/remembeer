@@ -6,7 +6,6 @@ import 'package:remembeer/leaderboard/controller/leaderboard_controller.dart';
 import 'package:remembeer/leaderboard/model/leaderboard.dart';
 import 'package:remembeer/leaderboard/page/create_leaderboard_page.dart';
 import 'package:remembeer/leaderboard/page/join_leaderboard_page.dart';
-import 'package:remembeer/leaderboard/page/leaderboard_detail_page.dart';
 import 'package:remembeer/leaderboard/widget/leaderboard_card.dart';
 
 class LeaderboardsPage extends StatelessWidget {
@@ -74,17 +73,7 @@ class LeaderboardsPage extends StatelessWidget {
           itemCount: leaderboards.length,
           itemBuilder: (context, index) {
             final leaderboard = leaderboards[index];
-            return LeaderboardCard(
-              leaderboard: leaderboard,
-              onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute<void>(
-                    builder: (context) =>
-                        LeaderboardDetailPage(leaderboard: leaderboard),
-                  ),
-                );
-              },
-            );
+            return LeaderboardCard(leaderboard: leaderboard);
           },
         );
       },
