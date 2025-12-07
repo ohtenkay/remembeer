@@ -72,21 +72,26 @@ class ManageLeaderboardPage extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Expanded(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Text(
-              'Members (${leaderboard.memberIds.length})',
-              style: theme.textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
+      child: AsyncBuilder<Leaderboard>(
+        stream: _leaderboardService.streamById(leaderboard.id),
+        builder: (context, currentLeaderboard) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Text(
+                  'Members (${currentLeaderboard.memberIds.length})',
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
-            ),
-          ),
-          const SizedBox(height: 8),
-          Expanded(child: _buildMembersList()),
-        ],
+              const SizedBox(height: 8),
+              Expanded(child: _buildMembersList(currentLeaderboard)),
+            ],
+          );
+        },
       ),
     );
   }
@@ -100,9 +105,9 @@ class ManageLeaderboardPage extends StatelessWidget {
     );
   }
 
-  Widget _buildMembersList() {
-    final memberIds = leaderboard.memberIds.toList();
-    final ownerId = leaderboard.userId;
+  Widget _buildMembersList(Leaderboard currentLeaderboard) {
+    final memberIds = currentLeaderboard.memberIds.toList();
+    final ownerId = currentLeaderboard.userId;
 
     return ListView.builder(
       itemCount: memberIds.length,
