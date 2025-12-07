@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:remembeer/leaderboard/model/leaderboard.dart';
+import 'package:remembeer/leaderboard/service/leaderboard_service.dart';
 
 class FoundLeaderboardCard extends StatelessWidget {
   final Leaderboard leaderboard;
@@ -15,6 +16,7 @@ class FoundLeaderboardCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final memberCount = leaderboard.userIds.length;
+    final isFull = memberCount >= maxLeaderboardMembers;
 
     return Column(
       children: [
@@ -40,9 +42,20 @@ class FoundLeaderboardCard extends StatelessWidget {
                   Text(
                     '$memberCount ${memberCount == 1 ? 'member' : 'members'}',
                     style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant,
+                      color: isFull
+                          ? theme.colorScheme.error
+                          : theme.colorScheme.onSurfaceVariant,
                     ),
                   ),
+                  if (isFull) ...[
+                    const SizedBox(height: 4),
+                    Text(
+                      'Leaderboard is full',
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.error,
+                      ),
+                    ),
+                  ],
                 ],
               ),
             ),
@@ -52,7 +65,7 @@ class FoundLeaderboardCard extends StatelessWidget {
         SizedBox(
           width: 200,
           child: FilledButton.icon(
-            onPressed: onJoin,
+            onPressed: isFull ? null : onJoin,
             icon: const Icon(Icons.group_add),
             label: const Text('Join Leaderboard'),
           ),
