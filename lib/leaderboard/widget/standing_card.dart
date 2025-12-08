@@ -78,18 +78,13 @@ class StandingCard extends StatelessWidget {
     );
   }
 
-  (Color?, Color?) _getCardColors(BuildContext context, int rank) {
-    switch (rank) {
-      case 1:
-        return (const Color(0xFFE8B41E), const Color(0xFFA68900));
-      case 2:
-        return (const Color(0xFFAEAEAE), const Color(0xFF757575));
-      case 3:
-        return (const Color(0xFFC36A1D), const Color(0xFF7C4006));
-      default:
-        return (null, null);
-    }
-  }
+  (Color?, Color?) _getCardColors(BuildContext context, int rank) =>
+      switch (rank) {
+        1 => (const Color(0xFFE8B41E), const Color(0xFFA68900)),
+        2 => (const Color(0xFFAEAEAE), const Color(0xFF757575)),
+        3 => (const Color(0xFFC36A1D), const Color(0xFF7C4006)),
+        _ => (null, null),
+      };
 
   VoidCallback? _navigateToUserPage(BuildContext context) {
     final isCurrentUser = entry.user.id == _authService.authenticatedUser.uid;
