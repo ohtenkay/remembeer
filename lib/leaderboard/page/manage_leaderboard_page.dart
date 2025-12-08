@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:remembeer/common/action/confirmation_dialog.dart';
 import 'package:remembeer/common/widget/async_builder.dart';
 import 'package:remembeer/common/widget/page_template.dart';
 import 'package:remembeer/ioc/ioc_container.dart';
@@ -131,61 +132,29 @@ class ManageLeaderboardPage extends StatelessWidget {
   }
 
   void _showRemoveConfirmationDialog(BuildContext context, UserModel user) {
-    showDialog<void>(
+    showConfirmationDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Remove Member'),
-        content: Text(
+      title: 'Remove Member',
+      text:
           'Are you sure you want to remove "${user.username}" from the leaderboard?',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
-          ),
-          FilledButton(
-            onPressed: () async {
-              await _leaderboardService.removeMember(
-                leaderboardId: leaderboard.id,
-                memberId: user.id,
-              );
-              if (context.mounted) {
-                Navigator.of(context).pop();
-              }
-            },
-            child: const Text('Remove'),
-          ),
-        ],
+      submitButtonText: 'Remove',
+      onPressed: () => _leaderboardService.removeMember(
+        leaderboardId: leaderboard.id,
+        memberId: user.id,
       ),
     );
   }
 
   void _showBanConfirmationDialog(BuildContext context, UserModel user) {
-    showDialog<void>(
+    showConfirmationDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Ban Member'),
-        content: Text(
+      title: 'Ban Member',
+      text:
           'Are you sure you want to ban "${user.username}" from the leaderboard?',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
-          ),
-          FilledButton(
-            onPressed: () async {
-              await _leaderboardService.banMember(
-                leaderboardId: leaderboard.id,
-                memberId: user.id,
-              );
-              if (context.mounted) {
-                Navigator.of(context).pop();
-              }
-            },
-            child: const Text('Ban'),
-          ),
-        ],
+      submitButtonText: 'Ban',
+      onPressed: () => _leaderboardService.banMember(
+        leaderboardId: leaderboard.id,
+        memberId: user.id,
       ),
     );
   }
@@ -205,35 +174,20 @@ class ManageLeaderboardPage extends StatelessWidget {
   }
 
   void _showDeleteConfirmationDialog(BuildContext context) {
-    final theme = Theme.of(context);
-
-    showDialog<void>(
+    showConfirmationDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Delete Leaderboard'),
-        content: Text(
+      title: 'Delete Leaderboard',
+      text:
           'Are you sure you want to delete "${leaderboard.name}"? '
           'This action cannot be undone.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
-          ),
-          FilledButton(
-            onPressed: () async {
-              await _leaderboardService.deleteLeaderboard(leaderboard.id);
-              if (context.mounted) {
-                Navigator.of(context).popUntil((route) => route.isFirst);
-              }
-            },
-            style: FilledButton.styleFrom(
-              backgroundColor: theme.colorScheme.error,
-            ),
-            child: const Text('Delete'),
-          ),
-        ],
-      ),
+      submitButtonText: 'Delete',
+      isDestructive: true,
+      onPressed: () async {
+        await _leaderboardService.deleteLeaderboard(leaderboard.id);
+        if (context.mounted) {
+          Navigator.of(context).popUntil((route) => route.isFirst);
+        }
+      },
     );
   }
 }

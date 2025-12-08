@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:remembeer/common/action/confirmation_dialog.dart';
 import 'package:remembeer/common/action/notifications.dart';
 import 'package:remembeer/common/widget/drink_icon.dart';
 import 'package:remembeer/drink/controller/drink_controller.dart';
@@ -52,29 +53,18 @@ class DrinkCard extends StatelessWidget {
   }
 
   void _showDeleteConfirmation(BuildContext context) {
-    showDialog<void>(
+    showConfirmationDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Delete Drink'),
-        content: Text(
-          'Are you sure you want to delete this ${drink.drinkType.name}?',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () {
-              _drinkController.deleteSingle(drink);
-              Navigator.of(context).pop();
-              showDrinkDeleted(context);
-            },
-            style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: const Text('Delete'),
-          ),
-        ],
-      ),
+      title: 'Delete Drink',
+      text: 'Are you sure you want to delete this ${drink.drinkType.name}?',
+      submitButtonText: 'Delete',
+      isDestructive: true,
+      onPressed: () async {
+        await _drinkController.deleteSingle(drink);
+
+        if (!context.mounted) return;
+        showDrinkDeleted(context);
+      },
     );
   }
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:remembeer/common/action/confirmation_dialog.dart';
 import 'package:remembeer/common/widget/drink_icon.dart';
 import 'package:remembeer/drink_type/controller/drink_type_controller.dart';
 import 'package:remembeer/drink_type/model/drink_type.dart';
@@ -45,26 +46,13 @@ class DrinkTypeTile extends StatelessWidget {
   }
 
   void _showDeleteConfirmation(BuildContext context) {
-    showDialog<void>(
+    showConfirmationDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Delete Drink Type'),
-        content: Text('Are you sure you want to delete "${drinkType.name}"?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () {
-              _drinkTypeController.deleteSingle(drinkType);
-              Navigator.of(context).pop();
-            },
-            style: TextButton.styleFrom(foregroundColor: Colors.red),
-            child: const Text('Delete'),
-          ),
-        ],
-      ),
+      title: 'Delete Drink Type',
+      text: 'Are you sure you want to delete "${drinkType.name}"?',
+      submitButtonText: 'Delete',
+      isDestructive: true,
+      onPressed: () async => _drinkTypeController.deleteSingle(drinkType),
     );
   }
 }

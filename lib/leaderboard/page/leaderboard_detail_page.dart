@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:remembeer/common/action/confirmation_dialog.dart';
 import 'package:remembeer/common/action/notifications.dart';
 import 'package:remembeer/common/widget/async_builder.dart';
 import 'package:remembeer/common/widget/page_template.dart';
@@ -89,29 +90,17 @@ class _LeaderboardDetailPageState extends State<LeaderboardDetailPage> {
   }
 
   void _showLeaveConfirmationDialog(BuildContext context) {
-    showDialog<void>(
+    showConfirmationDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Leave Leaderboard'),
-        content: Text(
-          'Are you sure you want to leave "${widget.leaderboard.name}"?',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
-          ),
-          FilledButton(
-            onPressed: () async {
-              await _leaderboardService.leaveLeaderboard(widget.leaderboard.id);
-              if (context.mounted) {
-                Navigator.of(context).popUntil((route) => route.isFirst);
-              }
-            },
-            child: const Text('Leave'),
-          ),
-        ],
-      ),
+      title: 'Leave Leaderboard',
+      text: 'Are you sure you want to leave "${widget.leaderboard.name}"?',
+      submitButtonText: 'Leave',
+      onPressed: () async {
+        await _leaderboardService.leaveLeaderboard(widget.leaderboard.id);
+        if (context.mounted) {
+          Navigator.of(context).popUntil((route) => route.isFirst);
+        }
+      },
     );
   }
 
