@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:remembeer/auth/service/auth_service.dart';
 import 'package:remembeer/leaderboard/controller/leaderboard_controller.dart';
+import 'package:remembeer/leaderboard/model/join_leaderboard_result.dart';
 import 'package:remembeer/leaderboard/model/leaderboard.dart';
 import 'package:remembeer/leaderboard/model/leaderboard_create.dart';
 import 'package:remembeer/leaderboard/model/leaderboard_entry.dart';
@@ -157,16 +158,20 @@ class LeaderboardService {
     await leaderboardController.updateSingle(updatedLeaderboard);
   }
 
-  Future<bool> joinLeaderboard(String leaderboardId) async {
+  Future<JoinLeaderboardResult> joinLeaderboard(String leaderboardId) async {
     final leaderboard = await leaderboardController.findById(leaderboardId);
     final currentUserId = authService.authenticatedUser.uid;
 
     if (leaderboard.memberIds.contains(currentUserId)) {
-      return true;
+      return JoinLeaderboardResult.alreadyMember;
+    }
+
+    if (leaderboard.bannedMemberIds.contains(currentUserId)) {
+      return JoinLeaderboardResult.banned;
     }
 
     if (leaderboard.memberIds.length >= maxLeaderboardMembers) {
-      return false;
+      return JoinLeaderboardResult.full;
     }
 
     final updatedLeaderboard = leaderboard.copyWith(
@@ -174,7 +179,7 @@ class LeaderboardService {
     );
 
     await leaderboardController.updateSingle(updatedLeaderboard);
-    return true;
+    return JoinLeaderboardResult.success;
   }
 
   bool isOwner(Leaderboard leaderboard) {
