@@ -37,6 +37,9 @@ class LeaderboardService {
   Future<Leaderboard?> findByInviteCode(String inviteCode) =>
       leaderboardController.findByInviteCode(inviteCode);
 
+  Stream<Leaderboard> streamById(String id) =>
+      leaderboardController.streamById(id);
+
   Future<void> createLeaderboard(String name) async {
     final inviteCode = await _generateUniqueInviteCode();
     final currentUserId = authService.authenticatedUser.uid;
@@ -44,7 +47,7 @@ class LeaderboardService {
     await leaderboardController.createSingle(
       LeaderboardCreate(
         name: name,
-        userIds: {currentUserId},
+        memberIds: {currentUserId},
         inviteCode: inviteCode,
       ),
     );
@@ -56,6 +59,10 @@ class LeaderboardService {
   }) async {
     final leaderboard = await leaderboardController.findById(leaderboardId);
 
+    if (leaderboard.userId != authService.authenticatedUser.uid) {
+      throw StateError('Only the owner can update the leaderboard name.');
+    }
+
     if (leaderboard.name == newName) {
       return;
     }
@@ -65,20 +72,77 @@ class LeaderboardService {
     await leaderboardController.updateSingle(updatedLeaderboard);
   }
 
+  Future<void> deleteLeaderboard(String leaderboardId) async {
+    final leaderboard = await leaderboardController.findById(leaderboardId);
+
+    if (leaderboard.userId != authService.authenticatedUser.uid) {
+      throw StateError('Only the owner can delete the leaderboard.');
+    }
+
+    await leaderboardController.deleteSingle(leaderboard);
+  }
+
+  Future<void> removeMember({
+    required String leaderboardId,
+    required String memberId,
+  }) async {
+    final leaderboard = await leaderboardController.findById(leaderboardId);
+    final currentUserId = authService.authenticatedUser.uid;
+
+    if (leaderboard.userId != currentUserId) {
+      throw StateError(
+        'Only the owner can remove members from the leaderboard.',
+      );
+    }
+
+    if (memberId == currentUserId) {
+      throw StateError(
+        'The owner cannot remove themselves from the leaderboard.',
+      );
+    }
+
+    final updatedMemberIds = Set<String>.from(leaderboard.memberIds)
+      ..remove(memberId);
+
+    final updatedLeaderboard = leaderboard.copyWith(
+      memberIds: updatedMemberIds,
+    );
+
+    await leaderboardController.updateSingle(updatedLeaderboard);
+  }
+
+  Future<void> leaveLeaderboard(String leaderboardId) async {
+    final leaderboard = await leaderboardController.findById(leaderboardId);
+    final currentUserId = authService.authenticatedUser.uid;
+
+    if (leaderboard.userId == currentUserId) {
+      throw StateError('The owner cannot leave their own leaderboard.');
+    }
+
+    final updatedMemberIds = Set<String>.from(leaderboard.memberIds)
+      ..remove(currentUserId);
+
+    final updatedLeaderboard = leaderboard.copyWith(
+      memberIds: updatedMemberIds,
+    );
+
+    await leaderboardController.updateSingle(updatedLeaderboard);
+  }
+
   Future<bool> joinLeaderboard(String leaderboardId) async {
     final leaderboard = await leaderboardController.findById(leaderboardId);
     final currentUserId = authService.authenticatedUser.uid;
 
-    if (leaderboard.userIds.contains(currentUserId)) {
+    if (leaderboard.memberIds.contains(currentUserId)) {
       return true;
     }
 
-    if (leaderboard.userIds.length >= maxLeaderboardMembers) {
+    if (leaderboard.memberIds.length >= maxLeaderboardMembers) {
       return false;
     }
 
     final updatedLeaderboard = leaderboard.copyWith(
-      userIds: {...leaderboard.userIds, currentUserId},
+      memberIds: {...leaderboard.memberIds, currentUserId},
     );
 
     await leaderboardController.updateSingle(updatedLeaderboard);
@@ -90,13 +154,18 @@ class LeaderboardService {
   }
 
   Stream<List<LeaderboardEntry>> standingsStreamFor(Leaderboard leaderboard) {
-    return monthService.selectedMonthStream.switchMap(
-      (selectedMonth) => _standingsStreamForMonth(
-        leaderboard: leaderboard,
+    return Rx.combineLatest2(
+      leaderboardController.streamById(leaderboard.id),
+      monthService.selectedMonthStream,
+      (leaderboard, selectedMonth) => (leaderboard, selectedMonth),
+    ).switchMap((record) {
+      final (leaderboard, selectedMonth) = record;
+      return _standingsStreamForMemberIds(
+        memberIds: leaderboard.memberIds.toList(),
         year: selectedMonth.year,
         month: selectedMonth.month,
-      ),
-    );
+      );
+    });
   }
 
   Stream<LeaderboardEntry?> currentUserStandingStreamFor(
@@ -105,25 +174,33 @@ class LeaderboardService {
     final now = DateTime.now();
     final currentUserId = authService.authenticatedUser.uid;
 
-    return _standingsStreamForMonth(
-      leaderboard: leaderboard,
-      year: now.year,
-      month: now.month,
-    ).map(
-      (standings) =>
-          standings.where((e) => e.user.id == currentUserId).firstOrNull,
-    );
+    return leaderboardController
+        .streamById(leaderboard.id)
+        .switchMap(
+          (leaderboard) =>
+              _standingsStreamForMemberIds(
+                memberIds: leaderboard.memberIds.toList(),
+                year: now.year,
+                month: now.month,
+              ).map(
+                (standings) => standings
+                    .where((e) => e.user.id == currentUserId)
+                    .firstOrNull,
+              ),
+        );
   }
 
-  Stream<List<LeaderboardEntry>> _standingsStreamForMonth({
-    required Leaderboard leaderboard,
+  Stream<List<LeaderboardEntry>> _standingsStreamForMemberIds({
+    required List<String> memberIds,
     required int year,
     required int month,
   }) {
-    final userIds = leaderboard.userIds.toList();
+    if (memberIds.isEmpty) {
+      return Stream.value([]);
+    }
 
     // TODO(metju-ac): Optimize this by storing the monthly stats in firestore
-    final statsStreams = userIds.map(
+    final statsStreams = memberIds.map(
       (userId) => userStatsService.monthlyStatsStreamFor(
         userId: userId,
         year: year,
@@ -134,10 +211,10 @@ class LeaderboardService {
     return Rx.combineLatestList(statsStreams).asyncMap((statsList) async {
       final entries = <LeaderboardEntry>[];
 
-      for (var i = 0; i < userIds.length; i++) {
-        final userId = userIds[i];
+      for (var i = 0; i < memberIds.length; i++) {
+        final memberId = memberIds[i];
         final stats = statsList[i];
-        final user = await userController.userById(userId);
+        final user = await userController.userById(memberId);
 
         entries.add(
           LeaderboardEntry(

@@ -15,7 +15,7 @@ class LeaderboardCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final memberCount = leaderboard.userIds.length;
+    final memberCount = leaderboard.memberIds.length;
 
     return Card(
       child: ListTile(
@@ -47,6 +47,11 @@ class LeaderboardCard extends StatelessWidget {
   Widget _buildStandingInfo(BuildContext context, ThemeData theme) {
     return AsyncBuilder(
       stream: _leaderboardService.currentUserStandingStreamFor(leaderboard),
+      waitingBuilder: (_) => const SizedBox(
+        width: 24,
+        height: 24,
+        child: CircularProgressIndicator(strokeWidth: 2),
+      ),
       builder: (context, leaderboardEntry) {
         if (leaderboardEntry == null) {
           return const Icon(Icons.chevron_right);

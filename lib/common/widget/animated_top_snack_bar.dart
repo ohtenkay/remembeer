@@ -1,33 +1,20 @@
 import 'package:flutter/material.dart';
 
-void _showTopSnackBar(BuildContext context, String message) {
-  final overlay = Overlay.of(context);
-  late OverlayEntry overlayEntry;
-
-  overlayEntry = OverlayEntry(
-    builder: (context) => _AnimatedTopSnackBar(
-      message: message,
-      onDismissed: () => overlayEntry.remove(),
-    ),
-  );
-
-  overlay.insert(overlayEntry);
-}
-
-class _AnimatedTopSnackBar extends StatefulWidget {
+class AnimatedTopSnackBar extends StatefulWidget {
   final String message;
   final VoidCallback onDismissed;
 
-  const _AnimatedTopSnackBar({
+  const AnimatedTopSnackBar({
+    super.key,
     required this.message,
     required this.onDismissed,
   });
 
   @override
-  State<_AnimatedTopSnackBar> createState() => _AnimatedTopSnackBarState();
+  State<AnimatedTopSnackBar> createState() => _AnimatedTopSnackBarState();
 }
 
-class _AnimatedTopSnackBarState extends State<_AnimatedTopSnackBar>
+class _AnimatedTopSnackBarState extends State<AnimatedTopSnackBar>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<Offset> _slideAnimation;
@@ -94,12 +81,4 @@ class _AnimatedTopSnackBarState extends State<_AnimatedTopSnackBar>
       ),
     );
   }
-}
-
-void showDefaultDrinkAdded(BuildContext context) {
-  _showTopSnackBar(context, 'Default drink added!');
-}
-
-void showDrinkDeleted(BuildContext context) {
-  _showTopSnackBar(context, 'Drink deleted!');
 }

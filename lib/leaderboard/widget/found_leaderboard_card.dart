@@ -15,7 +15,7 @@ class FoundLeaderboardCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final memberCount = leaderboard.userIds.length;
+    final memberCount = leaderboard.memberIds.length;
     final isFull = memberCount >= maxLeaderboardMembers;
 
     return Column(

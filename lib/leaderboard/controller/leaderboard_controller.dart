@@ -10,7 +10,7 @@ class LeaderboardController extends Controller<Leaderboard, LeaderboardCreate> {
   Stream<List<Leaderboard>> get myLeaderboardsStream {
     return readCollection
         .where(deletedAtField, isNull: true)
-        .where('userIds', arrayContains: authService.authenticatedUser.uid)
+        .where('memberIds', arrayContains: authService.authenticatedUser.uid)
         .snapshots()
         .map(
           (querySnapshot) => List.unmodifiable(
@@ -28,6 +28,16 @@ class LeaderboardController extends Controller<Leaderboard, LeaderboardCreate> {
       throw StateError('Leaderboard with id $id not found.');
     }
     return data;
+  }
+
+  Stream<Leaderboard> streamById(String id) {
+    return readCollection.doc(id).snapshots().map((snapshot) {
+      final data = snapshot.data();
+      if (data == null || data.deletedAt != null) {
+        throw StateError('Leaderboard with id $id not found.');
+      }
+      return data;
+    });
   }
 
   Future<Leaderboard?> findByInviteCode(String inviteCode) async {

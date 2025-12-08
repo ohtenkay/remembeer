@@ -49,7 +49,7 @@ class LeaderboardsPage extends StatelessWidget {
             onPressed: () => {
               Navigator.of(context).push(
                 MaterialPageRoute<void>(
-                  builder: (context) => const CreateLeaderboardPage(),
+                  builder: (context) => CreateLeaderboardPage(),
                 ),
               ),
             },

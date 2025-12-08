@@ -22,7 +22,9 @@ Leaderboard _$LeaderboardFromJson(Map<String, dynamic> json) => Leaderboard(
     const TimestampConverter().fromJson,
   ),
   name: json['name'] as String,
-  userIds: (json['userIds'] as List<dynamic>).map((e) => e as String).toSet(),
+  memberIds: (json['memberIds'] as List<dynamic>)
+      .map((e) => e as String)
+      .toSet(),
   inviteCode: json['inviteCode'] as String,
 );
 
@@ -43,7 +45,7 @@ Map<String, dynamic> _$LeaderboardToJson(Leaderboard instance) =>
         const TimestampConverter().toJson,
       ),
       'name': instance.name,
-      'userIds': instance.userIds.toList(),
+      'memberIds': instance.memberIds.toList(),
       'inviteCode': instance.inviteCode,
     };
 
