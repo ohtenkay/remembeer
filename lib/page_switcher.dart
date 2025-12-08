@@ -6,10 +6,10 @@ import 'package:remembeer/drink/page/drink_page.dart';
 import 'package:remembeer/drink/service/drink_service.dart';
 import 'package:remembeer/drink_type/model/drink_category.dart';
 import 'package:remembeer/ioc/ioc_container.dart';
+import 'package:remembeer/leaderboard/page/leaderboards_page.dart';
 import 'package:remembeer/pages/activity_page.dart';
-import 'package:remembeer/pages/leaderboards_page.dart';
-import 'package:remembeer/pages/profile_page.dart';
-import 'package:remembeer/pages/settings_page.dart';
+import 'package:remembeer/user/page/profile_page.dart';
+import 'package:remembeer/user_settings/page/settings_page.dart';
 
 const _drinkPageIndex = 2;
 const _activeIconSize = 36.0;
@@ -29,7 +29,7 @@ class _PageSwitcherState extends State<PageSwitcher> {
 
   static final _pages = <Widget>[
     ProfilePage(),
-    const LeaderboardsPage(),
+    LeaderboardsPage(),
     const DrinkPage(),
     const ActivityPage(),
     SettingsPage(),
