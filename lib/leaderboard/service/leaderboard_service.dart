@@ -140,6 +140,29 @@ class LeaderboardService {
     await leaderboardController.updateSingle(updatedLeaderboard);
   }
 
+  Future<void> unbanMember({
+    required String leaderboardId,
+    required String memberId,
+  }) async {
+    final leaderboard = await leaderboardController.findById(leaderboardId);
+    final currentUserId = authService.authenticatedUser.uid;
+
+    if (leaderboard.userId != currentUserId) {
+      throw StateError(
+        'Only the owner can unban members from the leaderboard.',
+      );
+    }
+
+    final updatedBannedMemberIds = Set<String>.from(leaderboard.bannedMemberIds)
+      ..remove(memberId);
+
+    final updatedLeaderboard = leaderboard.copyWith(
+      bannedMemberIds: updatedBannedMemberIds,
+    );
+
+    await leaderboardController.updateSingle(updatedLeaderboard);
+  }
+
   Future<void> leaveLeaderboard(String leaderboardId) async {
     final leaderboard = await leaderboardController.findById(leaderboardId);
     final currentUserId = authService.authenticatedUser.uid;
