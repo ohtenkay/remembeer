@@ -1,0 +1,1 @@
+enum SwipeDirection { left, right }

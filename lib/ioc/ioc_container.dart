@@ -8,6 +8,7 @@ import 'package:remembeer/drink_type/controller/drink_type_controller.dart';
 import 'package:remembeer/friend_request/controller/friend_request_controller.dart';
 import 'package:remembeer/leaderboard/controller/leaderboard_controller.dart';
 import 'package:remembeer/leaderboard/service/leaderboard_service.dart';
+import 'package:remembeer/leaderboard/service/month_service.dart';
 import 'package:remembeer/user/controller/user_controller.dart';
 import 'package:remembeer/user/service/user_service.dart';
 import 'package:remembeer/user_settings/controller/user_settings_controller.dart';
@@ -23,7 +24,8 @@ class IoCContainer {
     get
       ..registerSingleton(FirebaseAuth.instance)
       ..registerSingleton(AuthService(firebaseAuth: get<FirebaseAuth>()))
-      ..registerSingleton(DateService());
+      ..registerSingleton(DateService())
+      ..registerSingleton(MonthService());
 
     _registerControllers();
     _registerServices();
@@ -74,6 +76,9 @@ class IoCContainer {
         LeaderboardService(
           authService: get<AuthService>(),
           leaderboardController: get<LeaderboardController>(),
+          userController: get<UserController>(),
+          userStatsService: get<UserStatsService>(),
+          monthService: get<MonthService>(),
         ),
       );
   }

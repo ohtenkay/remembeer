@@ -73,7 +73,7 @@ class LeaderboardsPage extends StatelessWidget {
           itemCount: leaderboards.length,
           itemBuilder: (context, index) {
             final leaderboard = leaderboards[index];
-            return LeaderboardCard(leaderboard: leaderboard, onTap: () => {});
+            return LeaderboardCard(leaderboard: leaderboard);
           },
         );
       },

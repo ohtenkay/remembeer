@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:remembeer/common/widget/async_builder.dart';
+import 'package:remembeer/ioc/ioc_container.dart';
 import 'package:remembeer/leaderboard/model/leaderboard.dart';
+import 'package:remembeer/leaderboard/page/leaderboard_detail_page.dart';
+import 'package:remembeer/leaderboard/service/leaderboard_service.dart';
 
 class LeaderboardCard extends StatelessWidget {
   final Leaderboard leaderboard;
-  final VoidCallback? onTap;
 
-  const LeaderboardCard({super.key, required this.leaderboard, this.onTap});
+  LeaderboardCard({super.key, required this.leaderboard});
+
+  final _leaderboardService = get<LeaderboardService>();
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +19,14 @@ class LeaderboardCard extends StatelessWidget {
 
     return Card(
       child: ListTile(
-        onTap: onTap,
+        onTap: () {
+          Navigator.of(context).push(
+            MaterialPageRoute<void>(
+              builder: (context) =>
+                  LeaderboardDetailPage(leaderboard: leaderboard),
+            ),
+          );
+        },
         leading: CircleAvatar(
           backgroundColor: theme.colorScheme.primaryContainer,
           child: Icon(
@@ -27,8 +39,75 @@ class LeaderboardCard extends StatelessWidget {
           '$memberCount ${memberCount == 1 ? 'member' : 'members'}',
           style: theme.textTheme.bodySmall,
         ),
-        trailing: const Icon(Icons.chevron_right),
+        trailing: _buildStandingInfo(context, theme),
       ),
     );
   }
+
+  Widget _buildStandingInfo(BuildContext context, ThemeData theme) {
+    return AsyncBuilder(
+      stream: _leaderboardService.currentUserStandingStreamFor(leaderboard),
+      builder: (context, leaderboardEntry) {
+        if (leaderboardEntry == null) {
+          return const Icon(Icons.chevron_right);
+        }
+
+        return Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _buildRankChip(
+              theme,
+              Icons.sports_bar,
+              leaderboardEntry.rankByBeers,
+            ),
+            const SizedBox(width: 4),
+            _buildRankChip(
+              theme,
+              Icons.local_bar,
+              leaderboardEntry.rankByAlcohol,
+            ),
+            const SizedBox(width: 4),
+            const Icon(Icons.chevron_right),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildRankChip(ThemeData theme, IconData icon, int rank) {
+    final isHighlighted = rank <= 3;
+    final backgroundColor = _getRankColor(rank, theme);
+    final foregroundColor = isHighlighted
+        ? Colors.white
+        : theme.colorScheme.onSurfaceVariant;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 14, color: foregroundColor),
+          const SizedBox(width: 2),
+          Text(
+            '#$rank',
+            style: theme.textTheme.labelSmall?.copyWith(
+              color: foregroundColor,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Color _getRankColor(int rank, ThemeData theme) => switch (rank) {
+    1 => const Color(0xFFE8B41E),
+    2 => const Color(0xFF9C9B9B),
+    3 => const Color(0xFFC36A1D),
+    _ => theme.colorScheme.surfaceContainerHighest,
+  };
 }
