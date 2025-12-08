@@ -9,6 +9,7 @@ part 'leaderboard.g.dart';
 class Leaderboard extends Entity {
   final String name;
   final Set<String> memberIds;
+  final Set<String> bannedMemberIds;
   final String inviteCode;
 
   const Leaderboard({
@@ -19,6 +20,7 @@ class Leaderboard extends Entity {
     super.deletedAt,
     required this.name,
     required this.memberIds,
+    required this.bannedMemberIds,
     required this.inviteCode,
   });
 
@@ -28,7 +30,11 @@ class Leaderboard extends Entity {
   @override
   Map<String, dynamic> toJson() => _$LeaderboardToJson(this);
 
-  Leaderboard copyWith({String? name, Set<String>? memberIds}) {
+  Leaderboard copyWith({
+    String? name,
+    Set<String>? memberIds,
+    Set<String>? bannedMemberIds,
+  }) {
     return Leaderboard(
       id: id,
       createdAt: createdAt,
@@ -39,6 +45,7 @@ class Leaderboard extends Entity {
 
       name: name ?? this.name,
       memberIds: memberIds ?? this.memberIds,
+      bannedMemberIds: bannedMemberIds ?? this.bannedMemberIds,
     );
   }
 }

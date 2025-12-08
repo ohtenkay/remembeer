@@ -7,11 +7,13 @@ part 'leaderboard_create.g.dart';
 class LeaderboardCreate extends ValueObject {
   final String name;
   final Set<String> memberIds;
+  final Set<String> bannedMemberIds;
   final String inviteCode;
 
   LeaderboardCreate({
     required this.name,
     required this.memberIds,
+    this.bannedMemberIds = const {},
     required this.inviteCode,
   });
 

@@ -122,6 +122,7 @@ class ManageLeaderboardPage extends StatelessWidget {
               user: user,
               isOwner: isOwner,
               onRemove: () => _showRemoveConfirmationDialog(context, user),
+              onBan: () => _showBanConfirmationDialog(context, user),
             );
           },
         );
@@ -153,6 +154,36 @@ class ManageLeaderboardPage extends StatelessWidget {
               }
             },
             child: const Text('Remove'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showBanConfirmationDialog(BuildContext context, UserModel user) {
+    showDialog<void>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Ban Member'),
+        content: Text(
+          'Are you sure you want to ban "${user.username}" from the leaderboard?',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () async {
+              await _leaderboardService.banMember(
+                leaderboardId: leaderboard.id,
+                memberId: user.id,
+              );
+              if (context.mounted) {
+                Navigator.of(context).pop();
+              }
+            },
+            child: const Text('Ban'),
           ),
         ],
       ),

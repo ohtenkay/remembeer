@@ -25,6 +25,9 @@ Leaderboard _$LeaderboardFromJson(Map<String, dynamic> json) => Leaderboard(
   memberIds: (json['memberIds'] as List<dynamic>)
       .map((e) => e as String)
       .toSet(),
+  bannedMemberIds: (json['bannedMemberIds'] as List<dynamic>)
+      .map((e) => e as String)
+      .toSet(),
   inviteCode: json['inviteCode'] as String,
 );
 
@@ -46,6 +49,7 @@ Map<String, dynamic> _$LeaderboardToJson(Leaderboard instance) =>
       ),
       'name': instance.name,
       'memberIds': instance.memberIds.toList(),
+      'bannedMemberIds': instance.bannedMemberIds.toList(),
       'inviteCode': instance.inviteCode,
     };
 
