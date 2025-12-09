@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:remembeer/common/formatter/uppercase_formatter.dart';
 import 'package:remembeer/common/widget/page_template.dart';
 import 'package:remembeer/ioc/ioc_container.dart';
+import 'package:remembeer/leaderboard/model/join_leaderboard_result.dart';
 import 'package:remembeer/leaderboard/model/leaderboard.dart';
 import 'package:remembeer/leaderboard/service/leaderboard_service.dart';
 import 'package:remembeer/leaderboard/widget/found_leaderboard_card.dart';
@@ -155,19 +156,26 @@ class _JoinLeaderboardPageState extends State<JoinLeaderboardPage> {
   Future<void> _joinLeaderboard() async {
     if (_foundLeaderboard == null) return;
 
-    final success = await _leaderboardService.joinLeaderboard(
+    final result = await _leaderboardService.joinLeaderboard(
       _foundLeaderboard!.id,
     );
 
     if (!mounted) return;
 
-    if (success) {
-      Navigator.of(context).pop();
-    } else {
-      setState(() {
-        _foundLeaderboard = null;
-        _errorMessage = 'Leaderboard is full.';
-      });
+    switch (result) {
+      case JoinLeaderboardResult.success:
+      case JoinLeaderboardResult.alreadyMember:
+        Navigator.of(context).pop();
+      case JoinLeaderboardResult.full:
+        setState(() {
+          _foundLeaderboard = null;
+          _errorMessage = 'Leaderboard is full.';
+        });
+      case JoinLeaderboardResult.banned:
+        setState(() {
+          _foundLeaderboard = null;
+          _errorMessage = 'You are banned from this leaderboard.';
+        });
     }
   }
 }

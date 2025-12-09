@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:remembeer/common/action/confirmation_dialog.dart';
 import 'package:remembeer/common/widget/async_builder.dart';
 import 'package:remembeer/common/widget/page_template.dart';
 import 'package:remembeer/ioc/ioc_container.dart';
 import 'package:remembeer/leaderboard/model/leaderboard.dart';
 import 'package:remembeer/leaderboard/page/update_leaderboard_name_page.dart';
 import 'package:remembeer/leaderboard/service/leaderboard_service.dart';
+import 'package:remembeer/leaderboard/widget/banned_member_card.dart';
 import 'package:remembeer/leaderboard/widget/member_card.dart';
 import 'package:remembeer/user/controller/user_controller.dart';
 import 'package:remembeer/user/model/user_model.dart';
@@ -69,29 +71,42 @@ class ManageLeaderboardPage extends StatelessWidget {
   }
 
   Widget _buildMembersSection(BuildContext context) {
-    final theme = Theme.of(context);
-
     return Expanded(
       child: AsyncBuilder<Leaderboard>(
         stream: _leaderboardService.streamById(leaderboard.id),
         builder: (context, currentLeaderboard) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          return ListView(
             children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Text(
-                  'Members (${currentLeaderboard.memberIds.length})',
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+              _buildSectionHeader(
+                context,
+                'Members (${currentLeaderboard.memberIds.length})',
               ),
-              const SizedBox(height: 8),
-              Expanded(child: _buildMembersList(currentLeaderboard)),
+              _buildMembersList(currentLeaderboard),
+              if (currentLeaderboard.bannedMemberIds.isNotEmpty) ...[
+                const SizedBox(height: 24),
+                _buildSectionHeader(
+                  context,
+                  'Banned (${currentLeaderboard.bannedMemberIds.length})',
+                ),
+                _buildBannedMembersList(currentLeaderboard),
+              ],
             ],
           );
         },
+      ),
+    );
+  }
+
+  Widget _buildSectionHeader(BuildContext context, String title) {
+    final theme = Theme.of(context);
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Text(
+        title,
+        style: theme.textTheme.titleMedium?.copyWith(
+          fontWeight: FontWeight.bold,
+        ),
       ),
     );
   }
@@ -109,10 +124,8 @@ class ManageLeaderboardPage extends StatelessWidget {
     final memberIds = currentLeaderboard.memberIds.toList();
     final ownerId = currentLeaderboard.userId;
 
-    return ListView.builder(
-      itemCount: memberIds.length,
-      itemBuilder: (context, index) {
-        final userId = memberIds[index];
+    return Column(
+      children: memberIds.map((userId) {
         final isOwner = userId == ownerId;
 
         return AsyncBuilder<UserModel>(
@@ -122,39 +135,70 @@ class ManageLeaderboardPage extends StatelessWidget {
               user: user,
               isOwner: isOwner,
               onRemove: () => _showRemoveConfirmationDialog(context, user),
+              onBan: () => _showBanConfirmationDialog(context, user),
             );
           },
         );
-      },
+      }).toList(),
+    );
+  }
+
+  Widget _buildBannedMembersList(Leaderboard currentLeaderboard) {
+    final bannedMemberIds = currentLeaderboard.bannedMemberIds.toList();
+
+    return Column(
+      children: bannedMemberIds.map((userId) {
+        return AsyncBuilder<UserModel>(
+          future: _userController.userById(userId),
+          builder: (context, user) {
+            return BannedMemberCard(
+              user: user,
+              onUnban: () => _showUnbanConfirmationDialog(context, user),
+            );
+          },
+        );
+      }).toList(),
     );
   }
 
   void _showRemoveConfirmationDialog(BuildContext context, UserModel user) {
-    showDialog<void>(
+    showConfirmationDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Remove Member'),
-        content: Text(
+      title: 'Remove Member',
+      text:
           'Are you sure you want to remove "${user.username}" from the leaderboard?',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
-          ),
-          FilledButton(
-            onPressed: () async {
-              await _leaderboardService.removeMember(
-                leaderboardId: leaderboard.id,
-                memberId: user.id,
-              );
-              if (context.mounted) {
-                Navigator.of(context).pop();
-              }
-            },
-            child: const Text('Remove'),
-          ),
-        ],
+      submitButtonText: 'Remove',
+      onPressed: () => _leaderboardService.removeMember(
+        leaderboardId: leaderboard.id,
+        memberId: user.id,
+      ),
+    );
+  }
+
+  void _showBanConfirmationDialog(BuildContext context, UserModel user) {
+    showConfirmationDialog(
+      context: context,
+      title: 'Ban Member',
+      text:
+          'Are you sure you want to ban "${user.username}" from the leaderboard?',
+      submitButtonText: 'Ban',
+      onPressed: () => _leaderboardService.banMember(
+        leaderboardId: leaderboard.id,
+        memberId: user.id,
+      ),
+    );
+  }
+
+  void _showUnbanConfirmationDialog(BuildContext context, UserModel user) {
+    showConfirmationDialog(
+      context: context,
+      title: 'Unban Member',
+      text:
+          'Are you sure you want to unban "${user.username}"? They will be able to rejoin the leaderboard.',
+      submitButtonText: 'Unban',
+      onPressed: () => _leaderboardService.unbanMember(
+        leaderboardId: leaderboard.id,
+        memberId: user.id,
       ),
     );
   }
@@ -174,35 +218,20 @@ class ManageLeaderboardPage extends StatelessWidget {
   }
 
   void _showDeleteConfirmationDialog(BuildContext context) {
-    final theme = Theme.of(context);
-
-    showDialog<void>(
+    showConfirmationDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Delete Leaderboard'),
-        content: Text(
+      title: 'Delete Leaderboard',
+      text:
           'Are you sure you want to delete "${leaderboard.name}"? '
           'This action cannot be undone.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
-          ),
-          FilledButton(
-            onPressed: () async {
-              await _leaderboardService.deleteLeaderboard(leaderboard.id);
-              if (context.mounted) {
-                Navigator.of(context).popUntil((route) => route.isFirst);
-              }
-            },
-            style: FilledButton.styleFrom(
-              backgroundColor: theme.colorScheme.error,
-            ),
-            child: const Text('Delete'),
-          ),
-        ],
-      ),
+      submitButtonText: 'Delete',
+      isDestructive: true,
+      onPressed: () async {
+        await _leaderboardService.deleteLeaderboard(leaderboard.id);
+        if (context.mounted) {
+          Navigator.of(context).popUntil((route) => route.isFirst);
+        }
+      },
     );
   }
 }

@@ -5,12 +5,14 @@ class MemberCard extends StatelessWidget {
   final UserModel user;
   final bool isOwner;
   final VoidCallback onRemove;
+  final VoidCallback onBan;
 
   const MemberCard({
     super.key,
     required this.user,
     required this.isOwner,
     required this.onRemove,
+    required this.onBan,
   });
 
   @override
@@ -55,7 +57,7 @@ class MemberCard extends StatelessWidget {
       children: [
         IconButton(onPressed: onRemove, icon: const Icon(Icons.person_remove)),
         IconButton(
-          onPressed: () {},
+          onPressed: onBan,
           icon: const Icon(Icons.block),
           color: Theme.of(context).colorScheme.error,
         ),
