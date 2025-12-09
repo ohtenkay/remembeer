@@ -78,7 +78,6 @@ class IoCContainer {
           authService: get<AuthService>(),
           leaderboardController: get<LeaderboardController>(),
           userController: get<UserController>(),
-          userStatsService: get<UserStatsService>(),
           monthService: get<MonthService>(),
         ),
       );

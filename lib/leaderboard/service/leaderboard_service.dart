@@ -8,7 +8,6 @@ import 'package:remembeer/leaderboard/model/leaderboard_create.dart';
 import 'package:remembeer/leaderboard/model/leaderboard_entry.dart';
 import 'package:remembeer/leaderboard/service/month_service.dart';
 import 'package:remembeer/user/controller/user_controller.dart';
-import 'package:remembeer/user_stats/service/user_stats_service.dart';
 import 'package:rxdart/rxdart.dart';
 
 const inviteCodeLength = 8;
@@ -22,9 +21,6 @@ class LeaderboardService {
   final LeaderboardController leaderboardController;
   final UserController userController;
 
-  // TODO(metju-ac): remove this after saving monthly stats in firestore
-  final UserStatsService userStatsService;
-
   final _random = Random.secure();
 
   LeaderboardService({
@@ -32,7 +28,6 @@ class LeaderboardService {
     required this.monthService,
     required this.leaderboardController,
     required this.userController,
-    required this.userStatsService,
   });
 
   Future<Leaderboard?> findByInviteCode(String inviteCode) =>
@@ -278,33 +273,19 @@ class LeaderboardService {
       return Stream.value([]);
     }
 
-    // TODO(metju-ac): Optimize this by storing the monthly stats in firestore
-    final statsStreams = memberIds.map(
-      (userId) => userStatsService.monthlyStatsStreamFor(
-        userId: userId,
-        year: year,
-        month: month,
-      ),
-    );
+    final userStreams = memberIds.map(userController.userStreamFor);
 
-    return Rx.combineLatestList(statsStreams).asyncMap((statsList) async {
-      final entries = <LeaderboardEntry>[];
-
-      for (var i = 0; i < memberIds.length; i++) {
-        final memberId = memberIds[i];
-        final stats = statsList[i];
-        final user = await userController.userById(memberId);
-
-        entries.add(
-          LeaderboardEntry(
-            user: user,
-            beersConsumed: stats.beersConsumed,
-            alcoholConsumedMl: stats.alcoholConsumedMl,
-            rankByBeers: 0,
-            rankByAlcohol: 0,
-          ),
+    return Rx.combineLatestList(userStreams).map((users) {
+      final entries = users.map((user) {
+        final stats = user.getMonthlyStats(year, month);
+        return LeaderboardEntry(
+          user: user,
+          beersConsumed: stats.beersConsumed,
+          alcoholConsumedMl: stats.alcoholConsumedMl,
+          rankByBeers: 0,
+          rankByAlcohol: 0,
         );
-      }
+      }).toList();
 
       return _computeRanks(entries);
     });
