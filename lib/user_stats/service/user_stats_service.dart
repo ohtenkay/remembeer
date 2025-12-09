@@ -1,7 +1,6 @@
 import 'package:remembeer/drink/controller/drink_controller.dart';
 import 'package:remembeer/drink/model/drink.dart';
 import 'package:remembeer/drink_type/model/drink_category.dart';
-import 'package:remembeer/user/model/monthly_stats.dart';
 import 'package:remembeer/user_stats/model/user_stats.dart';
 
 const _beerVolumeMl = 500;
@@ -10,6 +9,14 @@ class UserStatsService {
   final DrinkController drinkController;
 
   UserStatsService({required this.drinkController});
+
+  Stream<UserStats> get userStatsStream {
+    return _mapDrinksToStats(drinkController.userRelatedEntitiesStream);
+  }
+
+  Stream<UserStats> userStatsStreamFor(String userId) {
+    return _mapDrinksToStats(drinkController.drinksStreamFor(userId));
+  }
 
   Stream<UserStats> _mapDrinksToStats(Stream<List<Drink>> drinksStream) {
     return drinksStream.map((drinks) {
@@ -31,27 +38,6 @@ class UserStatsService {
         isStreakActive: isStreakActive,
       );
     });
-  }
-
-  Stream<UserStats> get userStatsStream {
-    return _mapDrinksToStats(drinkController.userRelatedEntitiesStream);
-  }
-
-  Stream<UserStats> userStatsStreamFor(String userId) {
-    return _mapDrinksToStats(drinkController.drinksStreamFor(userId));
-  }
-
-  Stream<MonthlyStats> monthlyStatsStreamFor({
-    required String userId,
-    required int year,
-    required int month,
-  }) {
-    return drinkController
-        .drinksStreamFor(userId)
-        .map(
-          (drinks) =>
-              _computeMonthlyStats(drinks: drinks, year: year, month: month),
-        );
   }
 
   double _calculateEquivalentBeers(List<Drink> drinks) {
@@ -106,38 +92,5 @@ class UserStatsService {
     }
 
     return (isStreakActive, streakDays);
-  }
-
-  List<Drink> _filterDrinksByMonth({
-    required List<Drink> drinks,
-    required int year,
-    required int month,
-  }) {
-    final monthStart = DateTime(year, month);
-    final monthEnd = DateTime(year, month + 1);
-
-    return drinks.where((drink) {
-      return !drink.consumedAt.isBefore(monthStart) &&
-          drink.consumedAt.isBefore(monthEnd);
-    }).toList();
-  }
-
-  MonthlyStats _computeMonthlyStats({
-    required List<Drink> drinks,
-    required int year,
-    required int month,
-  }) {
-    final monthlyDrinks = _filterDrinksByMonth(
-      drinks: drinks,
-      year: year,
-      month: month,
-    );
-
-    return MonthlyStats(
-      year: year,
-      month: month,
-      beersConsumed: _calculateEquivalentBeers(monthlyDrinks),
-      alcoholConsumedMl: _calculateTotalAlcohol(monthlyDrinks),
-    );
   }
 }
