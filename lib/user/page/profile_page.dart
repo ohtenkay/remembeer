@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:remembeer/common/action/confirmation_dialog.dart';
 import 'package:remembeer/common/widget/async_builder.dart';
 import 'package:remembeer/common/widget/drink_icon.dart';
 import 'package:remembeer/common/widget/page_template.dart';
@@ -161,7 +162,7 @@ class ProfilePage extends StatelessWidget {
 
         switch (status) {
           case FriendshipStatus.friends:
-            onPressed = () => _userService.removeFriend(user.id);
+            onPressed = () => _showRemoveFriendDialog(context, user);
             icon = Icons.person_remove;
             label = 'Remove friend';
           case FriendshipStatus.requestSent:
@@ -188,6 +189,18 @@ class ProfilePage extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+
+  void _showRemoveFriendDialog(BuildContext context, UserModel user) {
+    showConfirmationDialog(
+      context: context,
+      title: 'Remove Friend',
+      text:
+          'Are you sure you want to remove "${user.username}" from your friends?',
+      submitButtonText: 'Remove',
+      isDestructive: true,
+      onPressed: () => _userService.removeFriend(user.id),
     );
   }
 
