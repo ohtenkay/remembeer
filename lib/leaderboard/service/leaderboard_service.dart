@@ -41,13 +41,17 @@ class LeaderboardService {
   Stream<Leaderboard> streamById(String id) =>
       leaderboardController.streamById(id);
 
-  Future<void> createLeaderboard(String name) async {
+  Future<void> createLeaderboard({
+    required String name,
+    required String iconName,
+  }) async {
     final inviteCode = await _generateUniqueInviteCode();
     final currentUserId = authService.authenticatedUser.uid;
 
     await leaderboardController.createSingle(
       LeaderboardCreate(
         name: name,
+        iconName: iconName,
         memberIds: {currentUserId},
         inviteCode: inviteCode,
       ),
@@ -69,6 +73,25 @@ class LeaderboardService {
     }
 
     final updatedLeaderboard = leaderboard.copyWith(name: newName);
+
+    await leaderboardController.updateSingle(updatedLeaderboard);
+  }
+
+  Future<void> updateLeaderboardIcon({
+    required String leaderboardId,
+    required String newIconName,
+  }) async {
+    final leaderboard = await leaderboardController.findById(leaderboardId);
+
+    if (leaderboard.userId != authService.authenticatedUser.uid) {
+      throw StateError('Only the owner can update the leaderboard icon.');
+    }
+
+    if (leaderboard.iconName == newIconName) {
+      return;
+    }
+
+    final updatedLeaderboard = leaderboard.copyWith(iconName: newIconName);
 
     await leaderboardController.updateSingle(updatedLeaderboard);
   }

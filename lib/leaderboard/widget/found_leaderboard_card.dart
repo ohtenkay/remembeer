@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:remembeer/leaderboard/model/leaderboard.dart';
+import 'package:remembeer/leaderboard/model/leaderboard_icon.dart';
 import 'package:remembeer/leaderboard/service/leaderboard_service.dart';
 
 class FoundLeaderboardCard extends StatelessWidget {
@@ -17,6 +18,7 @@ class FoundLeaderboardCard extends StatelessWidget {
     final theme = Theme.of(context);
     final memberCount = leaderboard.memberIds.length;
     final isFull = memberCount >= maxLeaderboardMembers;
+    final icon = LeaderboardIcon.fromName(leaderboard.iconName);
 
     return Column(
       children: [
@@ -31,7 +33,7 @@ class FoundLeaderboardCard extends StatelessWidget {
                     radius: 32,
                     backgroundColor: theme.colorScheme.primaryContainer,
                     child: Icon(
-                      Icons.emoji_events,
+                      icon.icon,
                       size: 32,
                       color: theme.colorScheme.onPrimaryContainer,
                     ),

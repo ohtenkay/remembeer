@@ -8,6 +8,7 @@ part 'leaderboard.g.dart';
 @JsonSerializable()
 class Leaderboard extends Entity {
   final String name;
+  final String iconName;
   final Set<String> memberIds;
   final Set<String> bannedMemberIds;
   final String inviteCode;
@@ -19,6 +20,7 @@ class Leaderboard extends Entity {
     super.updatedAt,
     super.deletedAt,
     required this.name,
+    required this.iconName,
     required this.memberIds,
     required this.bannedMemberIds,
     required this.inviteCode,
@@ -32,6 +34,7 @@ class Leaderboard extends Entity {
 
   Leaderboard copyWith({
     String? name,
+    String? iconName,
     Set<String>? memberIds,
     Set<String>? bannedMemberIds,
   }) {
@@ -44,6 +47,7 @@ class Leaderboard extends Entity {
       inviteCode: inviteCode,
 
       name: name ?? this.name,
+      iconName: iconName ?? this.iconName,
       memberIds: memberIds ?? this.memberIds,
       bannedMemberIds: bannedMemberIds ?? this.bannedMemberIds,
     );

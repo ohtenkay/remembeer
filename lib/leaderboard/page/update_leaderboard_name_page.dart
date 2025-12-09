@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:remembeer/common/widget/page_template.dart';
 import 'package:remembeer/ioc/ioc_container.dart';
 import 'package:remembeer/leaderboard/model/leaderboard.dart';
+import 'package:remembeer/leaderboard/model/leaderboard_icon.dart';
 import 'package:remembeer/leaderboard/service/leaderboard_service.dart';
-import 'package:remembeer/leaderboard/widget/leaderboard_name_form.dart';
+import 'package:remembeer/leaderboard/widget/leaderboard_form.dart';
 
 class UpdateLeaderboardNamePage extends StatelessWidget {
   final Leaderboard leaderboard;
@@ -16,10 +17,12 @@ class UpdateLeaderboardNamePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return PageTemplate(
       title: const Text('Update Leaderboard Name'),
-      child: LeaderboardNameForm(
+      child: LeaderboardForm(
         initialName: leaderboard.name,
+        initialIcon: LeaderboardIcon.fromName(leaderboard.iconName),
         submitButtonText: 'Save',
-        onSubmit: (name) async {
+        isEditing: true,
+        onSubmit: (name, _) async {
           await _leaderboardService.updateLeaderboardName(
             leaderboardId: leaderboard.id,
             newName: name,
