@@ -66,9 +66,37 @@ class UserModel {
         );
   }
 
-  UserModel updateMonthlyStats(MonthlyStats stats) {
+  UserModel _updateMonthlyStats(MonthlyStats stats) {
     final updatedStats = Map<String, MonthlyStats>.from(monthlyStats);
     updatedStats[stats.key] = stats;
     return copyWith(monthlyStats: updatedStats);
+  }
+
+  UserModel addDrink({
+    required int year,
+    required int month,
+    required double beersEquivalent,
+    required double alcoholMl,
+  }) {
+    final currentStats = getMonthlyStats(year, month);
+    final updatedStats = currentStats.addDrink(
+      beersEquivalent: beersEquivalent,
+      alcoholMl: alcoholMl,
+    );
+    return _updateMonthlyStats(updatedStats);
+  }
+
+  UserModel removeDrink({
+    required int year,
+    required int month,
+    required double beersEquivalent,
+    required double alcoholMl,
+  }) {
+    final currentStats = getMonthlyStats(year, month);
+    final updatedStats = currentStats.removeDrink(
+      beersEquivalent: beersEquivalent,
+      alcoholMl: alcoholMl,
+    );
+    return _updateMonthlyStats(updatedStats);
   }
 }
