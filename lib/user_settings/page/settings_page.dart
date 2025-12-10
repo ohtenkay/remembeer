@@ -58,7 +58,12 @@ class SettingsPage extends StatelessWidget {
 
   Padding _buildHeading(String text) {
     return Padding(
-      padding: const EdgeInsets.all(4.0),
+      padding: const EdgeInsets.only(
+        top: 12.0,
+        bottom: 4.0,
+        left: 4.0,
+        right: 4.0,
+      ),
       child: Text(
         text,
         style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
