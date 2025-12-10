@@ -31,8 +31,16 @@ class _DrinkListSortPageState extends State<DrinkListSortPage> {
         builder: (context, userSettings) {
           _selectedSort ??= userSettings.drinkListSort;
 
-          return Column(
-            children: DrinkListSort.values.map(_buildSortOption).toList(),
+          return RadioGroup<DrinkListSort>(
+            groupValue: _selectedSort,
+            onChanged: (value) {
+              setState(() {
+                _selectedSort = value;
+              });
+            },
+            child: Column(
+              children: DrinkListSort.values.map(_buildSortOption).toList(),
+            ),
           );
         },
       ),
@@ -44,15 +52,7 @@ class _DrinkListSortPageState extends State<DrinkListSortPage> {
 
     return Card(
       child: ListTile(
-        leading: Radio<DrinkListSort>(
-          value: sort,
-          groupValue: _selectedSort,
-          onChanged: (value) {
-            setState(() {
-              _selectedSort = value;
-            });
-          },
-        ),
+        leading: Radio<DrinkListSort>(value: sort),
         title: Text(sort.displayName),
         subtitle: Text(_getSubtitle(sort)),
         selected: isSelected,
