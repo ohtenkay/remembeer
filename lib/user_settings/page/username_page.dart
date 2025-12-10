@@ -4,8 +4,8 @@ import 'package:remembeer/ioc/ioc_container.dart';
 import 'package:remembeer/user/service/user_service.dart';
 import 'package:remembeer/user_settings/widget/settings_page_template.dart';
 
-const _maxUsernameLength = 20;
-const _minUsernameLength = 3;
+const maxUsernameLength = 20;
+const minUsernameLength = 3;
 
 class UserNamePage extends StatefulWidget {
   const UserNamePage({super.key});
@@ -54,8 +54,8 @@ class _UserNamePageState extends State<UserNamePage> {
   Widget _buildUsernameInput() {
     return TextFormField(
       controller: _usernameController,
-      maxLength: _maxUsernameLength,
-      inputFormatters: [LengthLimitingTextInputFormatter(_maxUsernameLength)],
+      maxLength: maxUsernameLength,
+      inputFormatters: [LengthLimitingTextInputFormatter(maxUsernameLength)],
       decoration: const InputDecoration(
         labelText: 'Username',
         border: OutlineInputBorder(),
@@ -65,8 +65,8 @@ class _UserNamePageState extends State<UserNamePage> {
         if (value == null || value.trim().isEmpty) {
           return 'Username cannot be empty.';
         }
-        if (value.trim().length < _minUsernameLength) {
-          return 'Username must be at least $_minUsernameLength characters long.';
+        if (value.trim().length < minUsernameLength) {
+          return 'Username must be at least $minUsernameLength characters long.';
         }
         return null;
       },
@@ -75,8 +75,7 @@ class _UserNamePageState extends State<UserNamePage> {
 
   Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
-      final newUsername = _usernameController.text.trim();
-      await _userService.updateUsername(newUsername: newUsername);
+      await _userService.updateUsername(newUsername: _usernameController.text);
       if (mounted) {
         Navigator.of(context).pop();
       }
