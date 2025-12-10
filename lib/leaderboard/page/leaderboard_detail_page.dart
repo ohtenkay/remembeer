@@ -7,6 +7,7 @@ import 'package:remembeer/common/widget/page_template.dart';
 import 'package:remembeer/ioc/ioc_container.dart';
 import 'package:remembeer/leaderboard/model/leaderboard.dart';
 import 'package:remembeer/leaderboard/model/leaderboard_entry.dart';
+import 'package:remembeer/leaderboard/model/leaderboard_icon.dart';
 import 'package:remembeer/leaderboard/model/leaderboard_type.dart';
 import 'package:remembeer/leaderboard/page/manage_leaderboard_page.dart';
 import 'package:remembeer/leaderboard/service/leaderboard_service.dart';
@@ -38,12 +39,13 @@ class _LeaderboardDetailPageState extends State<LeaderboardDetailPage> {
   @override
   Widget build(BuildContext context) {
     final isOwner = _leaderboardService.isOwner(widget.leaderboard);
+    final icon = LeaderboardIcon.fromName(widget.leaderboard.iconName);
 
     return PageTemplate(
       title: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.emoji_events, size: 24),
+          Icon(icon.icon, size: 24),
           const SizedBox(width: 8),
           Text(widget.leaderboard.name),
         ],

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:remembeer/common/widget/async_builder.dart';
 import 'package:remembeer/ioc/ioc_container.dart';
 import 'package:remembeer/leaderboard/model/leaderboard.dart';
+import 'package:remembeer/leaderboard/model/leaderboard_icon.dart';
 import 'package:remembeer/leaderboard/page/leaderboard_detail_page.dart';
 import 'package:remembeer/leaderboard/service/leaderboard_service.dart';
 
@@ -16,6 +17,7 @@ class LeaderboardCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final memberCount = leaderboard.memberIds.length;
+    final icon = LeaderboardIcon.fromName(leaderboard.iconName);
 
     return Card(
       child: ListTile(
@@ -29,10 +31,7 @@ class LeaderboardCard extends StatelessWidget {
         },
         leading: CircleAvatar(
           backgroundColor: theme.colorScheme.primaryContainer,
-          child: Icon(
-            Icons.emoji_events,
-            color: theme.colorScheme.onPrimaryContainer,
-          ),
+          child: Icon(icon.icon, color: theme.colorScheme.onPrimaryContainer),
         ),
         title: Text(leaderboard.name, style: theme.textTheme.titleMedium),
         subtitle: Text(

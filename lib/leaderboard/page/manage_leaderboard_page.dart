@@ -4,9 +4,11 @@ import 'package:remembeer/common/widget/async_builder.dart';
 import 'package:remembeer/common/widget/page_template.dart';
 import 'package:remembeer/ioc/ioc_container.dart';
 import 'package:remembeer/leaderboard/model/leaderboard.dart';
+import 'package:remembeer/leaderboard/model/leaderboard_icon.dart';
 import 'package:remembeer/leaderboard/page/update_leaderboard_name_page.dart';
 import 'package:remembeer/leaderboard/service/leaderboard_service.dart';
 import 'package:remembeer/leaderboard/widget/banned_member_card.dart';
+import 'package:remembeer/leaderboard/widget/leaderboard_icon_picker.dart';
 import 'package:remembeer/leaderboard/widget/member_card.dart';
 import 'package:remembeer/user/controller/user_controller.dart';
 import 'package:remembeer/user/model/user_model.dart';
@@ -23,31 +25,57 @@ class ManageLeaderboardPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return PageTemplate(
       title: const Text('Manage Leaderboard'),
-      child: Column(
-        children: [
-          _buildHeader(context),
-          const SizedBox(height: 24),
-          _buildMembersSection(context),
-          const SizedBox(height: 16),
-          _buildDeleteButton(context),
-        ],
+      child: AsyncBuilder<Leaderboard>(
+        stream: _leaderboardService.streamById(leaderboard.id),
+        builder: (context, currentLeaderboard) {
+          return Column(
+            children: [
+              _buildHeader(context, currentLeaderboard),
+              const SizedBox(height: 24),
+              _buildMembersSection(context, currentLeaderboard),
+              const SizedBox(height: 16),
+              _buildDeleteButton(context),
+            ],
+          );
+        },
       ),
     );
   }
 
-  Widget _buildHeader(BuildContext context) {
+  Widget _buildHeader(BuildContext context, Leaderboard currentLeaderboard) {
     final theme = Theme.of(context);
+    final icon = LeaderboardIcon.fromName(currentLeaderboard.iconName);
 
     return Column(
       children: [
         const SizedBox(height: 16),
-        CircleAvatar(
-          radius: 48,
-          backgroundColor: theme.colorScheme.primaryContainer,
-          child: Icon(
-            Icons.emoji_events,
-            size: 48,
-            color: theme.colorScheme.onPrimaryContainer,
+        InkWell(
+          onTap: () => _showIconPickerDialog(context, currentLeaderboard),
+          child: Stack(
+            children: [
+              CircleAvatar(
+                radius: 48,
+                backgroundColor: theme.colorScheme.primaryContainer,
+                child: Icon(
+                  icon.icon,
+                  size: 48,
+                  color: theme.colorScheme.onPrimaryContainer,
+                ),
+              ),
+              Positioned(
+                right: 0,
+                bottom: 0,
+                child: CircleAvatar(
+                  radius: 16,
+                  backgroundColor: theme.colorScheme.surface,
+                  child: Icon(
+                    Icons.edit,
+                    size: 16,
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
         const SizedBox(height: 16),
@@ -56,7 +84,10 @@ class ManageLeaderboardPage extends StatelessWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(leaderboard.name, style: theme.textTheme.headlineSmall),
+              Text(
+                currentLeaderboard.name,
+                style: theme.textTheme.headlineSmall,
+              ),
               const SizedBox(width: 8),
               Icon(
                 Icons.edit,
@@ -70,29 +101,66 @@ class ManageLeaderboardPage extends StatelessWidget {
     );
   }
 
-  Widget _buildMembersSection(BuildContext context) {
+  void _showIconPickerDialog(
+    BuildContext context,
+    Leaderboard currentLeaderboard,
+  ) {
+    var selectedIcon = LeaderboardIcon.fromName(currentLeaderboard.iconName);
+
+    showDialog<void>(
+      context: context,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setDialogState) => AlertDialog(
+          title: const Text('Choose Icon'),
+          content: LeaderboardIconPicker(
+            selectedIcon: selectedIcon,
+            onIconSelected: (icon) {
+              setDialogState(() => selectedIcon = icon);
+            },
+          ),
+          scrollable: true,
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cancel'),
+            ),
+            FilledButton(
+              onPressed: () async {
+                Navigator.of(context).pop();
+                await _leaderboardService.updateLeaderboardIcon(
+                  leaderboardId: leaderboard.id,
+                  newIconName: selectedIcon.name,
+                );
+              },
+              child: const Text('Save'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMembersSection(
+    BuildContext context,
+    Leaderboard currentLeaderboard,
+  ) {
     return Expanded(
-      child: AsyncBuilder<Leaderboard>(
-        stream: _leaderboardService.streamById(leaderboard.id),
-        builder: (context, currentLeaderboard) {
-          return ListView(
-            children: [
-              _buildSectionHeader(
-                context,
-                'Members (${currentLeaderboard.memberIds.length})',
-              ),
-              _buildMembersList(currentLeaderboard),
-              if (currentLeaderboard.bannedMemberIds.isNotEmpty) ...[
-                const SizedBox(height: 24),
-                _buildSectionHeader(
-                  context,
-                  'Banned (${currentLeaderboard.bannedMemberIds.length})',
-                ),
-                _buildBannedMembersList(currentLeaderboard),
-              ],
-            ],
-          );
-        },
+      child: ListView(
+        children: [
+          _buildSectionHeader(
+            context,
+            'Members (${currentLeaderboard.memberIds.length})',
+          ),
+          _buildMembersList(currentLeaderboard),
+          if (currentLeaderboard.bannedMemberIds.isNotEmpty) ...[
+            const SizedBox(height: 24),
+            _buildSectionHeader(
+              context,
+              'Banned (${currentLeaderboard.bannedMemberIds.length})',
+            ),
+            _buildBannedMembersList(currentLeaderboard),
+          ],
+        ],
       ),
     );
   }
