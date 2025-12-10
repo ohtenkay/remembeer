@@ -23,7 +23,11 @@ class SettingsPageTemplate extends StatelessWidget {
       title: title,
       padding: padding,
       floatingActionButton: onFabPressed != null
-          ? FloatingActionButton(onPressed: onFabPressed, child: Icon(fabIcon))
+          ? FloatingActionButton(
+              heroTag: null,
+              onPressed: onFabPressed,
+              child: Icon(fabIcon),
+            )
           : null,
       child: child,
     );
