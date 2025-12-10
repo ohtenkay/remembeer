@@ -3,9 +3,9 @@ import 'package:remembeer/auth/service/auth_service.dart';
 import 'package:remembeer/common/widget/page_template.dart';
 import 'package:remembeer/drink_type/page/custom_drink_types_page.dart';
 import 'package:remembeer/ioc/ioc_container.dart';
-import 'package:remembeer/user/page/username_page.dart';
 import 'package:remembeer/user_settings/page/default_drink_page.dart';
 import 'package:remembeer/user_settings/page/end_of_day_page.dart';
+import 'package:remembeer/user_settings/page/username_page.dart';
 
 class SettingsPage extends StatelessWidget {
   SettingsPage({super.key});

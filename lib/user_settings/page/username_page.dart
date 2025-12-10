@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:remembeer/common/widget/page_template.dart';
 import 'package:remembeer/ioc/ioc_container.dart';
 import 'package:remembeer/user/service/user_service.dart';
+import 'package:remembeer/user_settings/widget/settings_page_template.dart';
 
 const _maxUsernameLength = 20;
 const _minUsernameLength = 3;
@@ -41,31 +41,12 @@ class _UserNamePageState extends State<UserNamePage> {
 
   @override
   Widget build(BuildContext context) {
-    return PageTemplate(
+    return SettingsPageTemplate(
       title: const Text('Change your username'),
-      child: Column(
-        children: [
-          Expanded(
-            child: Form(
-              key: _formKey,
-              child: Column(children: [_buildUsernameInput()]),
-            ),
-          ),
-          _buildSaveButton(),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSaveButton() {
-    return ElevatedButton(
-      onPressed: () async {
-        await _submitForm();
-      },
-      style: ElevatedButton.styleFrom(padding: const EdgeInsets.all(16.0)),
-      child: const Text(
-        'Save Changes',
-        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+      onFabPressed: _submitForm,
+      child: Form(
+        key: _formKey,
+        child: Column(children: [_buildUsernameInput()]),
       ),
     );
   }
