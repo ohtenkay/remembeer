@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:remembeer/common/widget/page_template.dart';
 
+const _fabBottomOffset = 40.0;
+
 class SettingsPageTemplate extends StatelessWidget {
   final Widget title;
   final Widget child;
@@ -19,14 +21,21 @@ class SettingsPageTemplate extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final keyboardOpen = MediaQuery.of(context).viewInsets.bottom > 0;
+
     return PageTemplate(
       title: title,
       padding: padding,
       floatingActionButton: onFabPressed != null
-          ? FloatingActionButton(
-              heroTag: null,
-              onPressed: onFabPressed,
-              child: Icon(fabIcon),
+          ? Padding(
+              padding: EdgeInsets.only(
+                bottom: keyboardOpen ? 0 : _fabBottomOffset,
+              ),
+              child: FloatingActionButton(
+                heroTag: null,
+                onPressed: onFabPressed,
+                child: Icon(fabIcon),
+              ),
             )
           : null,
       child: child,
