@@ -10,6 +10,9 @@ class CustomDrinkTypesPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return SettingsPageTemplate(
       title: const Text('Custom Drink Types'),
+      hint:
+          'Your custom drinks are available in addition to the default set '
+          'when adding a drink.',
       fabIcon: Icons.add,
       onFabPressed: () => Navigator.of(
         context,

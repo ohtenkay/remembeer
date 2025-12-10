@@ -43,6 +43,9 @@ class _UserNamePageState extends State<UserNamePage> {
   Widget build(BuildContext context) {
     return SettingsPageTemplate(
       title: const Text('Change your username'),
+      hint:
+          'This is your displayed username. Other users can find you by '
+          'searching for this username or your email.',
       onFabPressed: _submitForm,
       child: Form(
         key: _formKey,

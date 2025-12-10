@@ -24,6 +24,10 @@ class _DefaultDrinkPageState extends State<DefaultDrinkPage> {
   Widget build(BuildContext context) {
     return SettingsPageTemplate(
       title: const Text('Default drink'),
+      hint:
+          'This drink is pre-filled when adding a drink. It is also added '
+          'automatically when you long-press the plus button on the drink '
+          'page or use the home screen widget.',
       onFabPressed: _saveSettings,
       child: AsyncBuilder(
         future: _userSettingsService.currentUserSettings,

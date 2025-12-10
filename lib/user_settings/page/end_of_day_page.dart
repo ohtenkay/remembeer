@@ -20,6 +20,11 @@ class _EndOfDayPageState extends State<EndOfDayPage> {
   Widget build(BuildContext context) {
     return SettingsPageTemplate(
       title: const Text('End of Day'),
+      hint:
+          'This time defines when a day ends. For example, if set to 6:00 AM '
+          'and viewing the 10th, drinks from 10th 6:00 AM to 11th 6:00 AM '
+          'will be shown. This has no effect on statictics or streak '
+          'calculations (they always use midnight as day boundary).',
       onFabPressed: _saveSettings,
       child: AsyncBuilder(
         future: _userSettingsService.currentUserSettings,

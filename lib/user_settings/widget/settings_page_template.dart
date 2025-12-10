@@ -6,6 +6,7 @@ const _fabBottomOffset = 40.0;
 class SettingsPageTemplate extends StatelessWidget {
   final Widget title;
   final Widget child;
+  final String? hint;
   final VoidCallback? onFabPressed;
   final IconData fabIcon;
   final EdgeInsetsGeometry padding;
@@ -14,6 +15,7 @@ class SettingsPageTemplate extends StatelessWidget {
     super.key,
     required this.title,
     required this.child,
+    this.hint,
     this.onFabPressed,
     this.fabIcon = Icons.save,
     this.padding = const EdgeInsets.all(8.0),
@@ -38,7 +40,41 @@ class SettingsPageTemplate extends StatelessWidget {
               ),
             )
           : null,
-      child: child,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          if (hint != null) _buildHintBox(context),
+          Expanded(child: child),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHintBox(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16.0),
+      padding: const EdgeInsets.all(12.0),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.primaryContainer,
+        borderRadius: BorderRadius.circular(8.0),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            Icons.info_outline,
+            color: Theme.of(context).colorScheme.onPrimaryContainer,
+          ),
+          const SizedBox(width: 12.0),
+          Expanded(
+            child: Text(
+              hint!,
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onPrimaryContainer,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
