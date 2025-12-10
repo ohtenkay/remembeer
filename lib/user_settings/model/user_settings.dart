@@ -5,6 +5,8 @@ import 'package:remembeer/user_settings/model/time_of_day_converter.dart';
 
 part 'user_settings.g.dart';
 
+const defaultEndOfDayBoundary = TimeOfDay(hour: 6, minute: 0);
+
 @JsonSerializable(explicitToJson: true)
 class UserSettings {
   final String id;
@@ -18,7 +20,7 @@ class UserSettings {
     required this.id,
     required this.defaultDrinkType,
     required this.defaultDrinkSize,
-    this.endOfDayBoundary = const TimeOfDay(hour: 6, minute: 0),
+    this.endOfDayBoundary = defaultEndOfDayBoundary,
   });
 
   factory UserSettings.fromJson(Map<String, dynamic> json) =>
