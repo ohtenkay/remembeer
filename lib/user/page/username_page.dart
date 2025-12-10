@@ -5,6 +5,7 @@ import 'package:remembeer/ioc/ioc_container.dart';
 import 'package:remembeer/user/service/user_service.dart';
 
 const _maxUsernameLength = 20;
+const _minUsernameLength = 3;
 
 class UserNamePage extends StatefulWidget {
   const UserNamePage({super.key});
@@ -83,8 +84,8 @@ class _UserNamePageState extends State<UserNamePage> {
         if (value == null || value.trim().isEmpty) {
           return 'Username cannot be empty.';
         }
-        if (value.trim().length < 3) {
-          return 'Username must be at least 3 characters long.';
+        if (value.trim().length < _minUsernameLength) {
+          return 'Username must be at least $_minUsernameLength characters long.';
         }
         return null;
       },
