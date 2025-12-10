@@ -4,7 +4,7 @@ import 'package:remembeer/drink_type/model/drink_type.dart';
 import 'package:remembeer/user_settings/controller/user_settings_controller.dart';
 import 'package:remembeer/user_settings/model/user_settings.dart';
 
-const _defaultDrink = DrinkType(
+const _defaultDrinkType = DrinkType(
   id: 'global-beer',
   userId: 'global',
   name: 'Beer',
@@ -31,7 +31,7 @@ class UserSettingsService {
   Future<void> createDefaultUserSettings() async {
     final defaultUserSettings = UserSettings(
       id: authService.authenticatedUser.uid,
-      defaultDrinkType: _defaultDrink,
+      defaultDrinkType: _defaultDrinkType,
       defaultDrinkSize: _defaultDrinkSize,
     );
 
