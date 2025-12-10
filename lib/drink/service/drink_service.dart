@@ -6,6 +6,7 @@ import 'package:remembeer/drink/service/date_service.dart';
 import 'package:remembeer/drink_type/model/drink_category.dart';
 import 'package:remembeer/user/controller/user_controller.dart';
 import 'package:remembeer/user_settings/controller/user_settings_controller.dart';
+import 'package:remembeer/user_settings/model/drink_list_sort.dart';
 import 'package:rxdart/rxdart.dart';
 
 const _beerVolumeMl = 500;
@@ -30,20 +31,27 @@ class DrinkService {
       userSettingsController.userSettingsStream,
       (drinks, selectedDate, userSettings) {
         final endOfDayBoundary = userSettings.endOfDayBoundary;
+        final drinkListSort = userSettings.drinkListSort;
         final (startTime, endTime) = _getDateBoundaries(
           selectedDate,
           endOfDayBoundary,
         );
 
-        final filtered =
-            drinks
-                .where(
-                  (drink) =>
-                      drink.consumedAt.isAfter(startTime) &&
-                      drink.consumedAt.isBefore(endTime),
-                )
-                .toList()
-              ..sort((a, b) => b.consumedAt.compareTo(a.consumedAt));
+        final filtered = drinks
+            .where(
+              (drink) =>
+                  drink.consumedAt.isAfter(startTime) &&
+                  drink.consumedAt.isBefore(endTime),
+            )
+            .toList();
+
+        switch (drinkListSort) {
+          case DrinkListSort.descending:
+            filtered.sort((a, b) => b.consumedAt.compareTo(a.consumedAt));
+          case DrinkListSort.ascending:
+            filtered.sort((a, b) => a.consumedAt.compareTo(b.consumedAt));
+        }
+
         return filtered;
       },
     );

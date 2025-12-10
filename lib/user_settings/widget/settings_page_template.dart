@@ -44,6 +44,7 @@ class SettingsPageTemplate extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           if (hint != null) _buildHintBox(context),
+          const SizedBox(height: 8),
           Expanded(child: child),
         ],
       ),

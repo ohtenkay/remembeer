@@ -57,9 +57,7 @@ class DrinkList extends StatelessWidget {
   }
 
   bool _crossesMidnight(DateTime later, DateTime earlier) {
-    return later.day != earlier.day ||
-        later.month != earlier.month ||
-        later.year != earlier.year;
+    return !DateUtils.isSameDay(later, earlier);
   }
 
   Widget _buildEmptyState(BuildContext context) {

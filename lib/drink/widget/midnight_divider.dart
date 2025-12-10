@@ -33,7 +33,7 @@ class MidnightDivider extends StatelessWidget {
                 ),
                 const SizedBox(width: 6),
                 Text(
-                  '${dateFormat.format(fromDate)} → ${dateFormat.format(toDate)}',
+                  '${dateFormat.format(toDate)} → ${dateFormat.format(fromDate)}',
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: theme.colorScheme.outline,
                     fontWeight: FontWeight.w500,
