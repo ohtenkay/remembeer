@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:remembeer/common/widget/async_builder.dart';
-import 'package:remembeer/common/widget/page_template.dart';
+import 'package:remembeer/common/widget/settings_page_template.dart';
 import 'package:remembeer/drink_type/model/drink_type.dart';
 import 'package:remembeer/drink_type/widget/drink_type_picker.dart';
 import 'package:remembeer/ioc/ioc_container.dart';
@@ -22,30 +22,24 @@ class _DefaultDrinkPageState extends State<DefaultDrinkPage> {
 
   @override
   Widget build(BuildContext context) {
-    return PageTemplate(
+    return SettingsPageTemplate(
       title: const Text('Default drink'),
+      onFabPressed: _saveSettings,
       child: AsyncBuilder(
         future: _userSettingsService.currentUserSettings,
         builder: (context, userSettings) {
           _selectedDrinkType ??= userSettings.defaultDrinkType;
           _selectedVolume ??= userSettings.defaultDrinkSize;
 
-          return Column(
-            children: [
-              Expanded(
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    children: [
-                      _buildDrinkTypeDropdown(),
-                      const SizedBox(height: 16),
-                      _buildVolumeInput(),
-                    ],
-                  ),
-                ),
-              ),
-              _buildSaveButton(),
-            ],
+          return Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                _buildDrinkTypeDropdown(),
+                const SizedBox(height: 16),
+                _buildVolumeInput(),
+              ],
+            ),
           );
         },
       ),
@@ -63,21 +57,6 @@ class _DefaultDrinkPageState extends State<DefaultDrinkPage> {
     if (mounted) {
       Navigator.of(context).pop();
     }
-  }
-
-  Widget _buildSaveButton() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        ElevatedButton(
-          onPressed: () async {
-            await _saveSettings();
-          },
-          style: ElevatedButton.styleFrom(padding: const EdgeInsets.all(30.0)),
-          child: const Text('Save'),
-        ),
-      ],
-    );
   }
 
   Widget _buildVolumeInput() {
