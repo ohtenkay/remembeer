@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:remembeer/auth/service/auth_service.dart';
 import 'package:remembeer/drink_type/model/drink_category.dart';
 import 'package:remembeer/drink_type/model/drink_type.dart';
@@ -65,6 +66,22 @@ class UserSettingsService {
 
     final updatedUserSettings = currentUserSettings.copyWith(
       defaultDrinkSize: drinkSize,
+    );
+
+    await userSettingsController.createOrUpdateUserSettings(
+      updatedUserSettings,
+    );
+  }
+
+  Future<void> updateEndOfDayBoundary(TimeOfDay endOfDayBoundary) async {
+    final currentUserSettings =
+        await userSettingsController.currentUserSettings;
+    if (currentUserSettings.endOfDayBoundary == endOfDayBoundary) {
+      return;
+    }
+
+    final updatedUserSettings = currentUserSettings.copyWith(
+      endOfDayBoundary: endOfDayBoundary,
     );
 
     await userSettingsController.createOrUpdateUserSettings(

@@ -1,5 +1,7 @@
+import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:remembeer/drink_type/model/drink_type.dart';
+import 'package:remembeer/user_settings/model/time_of_day_converter.dart';
 
 part 'user_settings.g.dart';
 
@@ -9,11 +11,14 @@ class UserSettings {
 
   final DrinkType defaultDrinkType;
   final int defaultDrinkSize;
+  @TimeOfDayConverter()
+  final TimeOfDay endOfDayBoundary;
 
   const UserSettings({
     required this.id,
     required this.defaultDrinkType,
     required this.defaultDrinkSize,
+    this.endOfDayBoundary = const TimeOfDay(hour: 6, minute: 0),
   });
 
   factory UserSettings.fromJson(Map<String, dynamic> json) =>
@@ -21,11 +26,16 @@ class UserSettings {
 
   Map<String, dynamic> toJson() => _$UserSettingsToJson(this);
 
-  UserSettings copyWith({DrinkType? defaultDrinkType, int? defaultDrinkSize}) {
+  UserSettings copyWith({
+    DrinkType? defaultDrinkType,
+    int? defaultDrinkSize,
+    TimeOfDay? endOfDayBoundary,
+  }) {
     return UserSettings(
       id: id,
       defaultDrinkType: defaultDrinkType ?? this.defaultDrinkType,
       defaultDrinkSize: defaultDrinkSize ?? this.defaultDrinkSize,
+      endOfDayBoundary: endOfDayBoundary ?? this.endOfDayBoundary,
     );
   }
 }
