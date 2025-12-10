@@ -3,9 +3,9 @@ import 'package:intl/intl.dart';
 import 'package:remembeer/common/action/confirmation_dialog.dart';
 import 'package:remembeer/common/action/notifications.dart';
 import 'package:remembeer/common/widget/drink_icon.dart';
-import 'package:remembeer/drink/controller/drink_controller.dart';
 import 'package:remembeer/drink/model/drink.dart';
 import 'package:remembeer/drink/page/update_drink_page.dart';
+import 'package:remembeer/drink/service/drink_service.dart';
 import 'package:remembeer/ioc/ioc_container.dart';
 
 class DrinkCard extends StatelessWidget {
@@ -13,7 +13,7 @@ class DrinkCard extends StatelessWidget {
 
   DrinkCard({super.key, required this.drink});
 
-  final _drinkController = get<DrinkController>();
+  final _drinkService = get<DrinkService>();
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +60,7 @@ class DrinkCard extends StatelessWidget {
       submitButtonText: 'Delete',
       isDestructive: true,
       onPressed: () async {
-        await _drinkController.deleteSingle(drink);
+        await _drinkService.deleteDrink(drink);
 
         if (!context.mounted) return;
         showDrinkDeleted(context);

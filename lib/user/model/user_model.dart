@@ -1,8 +1,9 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:remembeer/user/model/monthly_stats.dart';
 
 part 'user_model.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class UserModel {
   final String id;
   final String email;
@@ -10,6 +11,7 @@ class UserModel {
   late String searchableUsername;
   final String avatarName;
   final Set<String> friends;
+  final Map<String, MonthlyStats> monthlyStats;
 
   UserModel({
     required this.id,
@@ -17,6 +19,7 @@ class UserModel {
     required this.username,
     this.avatarName = 'jirka_kara.png',
     this.friends = const {},
+    this.monthlyStats = const {},
   }) {
     searchableUsername = username.toLowerCase();
   }
@@ -30,6 +33,7 @@ class UserModel {
     String? username,
     String? avatarName,
     Set<String>? friends,
+    Map<String, MonthlyStats>? monthlyStats,
   }) {
     return UserModel(
       id: id,
@@ -37,6 +41,7 @@ class UserModel {
       username: username ?? this.username,
       avatarName: avatarName ?? this.avatarName,
       friends: friends ?? this.friends,
+      monthlyStats: monthlyStats ?? this.monthlyStats,
     );
   }
 
@@ -48,5 +53,50 @@ class UserModel {
   UserModel removeFriend(String friendId) {
     final updatedFriends = Set<String>.from(friends)..remove(friendId);
     return copyWith(friends: updatedFriends);
+  }
+
+  MonthlyStats getMonthlyStats(int year, int month) {
+    final key = MonthlyStats.keyFor(year, month);
+    return monthlyStats[key] ??
+        MonthlyStats(
+          year: year,
+          month: month,
+          beersConsumed: 0,
+          alcoholConsumedMl: 0,
+        );
+  }
+
+  UserModel _updateMonthlyStats(MonthlyStats stats) {
+    final updatedStats = Map<String, MonthlyStats>.from(monthlyStats);
+    updatedStats[stats.key] = stats;
+    return copyWith(monthlyStats: updatedStats);
+  }
+
+  UserModel addDrink({
+    required int year,
+    required int month,
+    required double beersEquivalent,
+    required double alcoholMl,
+  }) {
+    final currentStats = getMonthlyStats(year, month);
+    final updatedStats = currentStats.addDrink(
+      beersEquivalent: beersEquivalent,
+      alcoholMl: alcoholMl,
+    );
+    return _updateMonthlyStats(updatedStats);
+  }
+
+  UserModel removeDrink({
+    required int year,
+    required int month,
+    required double beersEquivalent,
+    required double alcoholMl,
+  }) {
+    final currentStats = getMonthlyStats(year, month);
+    final updatedStats = currentStats.removeDrink(
+      beersEquivalent: beersEquivalent,
+      alcoholMl: alcoholMl,
+    );
+    return _updateMonthlyStats(updatedStats);
   }
 }

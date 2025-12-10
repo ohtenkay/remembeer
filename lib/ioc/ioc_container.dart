@@ -52,6 +52,7 @@ class IoCContainer {
       ..registerSingleton(
         DrinkService(
           drinkController: get<DrinkController>(),
+          userController: get<UserController>(),
           userSettingsController: get<UserSettingsController>(),
           dateService: get<DateService>(),
         ),
@@ -77,7 +78,6 @@ class IoCContainer {
           authService: get<AuthService>(),
           leaderboardController: get<LeaderboardController>(),
           userController: get<UserController>(),
-          userStatsService: get<UserStatsService>(),
           monthService: get<MonthService>(),
         ),
       );
