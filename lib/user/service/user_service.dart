@@ -69,8 +69,7 @@ class UserService {
   Future<void> updateUsername({required String newUsername}) async {
     final trimmedUsername = newUsername.trim();
     assert(
-      trimmedUsername.isNotEmpty &&
-          trimmedUsername.length >= minUsernameLength &&
+      trimmedUsername.length >= minUsernameLength &&
           trimmedUsername.length <= maxUsernameLength,
       'Username passed to updateUsername with invalid length: "$trimmedUsername" is of length ${trimmedUsername.length}',
     );
