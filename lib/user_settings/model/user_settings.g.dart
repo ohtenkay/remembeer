@@ -13,10 +13,13 @@ UserSettings _$UserSettingsFromJson(Map<String, dynamic> json) => UserSettings(
   ),
   defaultDrinkSize: (json['defaultDrinkSize'] as num).toInt(),
   endOfDayBoundary: json['endOfDayBoundary'] == null
-      ? const TimeOfDay(hour: 6, minute: 0)
+      ? defaultEndOfDayBoundary
       : const TimeOfDayConverter().fromJson(
           json['endOfDayBoundary'] as Map<String, dynamic>,
         ),
+  drinkListSort:
+      $enumDecodeNullable(_$DrinkListSortEnumMap, json['drinkListSort']) ??
+      DrinkListSort.descending,
 );
 
 Map<String, dynamic> _$UserSettingsToJson(UserSettings instance) =>
@@ -27,4 +30,10 @@ Map<String, dynamic> _$UserSettingsToJson(UserSettings instance) =>
       'endOfDayBoundary': const TimeOfDayConverter().toJson(
         instance.endOfDayBoundary,
       ),
+      'drinkListSort': _$DrinkListSortEnumMap[instance.drinkListSort]!,
     };
+
+const _$DrinkListSortEnumMap = {
+  DrinkListSort.descending: 'descending',
+  DrinkListSort.ascending: 'ascending',
+};
