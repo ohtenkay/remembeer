@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:remembeer/common/widget/page_template.dart';
 import 'package:remembeer/ioc/ioc_container.dart';
 import 'package:remembeer/user/service/user_service.dart';
+import 'package:remembeer/user_settings/widget/settings_page_template.dart';
 
-const _maxUsernameLength = 20;
+const maxUsernameLength = 20;
+const minUsernameLength = 3;
 
 class UserNamePage extends StatefulWidget {
   const UserNamePage({super.key});
@@ -40,31 +41,15 @@ class _UserNamePageState extends State<UserNamePage> {
 
   @override
   Widget build(BuildContext context) {
-    return PageTemplate(
+    return SettingsPageTemplate(
       title: const Text('Change your username'),
-      child: Column(
-        children: [
-          Expanded(
-            child: Form(
-              key: _formKey,
-              child: Column(children: [_buildUsernameInput()]),
-            ),
-          ),
-          _buildSaveButton(),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSaveButton() {
-    return ElevatedButton(
-      onPressed: () async {
-        await _submitForm();
-      },
-      style: ElevatedButton.styleFrom(padding: const EdgeInsets.all(16.0)),
-      child: const Text(
-        'Save Changes',
-        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+      hint:
+          'This is your displayed username. Other users can find you by '
+          'searching for this username or your email.',
+      onFabPressed: _submitForm,
+      child: Form(
+        key: _formKey,
+        child: Column(children: [_buildUsernameInput()]),
       ),
     );
   }
@@ -72,8 +57,8 @@ class _UserNamePageState extends State<UserNamePage> {
   Widget _buildUsernameInput() {
     return TextFormField(
       controller: _usernameController,
-      maxLength: _maxUsernameLength,
-      inputFormatters: [LengthLimitingTextInputFormatter(_maxUsernameLength)],
+      maxLength: maxUsernameLength,
+      inputFormatters: [LengthLimitingTextInputFormatter(maxUsernameLength)],
       decoration: const InputDecoration(
         labelText: 'Username',
         border: OutlineInputBorder(),
@@ -83,8 +68,8 @@ class _UserNamePageState extends State<UserNamePage> {
         if (value == null || value.trim().isEmpty) {
           return 'Username cannot be empty.';
         }
-        if (value.trim().length < 3) {
-          return 'Username must be at least 3 characters long.';
+        if (value.trim().length < minUsernameLength) {
+          return 'Username must be at least $minUsernameLength characters long.';
         }
         return null;
       },
@@ -93,8 +78,7 @@ class _UserNamePageState extends State<UserNamePage> {
 
   Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
-      final newUsername = _usernameController.text.trim();
-      await _userService.updateUsername(newUsername: newUsername);
+      await _userService.updateUsername(newUsername: _usernameController.text);
       if (mounted) {
         Navigator.of(context).pop();
       }

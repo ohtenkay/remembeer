@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:remembeer/drink/controller/drink_controller.dart';
 import 'package:remembeer/drink/model/drink.dart';
 import 'package:remembeer/drink/model/drink_create.dart';
@@ -23,18 +24,51 @@ class DrinkService {
   });
 
   Stream<List<Drink>> get drinksForSelectedDateStream {
-    return Rx.combineLatest2(
+    return Rx.combineLatest3(
       drinkController.userRelatedEntitiesStream,
       dateService.selectedDateStream,
-      (drinks, selectedDate) {
+      userSettingsController.userSettingsStream,
+      (drinks, selectedDate, userSettings) {
+        final endOfDayBoundary = userSettings.endOfDayBoundary;
+        final (startTime, endTime) = _getDateBoundaries(
+          selectedDate,
+          endOfDayBoundary,
+        );
+
         final filtered =
             drinks
-                .where((drink) => _isSameDay(drink.consumedAt, selectedDate))
+                .where(
+                  (drink) =>
+                      drink.consumedAt.isAfter(startTime) &&
+                      drink.consumedAt.isBefore(endTime),
+                )
                 .toList()
               ..sort((a, b) => b.consumedAt.compareTo(a.consumedAt));
         return filtered;
       },
     );
+  }
+
+  /// Returns the start and end DateTime for filtering drinks based on
+  /// the selected date and end of day boundary.
+  ///
+  /// For example, if selectedDate is Jan 10th and endOfDayBoundary is 6:00 AM,
+  /// returns (Jan 10th 6:00 AM, Jan 11th 6:00 AM).
+  (DateTime, DateTime) _getDateBoundaries(
+    DateTime selectedDate,
+    TimeOfDay endOfDayBoundary,
+  ) {
+    final startTime = DateTime(
+      selectedDate.year,
+      selectedDate.month,
+      selectedDate.day,
+      endOfDayBoundary.hour,
+      endOfDayBoundary.minute,
+    );
+
+    final endTime = startTime.add(const Duration(days: 1));
+
+    return (startTime, endTime);
   }
 
   Future<void> createDrink(DrinkCreate drinkCreate) async {
@@ -137,10 +171,6 @@ class DrinkService {
         volumeInMilliliters: userSettings.defaultDrinkSize,
       ),
     );
-  }
-
-  bool _isSameDay(DateTime a, DateTime b) {
-    return a.year == b.year && a.month == b.month && a.day == b.day;
   }
 
   double _beersEquivalent({

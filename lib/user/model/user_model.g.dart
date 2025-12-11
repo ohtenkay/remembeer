@@ -10,6 +10,7 @@ UserModel _$UserModelFromJson(Map<String, dynamic> json) => UserModel(
   id: json['id'] as String,
   email: json['email'] as String,
   username: json['username'] as String,
+  searchableUsername: json['searchableUsername'] as String?,
   avatarName: json['avatarName'] as String? ?? 'jirka_kara.png',
   friends:
       (json['friends'] as List<dynamic>?)?.map((e) => e as String).toSet() ??
@@ -19,7 +20,7 @@ UserModel _$UserModelFromJson(Map<String, dynamic> json) => UserModel(
         (k, e) => MapEntry(k, MonthlyStats.fromJson(e as Map<String, dynamic>)),
       ) ??
       const {},
-)..searchableUsername = json['searchableUsername'] as String;
+);
 
 Map<String, dynamic> _$UserModelToJson(UserModel instance) => <String, dynamic>{
   'id': instance.id,

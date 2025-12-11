@@ -5,6 +5,7 @@ import 'package:remembeer/friend_request/model/friend_request_create.dart';
 import 'package:remembeer/friend_request/model/friendship_status.dart';
 import 'package:remembeer/user/controller/user_controller.dart';
 import 'package:remembeer/user/model/user_model.dart';
+import 'package:remembeer/user_settings/page/username_page.dart';
 import 'package:rxdart/rxdart.dart';
 
 class UserService {
@@ -32,6 +33,7 @@ class UserService {
     if (trimmedQuery.isEmpty) {
       return [];
     }
+
     return userController.searchUsersByUsernameOrEmail(trimmedQuery);
   }
 
@@ -65,12 +67,19 @@ class UserService {
   }
 
   Future<void> updateUsername({required String newUsername}) async {
+    final trimmedUsername = newUsername.trim();
+    assert(
+      trimmedUsername.length >= minUsernameLength &&
+          trimmedUsername.length <= maxUsernameLength,
+      'Username passed to updateUsername with invalid length: "$trimmedUsername" is of length ${trimmedUsername.length}',
+    );
+
     final currentUser = await userController.currentUser;
-    if (currentUser.username == newUsername) {
+    if (currentUser.username == trimmedUsername) {
       return;
     }
 
-    final updatedUser = currentUser.copyWith(username: newUsername);
+    final updatedUser = currentUser.copyWith(username: trimmedUsername);
 
     await userController.createOrUpdateUser(updatedUser);
   }

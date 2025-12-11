@@ -36,6 +36,7 @@ class DrinkPage extends StatelessWidget {
           }
         },
         child: FloatingActionButton(
+          heroTag: 'add_drink_fab',
           onPressed: () => Navigator.of(
             context,
           ).push(MaterialPageRoute<void>(builder: (context) => AddDrinkPage())),

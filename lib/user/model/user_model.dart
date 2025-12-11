@@ -8,7 +8,7 @@ class UserModel {
   final String id;
   final String email;
   final String username;
-  late String searchableUsername;
+  final String searchableUsername;
   final String avatarName;
   final Set<String> friends;
   final Map<String, MonthlyStats> monthlyStats;
@@ -17,12 +17,12 @@ class UserModel {
     required this.id,
     required this.email,
     required this.username,
+    String? searchableUsername,
     this.avatarName = 'jirka_kara.png',
     this.friends = const {},
     this.monthlyStats = const {},
-  }) {
-    searchableUsername = username.toLowerCase();
-  }
+  }) : searchableUsername =
+           searchableUsername ?? username.toLowerCase().replaceAll(' ', '');
 
   factory UserModel.fromJson(Map<String, dynamic> json) =>
       _$UserModelFromJson(json);
@@ -39,6 +39,9 @@ class UserModel {
       id: id,
       email: email,
       username: username ?? this.username,
+      searchableUsername: (username != null)
+          ? username.toLowerCase().replaceAll(' ', '')
+          : searchableUsername,
       avatarName: avatarName ?? this.avatarName,
       friends: friends ?? this.friends,
       monthlyStats: monthlyStats ?? this.monthlyStats,

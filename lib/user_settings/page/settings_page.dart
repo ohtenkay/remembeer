@@ -3,8 +3,9 @@ import 'package:remembeer/auth/service/auth_service.dart';
 import 'package:remembeer/common/widget/page_template.dart';
 import 'package:remembeer/drink_type/page/custom_drink_types_page.dart';
 import 'package:remembeer/ioc/ioc_container.dart';
-import 'package:remembeer/user/page/username_page.dart';
 import 'package:remembeer/user_settings/page/default_drink_page.dart';
+import 'package:remembeer/user_settings/page/end_of_day_page.dart';
+import 'package:remembeer/user_settings/page/username_page.dart';
 
 class SettingsPage extends StatelessWidget {
   SettingsPage({super.key});
@@ -21,6 +22,8 @@ class SettingsPage extends StatelessWidget {
           _buildProfileSettingsBox(context),
           _buildHeading('Drinks'),
           _buildDrinkSettingsBox(context),
+          _buildHeading('Experience'),
+          _buildExperienceSettingsBox(context),
           const Spacer(),
           _buildSignOutButton(context),
         ],
@@ -103,6 +106,19 @@ class SettingsPage extends StatelessWidget {
           context: context,
           title: 'Change username',
           destinationPage: const UserNamePage(),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildExperienceSettingsBox(BuildContext context) {
+    return _buildSettingsBox(
+      context: context,
+      children: [
+        _buildSettingsCard(
+          context: context,
+          title: 'End of day boundary',
+          destinationPage: const EndOfDayPage(),
         ),
       ],
     );
