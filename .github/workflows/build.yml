@@ -24,6 +24,16 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      - name: Check build_runner generated files are up to date
+        run: |
+          dart run build_runner build --delete-conflicting-outputs
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "::error::build_runner generated files are out of date. Please run 'dart run build_runner build' and commit the changes."
+            git status
+            git diff
+            exit 1
+          fi
+
       - name: Format check
         run: dart format --output=none --set-exit-if-changed .
 
