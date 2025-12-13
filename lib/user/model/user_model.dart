@@ -1,3 +1,4 @@
+import 'package:diacritic/diacritic.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:remembeer/user/model/monthly_stats.dart';
 
@@ -21,8 +22,11 @@ class UserModel {
     this.avatarName = 'jirka_kara.png',
     this.friends = const {},
     this.monthlyStats = const {},
-  }) : searchableUsername =
-           searchableUsername ?? username.toLowerCase().replaceAll(' ', '');
+  }) : searchableUsername = searchableUsername ?? toSearchable(username);
+
+  static String toSearchable(String input) {
+    return removeDiacritics(input).toLowerCase().replaceAll(' ', '');
+  }
 
   factory UserModel.fromJson(Map<String, dynamic> json) =>
       _$UserModelFromJson(json);
@@ -40,7 +44,7 @@ class UserModel {
       email: email,
       username: username ?? this.username,
       searchableUsername: (username != null)
-          ? username.toLowerCase().replaceAll(' ', '')
+          ? toSearchable(username)
           : searchableUsername,
       avatarName: avatarName ?? this.avatarName,
       friends: friends ?? this.friends,

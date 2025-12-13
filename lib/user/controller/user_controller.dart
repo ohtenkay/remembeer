@@ -67,17 +67,21 @@ class UserController {
   }
 
   Future<List<UserModel>> searchUsersByUsernameOrEmail(String query) async {
-    final queryLower = query.toLowerCase();
+    final searchableQuery = UserModel.toSearchable(query);
 
     final usernameQuery = _userCollection
-        .where('searchableUsername', isGreaterThanOrEqualTo: queryLower)
-        .where('searchableUsername', isLessThanOrEqualTo: '$queryLower\uf8ff')
+        .where('searchableUsername', isGreaterThanOrEqualTo: searchableQuery)
+        .where(
+          'searchableUsername',
+          isLessThanOrEqualTo: '$searchableQuery\uf8ff',
+        )
         .limit(10)
         .get();
 
+    final emailQueryLower = query.toLowerCase();
     final emailQuery = _userCollection
-        .where('email', isGreaterThanOrEqualTo: queryLower)
-        .where('email', isLessThanOrEqualTo: '$queryLower\uf8ff')
+        .where('email', isGreaterThanOrEqualTo: emailQueryLower)
+        .where('email', isLessThanOrEqualTo: '$emailQueryLower\uf8ff')
         .limit(10)
         .get();
 
