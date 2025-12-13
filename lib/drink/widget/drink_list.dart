@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:remembeer/common/widget/async_builder.dart';
+import 'package:remembeer/drink/model/drink.dart';
 import 'package:remembeer/drink/service/drink_service.dart';
 import 'package:remembeer/drink/widget/drink_card.dart';
+import 'package:remembeer/drink/widget/midnight_divider.dart';
 import 'package:remembeer/ioc/ioc_container.dart';
 
 class DrinkList extends StatelessWidget {
@@ -18,18 +20,44 @@ class DrinkList extends StatelessWidget {
           return Expanded(child: _buildEmptyState(context));
         }
 
+        final items = _buildListItems(drinks);
+
         return Expanded(
           child: ListView.builder(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            itemCount: drinks.length,
-            itemBuilder: (context, index) {
-              final drink = drinks[index];
-              return DrinkCard(drink: drink);
-            },
+            itemCount: items.length,
+            itemBuilder: (context, index) => items[index],
           ),
         );
       },
     );
+  }
+
+  List<Widget> _buildListItems(List<Drink> drinks) {
+    final items = <Widget>[];
+
+    for (var i = 0; i < drinks.length; i++) {
+      final drink = drinks[i];
+      items.add(DrinkCard(drink: drink));
+
+      if (i < drinks.length - 1) {
+        final nextDrink = drinks[i + 1];
+        if (_crossesMidnight(drink.consumedAt, nextDrink.consumedAt)) {
+          items.add(
+            MidnightDivider(
+              fromDate: nextDrink.consumedAt,
+              toDate: drink.consumedAt,
+            ),
+          );
+        }
+      }
+    }
+
+    return items;
+  }
+
+  bool _crossesMidnight(DateTime later, DateTime earlier) {
+    return !DateUtils.isSameDay(later, earlier);
   }
 
   Widget _buildEmptyState(BuildContext context) {

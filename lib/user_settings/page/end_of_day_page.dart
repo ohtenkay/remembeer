@@ -34,7 +34,6 @@ class _EndOfDayPageState extends State<EndOfDayPage> {
 
           return Column(
             children: [
-              const SizedBox(height: 16),
               _buildTimeCard(context),
               const SizedBox(height: 24),
               _buildResetButton(context),

@@ -3,6 +3,7 @@ import 'package:remembeer/auth/service/auth_service.dart';
 import 'package:remembeer/drink_type/model/drink_category.dart';
 import 'package:remembeer/drink_type/model/drink_type.dart';
 import 'package:remembeer/user_settings/controller/user_settings_controller.dart';
+import 'package:remembeer/user_settings/model/drink_list_sort.dart';
 import 'package:remembeer/user_settings/model/user_settings.dart';
 
 const _defaultDrinkType = DrinkType(
@@ -82,6 +83,22 @@ class UserSettingsService {
 
     final updatedUserSettings = currentUserSettings.copyWith(
       endOfDayBoundary: endOfDayBoundary,
+    );
+
+    await userSettingsController.createOrUpdateUserSettings(
+      updatedUserSettings,
+    );
+  }
+
+  Future<void> updateDrinkListSort(DrinkListSort drinkListSort) async {
+    final currentUserSettings =
+        await userSettingsController.currentUserSettings;
+    if (currentUserSettings.drinkListSort == drinkListSort) {
+      return;
+    }
+
+    final updatedUserSettings = currentUserSettings.copyWith(
+      drinkListSort: drinkListSort,
     );
 
     await userSettingsController.createOrUpdateUserSettings(

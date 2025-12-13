@@ -4,6 +4,7 @@ import 'package:remembeer/common/widget/page_template.dart';
 import 'package:remembeer/drink_type/page/custom_drink_types_page.dart';
 import 'package:remembeer/ioc/ioc_container.dart';
 import 'package:remembeer/user_settings/page/default_drink_page.dart';
+import 'package:remembeer/user_settings/page/drink_list_sort_page.dart';
 import 'package:remembeer/user_settings/page/end_of_day_page.dart';
 import 'package:remembeer/user_settings/page/username_page.dart';
 
@@ -57,7 +58,12 @@ class SettingsPage extends StatelessWidget {
 
   Padding _buildHeading(String text) {
     return Padding(
-      padding: const EdgeInsets.all(4.0),
+      padding: const EdgeInsets.only(
+        top: 12.0,
+        bottom: 4.0,
+        left: 4.0,
+        right: 4.0,
+      ),
       child: Text(
         text,
         style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
@@ -93,6 +99,12 @@ class SettingsPage extends StatelessWidget {
           context: context,
           title: 'Default drink',
           destinationPage: const DefaultDrinkPage(),
+        ),
+        const Divider(height: 1),
+        _buildSettingsCard(
+          context: context,
+          title: 'Drink list order',
+          destinationPage: const DrinkListSortPage(),
         ),
       ],
     );
