@@ -51,6 +51,23 @@ class _LoginPageState extends State<LoginPage> {
                 style: const TextStyle(color: Colors.red),
               ),
             ),
+          const SizedBox(height: 16),
+          const Row(
+            children: [
+              Expanded(child: Divider()),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                child: Text('or'),
+              ),
+              Expanded(child: Divider()),
+            ],
+          ),
+          const SizedBox(height: 16),
+          OutlinedButton.icon(
+            onPressed: _signInWithGoogle,
+            icon: const Icon(Icons.g_mobiledata, size: 24),
+            label: const Text('Sign in with Google'),
+          ),
           TextButton(
             onPressed: () => _showPasswordResetDialog(context),
             child: const Text('Forgot Password?'),
@@ -89,6 +106,17 @@ class _LoginPageState extends State<LoginPage> {
       setState(() {
         // TODO(metju-ac): Proper error handling
         _errorMessage = e.message ?? 'Login failed';
+      });
+    }
+  }
+
+  Future<void> _signInWithGoogle() async {
+    try {
+      await _authService.signInWithGoogle();
+    } on FirebaseAuthException catch (e) {
+      setState(() {
+        // TODO(metju-ac): Proper error handling
+        _errorMessage = e.message ?? 'Google sign-in failed';
       });
     }
   }
