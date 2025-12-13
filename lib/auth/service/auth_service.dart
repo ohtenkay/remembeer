@@ -64,7 +64,8 @@ class AuthService {
     await _firebaseAuth.sendPasswordResetEmail(email: email);
   }
 
-  Future<UserCredential?> signInWithGoogle() async {
+  Future<({UserCredential credential, bool isNewUser})?>
+  signInWithGoogle() async {
     try {
       final googleUser = await GoogleSignIn.instance.authenticate();
 
@@ -72,7 +73,13 @@ class AuthService {
         idToken: googleUser.authentication.idToken,
       );
 
-      return _firebaseAuth.signInWithCredential(credential);
+      final userCredential = await _firebaseAuth.signInWithCredential(
+        credential,
+      );
+
+      final isNewUser = userCredential.additionalUserInfo?.isNewUser ?? false;
+
+      return (credential: userCredential, isNewUser: isNewUser);
     } on GoogleSignInException catch (e) {
       if (e.code == GoogleSignInExceptionCode.canceled) {
         return null;

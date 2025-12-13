@@ -4,6 +4,8 @@ import 'package:remembeer/auth/page/register_page.dart';
 import 'package:remembeer/auth/service/auth_service.dart';
 import 'package:remembeer/common/widget/page_template.dart';
 import 'package:remembeer/ioc/ioc_container.dart';
+import 'package:remembeer/user/service/user_service.dart';
+import 'package:remembeer/user_settings/service/user_settings_service.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -14,6 +16,8 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final AuthService _authService = get<AuthService>();
+  final UserService _userService = get<UserService>();
+  final UserSettingsService _userSettingsService = get<UserSettingsService>();
   late final TextEditingController _emailController;
   late final TextEditingController _passwordController;
   var _errorMessage = '';
@@ -112,7 +116,12 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> _signInWithGoogle() async {
     try {
-      await _authService.signInWithGoogle();
+      final result = await _authService.signInWithGoogle();
+
+      if (result != null && result.isNewUser) {
+        await _userSettingsService.createDefaultUserSettings();
+        await _userService.createDefaultUser();
+      }
     } on FirebaseAuthException catch (e) {
       setState(() {
         // TODO(metju-ac): Proper error handling
