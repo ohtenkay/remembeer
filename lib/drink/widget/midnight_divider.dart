@@ -15,6 +15,8 @@ class MidnightDivider extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final dateFormat = DateFormat('MMM d');
+    final lowerDate = fromDate.isBefore(toDate) ? fromDate : toDate;
+    final higherDate = fromDate.isBefore(toDate) ? toDate : fromDate;
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 12.0),
@@ -33,7 +35,7 @@ class MidnightDivider extends StatelessWidget {
                 ),
                 const SizedBox(width: 6),
                 Text(
-                  '${dateFormat.format(toDate)} → ${dateFormat.format(fromDate)}',
+                  '${dateFormat.format(lowerDate)} → ${dateFormat.format(higherDate)}',
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: theme.colorScheme.outline,
                     fontWeight: FontWeight.w500,
