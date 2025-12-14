@@ -88,6 +88,8 @@ class IoCContainer {
         SessionService(
           authService: get<AuthService>(),
           sessionController: get<SessionController>(),
+          userSettingsController: get<UserSettingsController>(),
+          dateService: get<DateService>(),
         ),
       );
   }

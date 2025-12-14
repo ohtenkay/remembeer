@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:remembeer/drink/constants.dart';
 import 'package:remembeer/drink/controller/drink_controller.dart';
 import 'package:remembeer/drink/model/drink.dart';
@@ -29,11 +28,9 @@ class DrinkService {
       dateService.selectedDateStream,
       userSettingsController.userSettingsStream,
       (drinks, selectedDate, userSettings) {
-        final endOfDayBoundary = userSettings.endOfDayBoundary;
         final drinkListSort = userSettings.drinkListSort;
-        final (startTime, endTime) = _getDateBoundaries(
-          selectedDate,
-          endOfDayBoundary,
+        final (startTime, endTime) = dateService.selectedDateBoundaries(
+          userSettings.endOfDayBoundary,
         );
 
         final filtered = drinks
@@ -54,28 +51,6 @@ class DrinkService {
         return filtered;
       },
     );
-  }
-
-  /// Returns the start and end DateTime for filtering drinks based on
-  /// the selected date and end of day boundary.
-  ///
-  /// For example, if selectedDate is Jan 10th and endOfDayBoundary is 6:00 AM,
-  /// returns (Jan 10th 6:00 AM, Jan 11th 6:00 AM).
-  (DateTime, DateTime) _getDateBoundaries(
-    DateTime selectedDate,
-    TimeOfDay endOfDayBoundary,
-  ) {
-    final startTime = DateTime(
-      selectedDate.year,
-      selectedDate.month,
-      selectedDate.day,
-      endOfDayBoundary.hour,
-      endOfDayBoundary.minute,
-    );
-
-    final endTime = startTime.add(const Duration(days: 1));
-
-    return (startTime, endTime);
   }
 
   Future<void> createDrink(DrinkCreate drinkCreate) async {
