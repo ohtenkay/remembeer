@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:remembeer/auth/page/change_password_page.dart';
 import 'package:remembeer/auth/service/auth_service.dart';
 import 'package:remembeer/common/widget/page_template.dart';
 import 'package:remembeer/drink_type/page/custom_drink_types_page.dart';
@@ -7,6 +8,8 @@ import 'package:remembeer/user_settings/page/default_drink_page.dart';
 import 'package:remembeer/user_settings/page/drink_list_sort_page.dart';
 import 'package:remembeer/user_settings/page/end_of_day_page.dart';
 import 'package:remembeer/user_settings/page/username_page.dart';
+
+const _divider = Divider(height: 1);
 
 class SettingsPage extends StatelessWidget {
   SettingsPage({super.key});
@@ -94,13 +97,13 @@ class SettingsPage extends StatelessWidget {
           title: 'Custom drinks',
           destinationPage: const CustomDrinkTypesPage(),
         ),
-        const Divider(height: 1),
+        _divider,
         _buildSettingsCard(
           context: context,
           title: 'Default drink',
           destinationPage: const DefaultDrinkPage(),
         ),
-        const Divider(height: 1),
+        _divider,
         _buildSettingsCard(
           context: context,
           title: 'Drink list order',
@@ -111,6 +114,8 @@ class SettingsPage extends StatelessWidget {
   }
 
   Widget _buildProfileSettingsBox(BuildContext context) {
+    final hasPassword = _authService.hasPasswordProvider;
+
     return _buildSettingsBox(
       context: context,
       children: [
@@ -119,6 +124,14 @@ class SettingsPage extends StatelessWidget {
           title: 'Change username',
           destinationPage: const UserNamePage(),
         ),
+        if (hasPassword) ...[
+          _divider,
+          _buildSettingsCard(
+            context: context,
+            title: 'Change password',
+            destinationPage: const ChangePasswordPage(),
+          ),
+        ],
       ],
     );
   }

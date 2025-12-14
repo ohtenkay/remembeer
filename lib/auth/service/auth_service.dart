@@ -33,6 +33,10 @@ class AuthService {
 
   bool get isVerified => authenticatedUser.emailVerified;
 
+  bool get hasPasswordProvider => authenticatedUser.providerData.any(
+    (info) => info.providerId == 'password',
+  );
+
   Future<UserCredential> signInWithEmailAndPassword({
     required String email,
     required String password,
@@ -62,6 +66,24 @@ class AuthService {
 
   Future<void> resetPassword({required String email}) async {
     await _firebaseAuth.sendPasswordResetEmail(email: email);
+  }
+
+  Future<void> updatePassword({
+    required String currentPassword,
+    required String newPassword,
+  }) async {
+    final user = authenticatedUser;
+    final email = user.email;
+    if (email == null) {
+      throw StateError('User does not have an email.');
+    }
+
+    final credential = EmailAuthProvider.credential(
+      email: email,
+      password: currentPassword,
+    );
+    await user.reauthenticateWithCredential(credential);
+    await user.updatePassword(newPassword);
   }
 
   Future<({UserCredential credential, bool isNewUser})?>
