@@ -49,7 +49,7 @@ class DrinkPage extends StatelessWidget {
           child: const Icon(Icons.add),
         ),
       ),
-      child: Column(children: [DateSelector(), DrinkGroupList()]),
+      child: Column(children: [DateSelector(), const DrinkGroupList()]),
     );
   }
 }

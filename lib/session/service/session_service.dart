@@ -64,4 +64,29 @@ class SessionService {
       ),
     );
   }
+
+  Future<void> updateSession({
+    required Session session,
+    String? name,
+    DateTime? startedAt,
+    DateTime? endedAt,
+  }) async {
+    final updatedSession = session.copyWith(
+      name: name,
+      startedAt: startedAt,
+      endedAt: endedAt,
+    );
+    await sessionController.updateSingle(updatedSession);
+  }
+
+  Future<void> markSessionAsDone({
+    required Session session,
+    required DateTime endedAt,
+  }) async {
+    await updateSession(session: session, endedAt: endedAt);
+  }
+
+  bool isSessionOwner(Session session) {
+    return session.userId == authService.authenticatedUser.uid;
+  }
 }
