@@ -12,6 +12,10 @@ class SessionDivider extends StatelessWidget {
     final theme = Theme.of(context);
     final timeFormat = DateFormat('H:mm');
 
+    final timeText = session.endedAt != null
+        ? '${timeFormat.format(session.startedAt)} to ${timeFormat.format(session.endedAt!)}'
+        : '${timeFormat.format(session.startedAt)} - still going';
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       child: Row(
@@ -31,8 +35,19 @@ class SessionDivider extends StatelessWidget {
           ),
           const Spacer(),
           Text(
-            'from ${timeFormat.format(session.startedAt)}',
+            timeText,
             style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
+            ),
+          ),
+          const SizedBox(width: 8),
+          GestureDetector(
+            onTap: () {
+              // TODO(session): Navigate to edit session page
+            },
+            child: Icon(
+              Icons.edit_outlined,
+              size: 16,
               color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
             ),
           ),
