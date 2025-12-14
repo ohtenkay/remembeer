@@ -32,7 +32,7 @@ class DrinkPage extends StatelessWidget {
           // TODO(ohtenkay): Maybe make this react to the current date selection, add to the selected date, not now.
           await drinkService.addDefaultDrink();
           if (context.mounted) {
-            showDefaultDrinkAdded(context);
+            showNotification(context, 'Default drink added!');
           }
         },
         child: FloatingActionButton(

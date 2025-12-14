@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:remembeer/auth/page/register_page.dart';
 import 'package:remembeer/auth/service/auth_service.dart';
 import 'package:remembeer/auth/util/firebase_error_mapper.dart';
+import 'package:remembeer/common/action/notifications.dart';
 import 'package:remembeer/common/widget/drink_icon.dart';
 import 'package:remembeer/common/widget/page_template.dart';
 import 'package:remembeer/drink_type/model/drink_category.dart';
@@ -336,13 +337,9 @@ class _LoginPageState extends State<LoginPage> {
 
                 _authService.resetPassword(email: email);
                 Navigator.of(context).pop();
-
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text(
-                      'Password reset email sent! Check your inbox (including spam).',
-                    ),
-                  ),
+                showNotification(
+                  context,
+                  'Password reset email sent! Check your inbox (including spam).',
                 );
               },
               child: const Text('Send'),
