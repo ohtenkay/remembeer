@@ -17,6 +17,22 @@ class DrinkCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return LongPressDraggable<Drink>(
+      data: drink,
+      feedback: Material(
+        elevation: 4,
+        borderRadius: BorderRadius.circular(12),
+        child: SizedBox(
+          width: MediaQuery.of(context).size.width - 32,
+          child: Opacity(opacity: 0.9, child: _buildCard(context)),
+        ),
+      ),
+      childWhenDragging: Opacity(opacity: 0.3, child: _buildCard(context)),
+      child: _buildCard(context),
+    );
+  }
+
+  Widget _buildCard(BuildContext context) {
     return Card(
       child: ListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),

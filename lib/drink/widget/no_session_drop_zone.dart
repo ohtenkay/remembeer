@@ -4,27 +4,17 @@ import 'package:remembeer/drink/service/drink_service.dart';
 import 'package:remembeer/drink/widget/drink_card.dart';
 import 'package:remembeer/drink/widget/midnight_divider.dart';
 import 'package:remembeer/ioc/ioc_container.dart';
-import 'package:remembeer/session/model/session.dart';
-import 'package:remembeer/session/widget/session_divider.dart';
 
-const _sessionBackgroundColor = Color(0x1A4CAF50);
-const _sessionDragOverColor = Color(0x334CAF50);
-
-class SessionSection extends StatefulWidget {
-  final Session session;
+class NoSessionDropZone extends StatefulWidget {
   final List<Drink> drinks;
 
-  const SessionSection({
-    super.key,
-    required this.session,
-    required this.drinks,
-  });
+  const NoSessionDropZone({super.key, required this.drinks});
 
   @override
-  State<SessionSection> createState() => _SessionSectionState();
+  State<NoSessionDropZone> createState() => _NoSessionDropZoneState();
 }
 
-class _SessionSectionState extends State<SessionSection> {
+class _NoSessionDropZoneState extends State<NoSessionDropZone> {
   final _drinkService = get<DrinkService>();
   var _isDragOver = false;
 
@@ -32,7 +22,7 @@ class _SessionSectionState extends State<SessionSection> {
   Widget build(BuildContext context) {
     return DragTarget<Drink>(
       onWillAcceptWithDetails: (details) {
-        final dominated = details.data.sessionId != widget.session.id;
+        final dominated = details.data.sessionId != null;
         if (dominated && !_isDragOver) {
           setState(() => _isDragOver = true);
         }
@@ -41,20 +31,16 @@ class _SessionSectionState extends State<SessionSection> {
       onLeave: (_) => setState(() => _isDragOver = false),
       onAcceptWithDetails: (details) async {
         setState(() => _isDragOver = false);
-        await _drinkService.updateDrinkSession(details.data, widget.session.id);
+        await _drinkService.updateDrinkSession(details.data, null);
       },
       builder: (context, candidateData, rejectedData) {
         return ColoredBox(
-          color: _isDragOver ? _sessionDragOverColor : _sessionBackgroundColor,
+          color: _isDragOver
+              ? Theme.of(context).colorScheme.surfaceContainerHighest
+              : Colors.transparent,
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            children: [
-              if (widget.drinks.isEmpty)
-                const SizedBox(height: 16)
-              else
-                ..._buildDrinkItems(),
-              SessionDivider(session: widget.session),
-            ],
+            children: _buildDrinkItems(),
           ),
         );
       },
@@ -62,6 +48,10 @@ class _SessionSectionState extends State<SessionSection> {
   }
 
   List<Widget> _buildDrinkItems() {
+    if (widget.drinks.isEmpty) {
+      return const [];
+    }
+
     final items = <Widget>[];
 
     for (var i = 0; i < widget.drinks.length; i++) {

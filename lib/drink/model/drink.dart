@@ -55,4 +55,18 @@ class Drink extends Entity {
       sessionId: sessionId ?? this.sessionId,
     );
   }
+
+  Drink withoutSessionId() {
+    return Drink(
+      id: id,
+      createdAt: createdAt,
+      updatedAt: updatedAt,
+      deletedAt: deletedAt,
+      userId: userId,
+      consumedAt: consumedAt,
+      drinkType: drinkType,
+      volumeInMilliliters: volumeInMilliliters,
+      location: location,
+    );
+  }
 }

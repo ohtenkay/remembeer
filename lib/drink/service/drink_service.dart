@@ -155,6 +155,14 @@ class DrinkService {
     );
   }
 
+  Future<void> updateDrinkSession(Drink drink, String? sessionId) async {
+    if (drink.sessionId == sessionId) return;
+    final updatedDrink = sessionId == null
+        ? drink.withoutSessionId()
+        : drink.copyWith(sessionId: sessionId);
+    await drinkController.updateSingle(updatedDrink);
+  }
+
   double _beersEquivalent({
     required DrinkCategory category,
     required int volumeInMilliliters,

@@ -3,8 +3,7 @@ import 'package:remembeer/common/widget/async_builder.dart';
 import 'package:remembeer/drink/model/drink.dart';
 import 'package:remembeer/drink/model/drink_list_data.dart';
 import 'package:remembeer/drink/service/drink_list_service.dart';
-import 'package:remembeer/drink/widget/drink_card.dart';
-import 'package:remembeer/drink/widget/midnight_divider.dart';
+import 'package:remembeer/drink/widget/no_session_drop_zone.dart';
 import 'package:remembeer/ioc/ioc_container.dart';
 import 'package:remembeer/session/widget/session_section.dart';
 
@@ -49,28 +48,9 @@ class DrinkList extends StatelessWidget {
     }
 
     final drinksWithoutSession = drinksBySessionId[null] ?? [];
-    for (var i = 0; i < drinksWithoutSession.length; i++) {
-      final drink = drinksWithoutSession[i];
-      items.add(DrinkCard(drink: drink));
-
-      if (i < drinksWithoutSession.length - 1) {
-        final nextDrink = drinksWithoutSession[i + 1];
-        if (_crossesMidnight(drink.consumedAt, nextDrink.consumedAt)) {
-          items.add(
-            MidnightDivider(
-              fromDate: nextDrink.consumedAt,
-              toDate: drink.consumedAt,
-            ),
-          );
-        }
-      }
-    }
+    items.add(NoSessionDropZone(drinks: drinksWithoutSession));
 
     return items;
-  }
-
-  bool _crossesMidnight(DateTime later, DateTime earlier) {
-    return !DateUtils.isSameDay(later, earlier);
   }
 
   Widget _buildEmptyState(BuildContext context) {
