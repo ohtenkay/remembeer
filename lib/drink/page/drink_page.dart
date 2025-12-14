@@ -7,6 +7,7 @@ import 'package:remembeer/drink/widget/date_selector.dart';
 import 'package:remembeer/drink/widget/drink_list.dart';
 import 'package:remembeer/drink/widget/streak_indicator.dart';
 import 'package:remembeer/ioc/ioc_container.dart';
+import 'package:remembeer/session/page/create_session_page.dart';
 
 class DrinkPage extends StatelessWidget {
   const DrinkPage({super.key});
@@ -20,9 +21,14 @@ class DrinkPage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           StreakIndicator(),
-          const Text(
-            'Create session placeholder',
-            style: TextStyle(fontSize: 12),
+          IconButton(
+            icon: const Icon(Icons.table_bar),
+            tooltip: 'Create Session',
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (context) => CreateSessionPage(),
+              ),
+            ),
           ),
         ],
       ),
