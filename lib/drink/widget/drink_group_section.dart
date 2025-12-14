@@ -21,11 +21,13 @@ const _noSessionMinHeight = 120.0;
 class DrinkGroupSection extends StatefulWidget {
   final Session? session;
   final List<Drink> drinks;
+  final double? minHeight;
 
   const DrinkGroupSection({
     super.key,
     required this.session,
     required this.drinks,
+    this.minHeight,
   });
 
   @override
@@ -57,11 +59,16 @@ class _DrinkGroupSectionState extends State<DrinkGroupSection> {
         );
       },
       builder: (context, candidateData, rejectedData) {
-        return ColoredBox(
-          color: _backgroundColor,
-          child: _isSessionMode
-              ? _buildSessionContent()
-              : _buildNoSessionContent(),
+        final content = _isSessionMode
+            ? _buildSessionContent()
+            : _buildNoSessionContent();
+
+        return SizedBox(
+          width: double.infinity,
+          height: _isSessionMode
+              ? null
+              : (widget.minHeight ?? _noSessionMinHeight),
+          child: ColoredBox(color: _backgroundColor, child: content),
         );
       },
     );
@@ -90,7 +97,7 @@ class _DrinkGroupSectionState extends State<DrinkGroupSection> {
       mainAxisSize: MainAxisSize.min,
       children: [
         if (widget.drinks.isEmpty)
-          const SizedBox(height: 16)
+          const SizedBox(height: 32)
         else
           ..._buildDrinkItems(),
         SessionDivider(session: widget.session!),
@@ -99,13 +106,7 @@ class _DrinkGroupSectionState extends State<DrinkGroupSection> {
   }
 
   Widget _buildNoSessionContent() {
-    return ConstrainedBox(
-      constraints: const BoxConstraints(minHeight: _noSessionMinHeight),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: _buildDrinkItems(),
-      ),
-    );
+    return Column(mainAxisSize: MainAxisSize.min, children: _buildDrinkItems());
   }
 
   List<Widget> _buildDrinkItems() {

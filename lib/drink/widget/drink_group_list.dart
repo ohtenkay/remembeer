@@ -20,36 +20,47 @@ class DrinkGroupList extends StatelessWidget {
           return Expanded(child: _buildEmptyState(context));
         }
 
-        final items = _buildListItems(data);
-
         return Expanded(
-          child: ListView.builder(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            itemCount: items.length,
-            itemBuilder: (context, index) => items[index],
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              return SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                child: _buildContent(data, constraints.maxHeight),
+              );
+            },
           ),
         );
       },
     );
   }
 
-  List<Widget> _buildListItems(DrinkListData data) {
-    final items = <Widget>[];
-
+  Widget _buildContent(DrinkListData data, double viewportHeight) {
     final drinksBySessionId = <String?, List<Drink>>{};
     for (final drink in data.drinks) {
       drinksBySessionId.putIfAbsent(drink.sessionId, () => []).add(drink);
     }
 
+    final sessionSections = <Widget>[];
     for (final session in data.sessions) {
       final sessionDrinks = drinksBySessionId[session.id] ?? [];
-      items.add(DrinkGroupSection(session: session, drinks: sessionDrinks));
+      sessionSections.add(
+        DrinkGroupSection(session: session, drinks: sessionDrinks),
+      );
     }
 
     final drinksWithoutSession = drinksBySessionId[null] ?? [];
-    items.add(DrinkGroupSection(session: null, drinks: drinksWithoutSession));
 
-    return items;
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        ...sessionSections,
+        DrinkGroupSection(
+          session: null,
+          drinks: drinksWithoutSession,
+          minHeight: viewportHeight,
+        ),
+      ],
+    );
   }
 
   Widget _buildEmptyState(BuildContext context) {
