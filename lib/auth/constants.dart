@@ -1,8 +1,11 @@
+import 'package:diacritic/diacritic.dart';
+
 const minPasswordLength = 8;
 
 bool isPasswordValid(String password) {
+  final normalized = removeDiacritics(password);
   return password.length >= minPasswordLength &&
-      password.contains(RegExp('[A-Z]')) &&
-      password.contains(RegExp('[a-z]')) &&
-      password.contains(RegExp('[0-9]'));
+      normalized.contains(RegExp('[A-Z]')) &&
+      normalized.contains(RegExp('[a-z]')) &&
+      normalized.contains(RegExp('[0-9]'));
 }

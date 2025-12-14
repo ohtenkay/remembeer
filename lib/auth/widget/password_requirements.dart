@@ -1,3 +1,4 @@
+import 'package:diacritic/diacritic.dart';
 import 'package:flutter/material.dart';
 import 'package:remembeer/auth/constants.dart';
 
@@ -11,10 +12,11 @@ class PasswordRequirements extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final normalized = removeDiacritics(password);
     final hasMinLength = password.length >= minPasswordLength;
-    final hasUppercase = password.contains(RegExp('[A-Z]'));
-    final hasLowercase = password.contains(RegExp('[a-z]'));
-    final hasNumber = password.contains(RegExp('[0-9]'));
+    final hasUppercase = normalized.contains(RegExp('[A-Z]'));
+    final hasLowercase = normalized.contains(RegExp('[a-z]'));
+    final hasNumber = normalized.contains(RegExp('[0-9]'));
 
     return Container(
       padding: const EdgeInsets.all(12),
