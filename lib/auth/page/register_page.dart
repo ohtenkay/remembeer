@@ -11,6 +11,7 @@ import 'package:remembeer/user/constants.dart';
 import 'package:remembeer/user/service/user_service.dart';
 import 'package:remembeer/user_settings/service/user_settings_service.dart';
 
+const _gap2 = SizedBox(height: 2);
 const _gap8 = SizedBox(height: 8);
 const _gap16 = SizedBox(height: 16);
 
@@ -69,8 +70,8 @@ class _RegisterPageState extends State<RegisterPage> {
                 if (value == null || value.isEmpty) {
                   return 'Please enter a password.';
                 }
-                if (value.length < minPasswordLength) {
-                  return 'Password must be at least $minPasswordLength characters.';
+                if (!_isPasswordValid(value)) {
+                  return 'Password does not meet requirements.';
                 }
                 return null;
               },
@@ -188,9 +189,19 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
+  bool _isPasswordValid(String password) {
+    return password.length >= minPasswordLength &&
+        password.contains(RegExp('[A-Z]')) &&
+        password.contains(RegExp('[a-z]')) &&
+        password.contains(RegExp('[0-9]'));
+  }
+
   Widget _buildPasswordRequirements(ThemeData theme) {
     final password = _passwordController.text;
     final hasMinLength = password.length >= minPasswordLength;
+    final hasUppercase = password.contains(RegExp('[A-Z]'));
+    final hasLowercase = password.contains(RegExp('[a-z]'));
+    final hasNumber = password.contains(RegExp('[0-9]'));
 
     return Container(
       padding: const EdgeInsets.all(12),
@@ -214,6 +225,12 @@ class _RegisterPageState extends State<RegisterPage> {
             'At least $minPasswordLength characters',
             hasMinLength,
           ),
+          _gap2,
+          _buildRequirementRow(theme, 'One uppercase letter', hasUppercase),
+          _gap2,
+          _buildRequirementRow(theme, 'One lowercase letter', hasLowercase),
+          _gap2,
+          _buildRequirementRow(theme, 'One number', hasNumber),
         ],
       ),
     );
