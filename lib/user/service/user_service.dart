@@ -3,9 +3,9 @@ import 'package:remembeer/friend_request/controller/friend_request_controller.da
 import 'package:remembeer/friend_request/model/friend_request.dart';
 import 'package:remembeer/friend_request/model/friend_request_create.dart';
 import 'package:remembeer/friend_request/model/friendship_status.dart';
+import 'package:remembeer/user/constants.dart';
 import 'package:remembeer/user/controller/user_controller.dart';
 import 'package:remembeer/user/model/user_model.dart';
-import 'package:remembeer/user_settings/page/username_page.dart';
 import 'package:rxdart/rxdart.dart';
 
 class UserService {
@@ -54,11 +54,12 @@ class UserService {
     });
   }
 
-  Future<void> createDefaultUser() async {
+  Future<void> createDefaultUser({String? username}) async {
     final defaultUser = UserModel(
       id: authService.authenticatedUser.uid,
       email: authService.authenticatedUser.email!,
       username:
+          username ??
           authService.authenticatedUser.displayName ??
           authService.authenticatedUser.email!,
     );

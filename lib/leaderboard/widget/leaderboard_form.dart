@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:remembeer/leaderboard/constants.dart';
 import 'package:remembeer/leaderboard/model/leaderboard_icon.dart';
 import 'package:remembeer/leaderboard/widget/leaderboard_icon_picker.dart';
-
-const _maxNameLength = 20;
 
 class LeaderboardForm extends StatefulWidget {
   final String initialName;
@@ -74,8 +73,10 @@ class _LeaderboardFormState extends State<LeaderboardForm> {
   Widget _buildNameInput() {
     return TextFormField(
       controller: _nameController,
-      maxLength: _maxNameLength,
-      inputFormatters: [LengthLimitingTextInputFormatter(_maxNameLength)],
+      maxLength: maxLeaderboardNameLength,
+      inputFormatters: [
+        LengthLimitingTextInputFormatter(maxLeaderboardNameLength),
+      ],
       decoration: InputDecoration(
         labelText: 'Leaderboard Name',
         border: const OutlineInputBorder(),
@@ -85,8 +86,8 @@ class _LeaderboardFormState extends State<LeaderboardForm> {
         if (value == null || value.trim().isEmpty) {
           return 'Name cannot be empty.';
         }
-        if (value.trim().length < 3) {
-          return 'Name must be at least 3 characters long.';
+        if (value.trim().length < minLeaderboardNameLength) {
+          return 'Name must be at least $minLeaderboardNameLength characters long.';
         }
         return null;
       },

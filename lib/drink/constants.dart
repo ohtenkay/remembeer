@@ -1,0 +1,1 @@
+const beerVolumeMl = 500;

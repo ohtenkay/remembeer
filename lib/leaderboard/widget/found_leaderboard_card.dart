@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:remembeer/leaderboard/constants.dart';
 import 'package:remembeer/leaderboard/model/leaderboard.dart';
 import 'package:remembeer/leaderboard/model/leaderboard_icon.dart';
-import 'package:remembeer/leaderboard/service/leaderboard_service.dart';
 
 class FoundLeaderboardCard extends StatelessWidget {
   final Leaderboard leaderboard;

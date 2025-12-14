@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:remembeer/common/formatter/uppercase_formatter.dart';
 import 'package:remembeer/common/widget/page_template.dart';
 import 'package:remembeer/ioc/ioc_container.dart';
+import 'package:remembeer/leaderboard/constants.dart';
 import 'package:remembeer/leaderboard/model/join_leaderboard_result.dart';
 import 'package:remembeer/leaderboard/model/leaderboard.dart';
 import 'package:remembeer/leaderboard/service/leaderboard_service.dart';

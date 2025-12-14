@@ -1,10 +1,19 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:remembeer/auth/constants.dart';
 import 'package:remembeer/auth/service/auth_service.dart';
+import 'package:remembeer/auth/util/firebase_error_mapper.dart';
+import 'package:remembeer/common/widget/error_message_box.dart';
 import 'package:remembeer/common/widget/page_template.dart';
 import 'package:remembeer/ioc/ioc_container.dart';
+import 'package:remembeer/user/constants.dart';
 import 'package:remembeer/user/service/user_service.dart';
 import 'package:remembeer/user_settings/service/user_settings_service.dart';
+
+const _gap2 = SizedBox(height: 2);
+const _gap8 = SizedBox(height: 8);
+const _gap16 = SizedBox(height: 16);
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -14,80 +23,288 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  final AuthService _authService = get<AuthService>();
-  final UserService _userService = get<UserService>();
-  final UserSettingsService _userSettingsService = get<UserSettingsService>();
-  late final TextEditingController _emailController;
-  late final TextEditingController _passwordController;
-  var _errorMessage = '';
+  final _authService = get<AuthService>();
+  final _userService = get<UserService>();
+  final _userSettingsService = get<UserSettingsService>();
+
+  final _formKey = GlobalKey<FormState>();
+  final _emailController = TextEditingController();
+  final _usernameController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
+
+  var _isLoading = false;
+  var _obscurePassword = true;
+  String? _errorMessage;
 
   @override
-  void initState() {
-    super.initState();
-    _emailController = TextEditingController();
-    _passwordController = TextEditingController();
+  void dispose() {
+    _emailController.dispose();
+    _usernameController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return PageTemplate(
-      title: const Text('Register'),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          TextField(
-            controller: _emailController,
-            decoration: const InputDecoration(labelText: 'Email'),
-            keyboardType: TextInputType.emailAddress,
-          ),
-          TextField(
-            controller: _passwordController,
-            decoration: const InputDecoration(labelText: 'Password'),
-            obscureText: true,
-          ),
-          const SizedBox(height: 20),
-          ElevatedButton(onPressed: _register, child: const Text('Register')),
-          if (_errorMessage.isNotEmpty)
-            Padding(
-              padding: const EdgeInsets.only(top: 12.0),
-              child: Text(
-                _errorMessage,
-                style: const TextStyle(color: Colors.red),
-              ),
+      title: const Text('Create Account'),
+      padding: const EdgeInsets.all(24),
+      child: Form(
+        key: _formKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            _buildEmailField(),
+            _gap16,
+            _buildUsernameField(),
+            _gap16,
+            _buildPasswordTextField(
+              controller: _passwordController,
+              label: 'Password',
+              onChanged: () => setState(() {}),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter a password.';
+                }
+                if (!_isPasswordValid(value)) {
+                  return 'Password does not meet requirements.';
+                }
+                return null;
+              },
             ),
+            _gap8,
+            _buildPasswordRequirements(theme),
+            _gap16,
+            _buildPasswordTextField(
+              controller: _confirmPasswordController,
+              label: 'Confirm Password',
+              textInputAction: TextInputAction.done,
+              onFieldSubmitted: () => _register(context),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please confirm your password.';
+                }
+                if (value != _passwordController.text) {
+                  return 'Passwords do not match.';
+                }
+                return null;
+              },
+            ),
+            if (_errorMessage != null) ...[
+              _gap16,
+              ErrorMessageBox(message: _errorMessage!),
+            ],
+            const SizedBox(height: 24),
+            _buildRegisterButton(context),
+            _gap16,
+            _buildLoginLink(context),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEmailField() {
+    return TextFormField(
+      controller: _emailController,
+      keyboardType: TextInputType.emailAddress,
+      textInputAction: TextInputAction.next,
+      enabled: !_isLoading,
+      decoration: const InputDecoration(
+        labelText: 'Email',
+        border: OutlineInputBorder(),
+        prefixIcon: Icon(Icons.email_outlined),
+      ),
+      validator: (value) {
+        if (value == null || value.trim().isEmpty) {
+          return 'Please enter your email.';
+        }
+        final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+        if (!emailRegex.hasMatch(value.trim())) {
+          return 'Please enter a valid email address.';
+        }
+        return null;
+      },
+    );
+  }
+
+  Widget _buildUsernameField() {
+    return TextFormField(
+      controller: _usernameController,
+      textInputAction: TextInputAction.next,
+      enabled: !_isLoading,
+      maxLength: maxUsernameLength,
+      inputFormatters: [LengthLimitingTextInputFormatter(maxUsernameLength)],
+      decoration: const InputDecoration(
+        labelText: 'Username',
+        border: OutlineInputBorder(),
+        prefixIcon: Icon(Icons.person_outline),
+        helperText: 'This is how other users will see you.',
+      ),
+      validator: (value) {
+        if (value == null || value.trim().isEmpty) {
+          return 'Please enter a username.';
+        }
+        if (value.trim().length < minUsernameLength) {
+          return 'Username must be at least $minUsernameLength characters.';
+        }
+        return null;
+      },
+    );
+  }
+
+  Widget _buildPasswordTextField({
+    required TextEditingController controller,
+    required String label,
+    required String? Function(String?) validator,
+    TextInputAction textInputAction = TextInputAction.next,
+    VoidCallback? onChanged,
+    VoidCallback? onFieldSubmitted,
+  }) {
+    return TextFormField(
+      controller: controller,
+      obscureText: _obscurePassword,
+      textInputAction: textInputAction,
+      enabled: !_isLoading,
+      onChanged: onChanged != null ? (_) => onChanged() : null,
+      onFieldSubmitted: onFieldSubmitted != null
+          ? (_) => onFieldSubmitted()
+          : null,
+      decoration: InputDecoration(
+        labelText: label,
+        border: const OutlineInputBorder(),
+        prefixIcon: const Icon(Icons.lock_outlined),
+        suffixIcon: IconButton(
+          icon: Icon(
+            _obscurePassword ? Icons.visibility : Icons.visibility_off,
+          ),
+          onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
+        ),
+      ),
+      validator: validator,
+    );
+  }
+
+  bool _isPasswordValid(String password) {
+    return password.length >= minPasswordLength &&
+        password.contains(RegExp('[A-Z]')) &&
+        password.contains(RegExp('[a-z]')) &&
+        password.contains(RegExp('[0-9]'));
+  }
+
+  Widget _buildPasswordRequirements(ThemeData theme) {
+    final password = _passwordController.text;
+    final hasMinLength = password.length >= minPasswordLength;
+    final hasUppercase = password.contains(RegExp('[A-Z]'));
+    final hasLowercase = password.contains(RegExp('[a-z]'));
+    final hasNumber = password.contains(RegExp('[0-9]'));
+
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Password requirements:',
+            style: theme.textTheme.bodySmall?.copyWith(
+              fontWeight: FontWeight.w500,
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+          ),
+          _gap8,
+          _buildRequirementRow(
+            theme,
+            'At least $minPasswordLength characters',
+            hasMinLength,
+          ),
+          _gap2,
+          _buildRequirementRow(theme, 'One uppercase letter', hasUppercase),
+          _gap2,
+          _buildRequirementRow(theme, 'One lowercase letter', hasLowercase),
+          _gap2,
+          _buildRequirementRow(theme, 'One number', hasNumber),
         ],
       ),
     );
   }
 
-  @override
-  void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
-    super.dispose();
+  Widget _buildRequirementRow(ThemeData theme, String text, bool isMet) {
+    final color = isMet ? Colors.green : theme.colorScheme.onSurfaceVariant;
+    final icon = isMet ? Icons.check_circle : Icons.circle_outlined;
+
+    return Row(
+      children: [
+        Icon(icon, size: 16, color: color),
+        const SizedBox(width: 8),
+        Text(text, style: theme.textTheme.bodySmall?.copyWith(color: color)),
+      ],
+    );
   }
 
-  Future<void> _register() async {
-    final email = _emailController.text;
-    final password = _passwordController.text;
+  Widget _buildRegisterButton(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return FilledButton(
+      onPressed: _isLoading ? null : () => _register(context),
+      style: FilledButton.styleFrom(
+        padding: const EdgeInsets.symmetric(vertical: 16),
+      ),
+      child: _isLoading
+          ? SizedBox(
+              height: 20,
+              width: 20,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                color: theme.colorScheme.onPrimary,
+              ),
+            )
+          : const Text('Create Account', style: TextStyle(fontSize: 16)),
+    );
+  }
+
+  Widget _buildLoginLink(BuildContext context) {
+    return TextButton(
+      onPressed: _isLoading ? null : () => Navigator.of(context).pop(),
+      child: const Text('Already have an account? Login'),
+    );
+  }
+
+  Future<void> _register(BuildContext context) async {
+    if (!_formKey.currentState!.validate()) return;
+
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
 
     try {
       await _authService.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
+        email: _emailController.text.trim(),
+        password: _passwordController.text,
       );
 
       await _userSettingsService.createDefaultUserSettings();
-      await _userService.createDefaultUser();
+      await _userService.createDefaultUser(
+        username: _usernameController.text.trim(),
+      );
 
-      if (mounted) {
-        Navigator.pop(context);
+      if (context.mounted) {
+        Navigator.of(context).pop();
       }
     } on FirebaseAuthException catch (e) {
-      setState(() {
-        // TODO(metju-ac): Proper error handling
-        _errorMessage = e.message ?? 'Registration failed';
-      });
+      setState(() => _errorMessage = mapFirebaseAuthError(e.code));
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
     }
   }
 }

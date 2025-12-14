@@ -63,7 +63,7 @@ class DrinkCard extends StatelessWidget {
         await _drinkService.deleteDrink(drink);
 
         if (!context.mounted) return;
-        showDrinkDeleted(context);
+        showNotification(context, 'Drink deleted!');
       },
     );
   }

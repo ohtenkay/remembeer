@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:remembeer/drink/constants.dart';
 import 'package:remembeer/drink/controller/drink_controller.dart';
 import 'package:remembeer/drink/model/drink.dart';
 import 'package:remembeer/drink/model/drink_create.dart';
@@ -8,8 +9,6 @@ import 'package:remembeer/user/controller/user_controller.dart';
 import 'package:remembeer/user_settings/controller/user_settings_controller.dart';
 import 'package:remembeer/user_settings/model/drink_list_sort.dart';
 import 'package:rxdart/rxdart.dart';
-
-const _beerVolumeMl = 500;
 
 class DrinkService {
   final UserSettingsController userSettingsController;
@@ -186,7 +185,7 @@ class DrinkService {
     required int volumeInMilliliters,
   }) {
     if (category != DrinkCategory.beer) return 0;
-    return volumeInMilliliters / _beerVolumeMl;
+    return volumeInMilliliters / beerVolumeMl;
   }
 
   double _alcoholMl({

@@ -58,7 +58,7 @@ class _PageSwitcherState extends State<PageSwitcher> {
       setState(() {
         _selectedIndex = _drinkPageIndex;
       });
-      showDefaultDrinkAdded(context);
+      showNotification(context, 'Default drink added!');
     }
   }
 
