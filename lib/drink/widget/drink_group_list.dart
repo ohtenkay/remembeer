@@ -3,12 +3,11 @@ import 'package:remembeer/common/widget/async_builder.dart';
 import 'package:remembeer/drink/model/drink.dart';
 import 'package:remembeer/drink/model/drink_list_data.dart';
 import 'package:remembeer/drink/service/drink_list_service.dart';
-import 'package:remembeer/drink/widget/no_session_drop_zone.dart';
+import 'package:remembeer/drink/widget/drink_group_section.dart';
 import 'package:remembeer/ioc/ioc_container.dart';
-import 'package:remembeer/session/widget/session_section.dart';
 
-class DrinkList extends StatelessWidget {
-  DrinkList({super.key});
+class DrinkGroupList extends StatelessWidget {
+  DrinkGroupList({super.key});
 
   final _drinkListService = get<DrinkListService>();
 
@@ -44,11 +43,11 @@ class DrinkList extends StatelessWidget {
 
     for (final session in data.sessions) {
       final sessionDrinks = drinksBySessionId[session.id] ?? [];
-      items.add(SessionSection(session: session, drinks: sessionDrinks));
+      items.add(DrinkGroupSection(session: session, drinks: sessionDrinks));
     }
 
     final drinksWithoutSession = drinksBySessionId[null] ?? [];
-    items.add(NoSessionDropZone(drinks: drinksWithoutSession));
+    items.add(DrinkGroupSection(session: null, drinks: drinksWithoutSession));
 
     return items;
   }
