@@ -9,6 +9,8 @@ import 'package:remembeer/friend_request/controller/friend_request_controller.da
 import 'package:remembeer/leaderboard/controller/leaderboard_controller.dart';
 import 'package:remembeer/leaderboard/service/leaderboard_service.dart';
 import 'package:remembeer/leaderboard/service/month_service.dart';
+import 'package:remembeer/session/controller/session_controller.dart';
+import 'package:remembeer/session/service/session_service.dart';
 import 'package:remembeer/user/controller/user_controller.dart';
 import 'package:remembeer/user/service/user_service.dart';
 import 'package:remembeer/user_settings/controller/user_settings_controller.dart';
@@ -44,7 +46,8 @@ class IoCContainer {
       )
       ..registerSingleton(
         LeaderboardController(authService: get<AuthService>()),
-      );
+      )
+      ..registerSingleton(SessionController(authService: get<AuthService>()));
   }
 
   static void _registerServices() {
@@ -79,6 +82,12 @@ class IoCContainer {
           leaderboardController: get<LeaderboardController>(),
           userController: get<UserController>(),
           monthService: get<MonthService>(),
+        ),
+      )
+      ..registerSingleton(
+        SessionService(
+          authService: get<AuthService>(),
+          sessionController: get<SessionController>(),
         ),
       );
   }
