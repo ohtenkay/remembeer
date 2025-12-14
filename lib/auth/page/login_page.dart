@@ -6,6 +6,7 @@ import 'package:remembeer/auth/service/auth_service.dart';
 import 'package:remembeer/auth/util/firebase_error_mapper.dart';
 import 'package:remembeer/common/action/notifications.dart';
 import 'package:remembeer/common/widget/drink_icon.dart';
+import 'package:remembeer/common/widget/error_message_box.dart';
 import 'package:remembeer/common/widget/page_template.dart';
 import 'package:remembeer/drink_type/model/drink_category.dart';
 import 'package:remembeer/ioc/ioc_container.dart';
@@ -102,7 +103,7 @@ class _LoginPageState extends State<LoginPage> {
           _buildPasswordField(),
           if (_errorMessage != null) ...[
             const SizedBox(height: 12),
-            _buildErrorMessage(theme),
+            ErrorMessageBox(message: _errorMessage!),
           ],
           const SizedBox(height: 8),
           _buildForgotPassword(context),
@@ -157,28 +158,6 @@ class _LoginPageState extends State<LoginPage> {
         }
         return null;
       },
-    );
-  }
-
-  Widget _buildErrorMessage(ThemeData theme) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.errorContainer,
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Row(
-        children: [
-          Icon(Icons.error_outline, color: theme.colorScheme.error),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              _errorMessage!,
-              style: TextStyle(color: theme.colorScheme.onErrorContainer),
-            ),
-          ),
-        ],
-      ),
     );
   }
 

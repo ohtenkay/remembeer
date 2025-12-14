@@ -54,11 +54,12 @@ class UserService {
     });
   }
 
-  Future<void> createDefaultUser() async {
+  Future<void> createDefaultUser({String? username}) async {
     final defaultUser = UserModel(
       id: authService.authenticatedUser.uid,
       email: authService.authenticatedUser.email!,
       username:
+          username ??
           authService.authenticatedUser.displayName ??
           authService.authenticatedUser.email!,
     );
