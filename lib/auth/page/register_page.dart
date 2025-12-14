@@ -4,6 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:remembeer/auth/constants.dart';
 import 'package:remembeer/auth/service/auth_service.dart';
 import 'package:remembeer/auth/util/firebase_error_mapper.dart';
+import 'package:remembeer/auth/widget/password_requirements.dart';
+import 'package:remembeer/auth/widget/password_text_field.dart';
 import 'package:remembeer/common/widget/error_message_box.dart';
 import 'package:remembeer/common/widget/page_template.dart';
 import 'package:remembeer/ioc/ioc_container.dart';
@@ -11,7 +13,6 @@ import 'package:remembeer/user/constants.dart';
 import 'package:remembeer/user/service/user_service.dart';
 import 'package:remembeer/user_settings/service/user_settings_service.dart';
 
-const _gap2 = SizedBox(height: 2);
 const _gap8 = SizedBox(height: 8);
 const _gap16 = SizedBox(height: 16);
 
@@ -48,8 +49,6 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return PageTemplate(
       title: const Text('Create Account'),
       padding: const EdgeInsets.all(24),
@@ -62,26 +61,34 @@ class _RegisterPageState extends State<RegisterPage> {
             _gap16,
             _buildUsernameField(),
             _gap16,
-            _buildPasswordTextField(
+            PasswordTextField(
               controller: _passwordController,
               label: 'Password',
-              onChanged: () => setState(() {}),
+              obscureText: _obscurePassword,
+              onToggleVisibility: () =>
+                  setState(() => _obscurePassword = !_obscurePassword),
+              enabled: !_isLoading,
+              onChanged: (_) => setState(() {}),
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Please enter a password.';
                 }
-                if (!_isPasswordValid(value)) {
+                if (!isPasswordValid(value)) {
                   return 'Password does not meet requirements.';
                 }
                 return null;
               },
             ),
             _gap8,
-            _buildPasswordRequirements(theme),
+            PasswordRequirements(password: _passwordController.text),
             _gap16,
-            _buildPasswordTextField(
+            PasswordTextField(
               controller: _confirmPasswordController,
               label: 'Confirm Password',
+              obscureText: _obscurePassword,
+              onToggleVisibility: () =>
+                  setState(() => _obscurePassword = !_obscurePassword),
+              enabled: !_isLoading,
               textInputAction: TextInputAction.done,
               onFieldSubmitted: () => _register(context),
               validator: (value) {
@@ -154,98 +161,6 @@ class _RegisterPageState extends State<RegisterPage> {
         }
         return null;
       },
-    );
-  }
-
-  Widget _buildPasswordTextField({
-    required TextEditingController controller,
-    required String label,
-    required String? Function(String?) validator,
-    TextInputAction textInputAction = TextInputAction.next,
-    VoidCallback? onChanged,
-    VoidCallback? onFieldSubmitted,
-  }) {
-    return TextFormField(
-      controller: controller,
-      obscureText: _obscurePassword,
-      textInputAction: textInputAction,
-      enabled: !_isLoading,
-      onChanged: onChanged != null ? (_) => onChanged() : null,
-      onFieldSubmitted: onFieldSubmitted != null
-          ? (_) => onFieldSubmitted()
-          : null,
-      decoration: InputDecoration(
-        labelText: label,
-        border: const OutlineInputBorder(),
-        prefixIcon: const Icon(Icons.lock_outlined),
-        suffixIcon: IconButton(
-          icon: Icon(
-            _obscurePassword ? Icons.visibility : Icons.visibility_off,
-          ),
-          onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
-        ),
-      ),
-      validator: validator,
-    );
-  }
-
-  bool _isPasswordValid(String password) {
-    return password.length >= minPasswordLength &&
-        password.contains(RegExp('[A-Z]')) &&
-        password.contains(RegExp('[a-z]')) &&
-        password.contains(RegExp('[0-9]'));
-  }
-
-  Widget _buildPasswordRequirements(ThemeData theme) {
-    final password = _passwordController.text;
-    final hasMinLength = password.length >= minPasswordLength;
-    final hasUppercase = password.contains(RegExp('[A-Z]'));
-    final hasLowercase = password.contains(RegExp('[a-z]'));
-    final hasNumber = password.contains(RegExp('[0-9]'));
-
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerHighest,
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Password requirements:',
-            style: theme.textTheme.bodySmall?.copyWith(
-              fontWeight: FontWeight.w500,
-              color: theme.colorScheme.onSurfaceVariant,
-            ),
-          ),
-          _gap8,
-          _buildRequirementRow(
-            theme,
-            'At least $minPasswordLength characters',
-            hasMinLength,
-          ),
-          _gap2,
-          _buildRequirementRow(theme, 'One uppercase letter', hasUppercase),
-          _gap2,
-          _buildRequirementRow(theme, 'One lowercase letter', hasLowercase),
-          _gap2,
-          _buildRequirementRow(theme, 'One number', hasNumber),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildRequirementRow(ThemeData theme, String text, bool isMet) {
-    final color = isMet ? Colors.green : theme.colorScheme.onSurfaceVariant;
-    final icon = isMet ? Icons.check_circle : Icons.circle_outlined;
-
-    return Row(
-      children: [
-        Icon(icon, size: 16, color: color),
-        const SizedBox(width: 8),
-        Text(text, style: theme.textTheme.bodySmall?.copyWith(color: color)),
-      ],
     );
   }
 

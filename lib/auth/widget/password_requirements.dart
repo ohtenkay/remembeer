@@ -1,0 +1,72 @@
+import 'package:flutter/material.dart';
+import 'package:remembeer/auth/constants.dart';
+
+const _gap2 = SizedBox(height: 2);
+
+class PasswordRequirements extends StatelessWidget {
+  final String password;
+
+  const PasswordRequirements({super.key, required this.password});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final hasMinLength = password.length >= minPasswordLength;
+    final hasUppercase = password.contains(RegExp('[A-Z]'));
+    final hasLowercase = password.contains(RegExp('[a-z]'));
+    final hasNumber = password.contains(RegExp('[0-9]'));
+
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Password requirements:',
+            style: theme.textTheme.bodySmall?.copyWith(
+              fontWeight: FontWeight.w500,
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+          ),
+          const SizedBox(height: 8),
+          _RequirementRow(
+            text: 'At least $minPasswordLength characters',
+            isMet: hasMinLength,
+          ),
+          _gap2,
+          _RequirementRow(text: 'One uppercase letter', isMet: hasUppercase),
+          _gap2,
+          _RequirementRow(text: 'One lowercase letter', isMet: hasLowercase),
+          _gap2,
+          _RequirementRow(text: 'One number', isMet: hasNumber),
+        ],
+      ),
+    );
+  }
+}
+
+class _RequirementRow extends StatelessWidget {
+  final String text;
+  final bool isMet;
+
+  const _RequirementRow({required this.text, required this.isMet});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final color = isMet ? Colors.green : theme.colorScheme.onSurfaceVariant;
+    final icon = isMet ? Icons.check_circle : Icons.circle_outlined;
+
+    return Row(
+      children: [
+        Icon(icon, size: 16, color: color),
+        const SizedBox(width: 8),
+        Text(text, style: theme.textTheme.bodySmall?.copyWith(color: color)),
+      ],
+    );
+  }
+}
