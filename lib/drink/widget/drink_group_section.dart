@@ -65,20 +65,31 @@ class _DrinkGroupSectionState extends State<DrinkGroupSection> {
             ? _buildSessionContent()
             : _buildNoSessionContent();
 
-        return Container(
-          width: double.infinity,
-          height: _isSessionMode
-              ? null
-              : (widget.minHeight ?? _noSessionMinHeight),
-          decoration: _isSessionMode
-              ? BoxDecoration(
-                  color: _backgroundColor,
-                  borderRadius: BorderRadius.circular(_borderRadius),
-                  border: Border.all(color: _sessionBorderColor),
-                )
-              : BoxDecoration(color: _backgroundColor),
-          child: content,
-        );
+        final decoration = _isSessionMode
+            ? BoxDecoration(
+                color: _backgroundColor,
+                borderRadius: BorderRadius.circular(_borderRadius),
+                border: Border.all(color: _sessionBorderColor),
+              )
+            : BoxDecoration(color: _backgroundColor);
+
+        if (_isSessionMode) {
+          return Container(
+            width: double.infinity,
+            decoration: decoration,
+            child: content,
+          );
+        } else {
+          return ConstrainedBox(
+            constraints: BoxConstraints(
+              minHeight: widget.minHeight ?? _noSessionMinHeight,
+            ),
+            child: DecoratedBox(
+              decoration: decoration,
+              child: SizedBox(width: double.infinity, child: content),
+            ),
+          );
+        }
       },
     );
   }
