@@ -1,15 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:remembeer/common/widget/async_builder.dart';
+import 'package:remembeer/common/widget/drag_auto_scroller.dart';
 import 'package:remembeer/drink/model/drink.dart';
 import 'package:remembeer/drink/model/drink_list_data.dart';
 import 'package:remembeer/drink/service/drink_list_service.dart';
 import 'package:remembeer/drink/widget/drink_group_section.dart';
 import 'package:remembeer/ioc/ioc_container.dart';
 
-class DrinkGroupList extends StatelessWidget {
-  DrinkGroupList({super.key});
+class DrinkGroupList extends StatefulWidget {
+  const DrinkGroupList({super.key});
 
+  @override
+  State<DrinkGroupList> createState() => _DrinkGroupListState();
+}
+
+class _DrinkGroupListState extends State<DrinkGroupList> {
   final _drinkListService = get<DrinkListService>();
+  final _scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,9 +36,16 @@ class DrinkGroupList extends StatelessWidget {
         return Expanded(
           child: LayoutBuilder(
             builder: (context, constraints) {
-              return SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                child: _buildContent(data, constraints.maxHeight),
+              return DragAutoScroller(
+                scrollController: _scrollController,
+                child: SingleChildScrollView(
+                  controller: _scrollController,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
+                  child: _buildContent(data, constraints.maxHeight),
+                ),
               );
             },
           ),
