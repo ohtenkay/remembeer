@@ -3,6 +3,7 @@ import 'package:get_it/get_it.dart';
 import 'package:remembeer/auth/service/auth_service.dart';
 import 'package:remembeer/drink/controller/drink_controller.dart';
 import 'package:remembeer/drink/service/date_service.dart';
+import 'package:remembeer/drink/service/drink_list_service.dart';
 import 'package:remembeer/drink/service/drink_service.dart';
 import 'package:remembeer/drink_type/controller/drink_type_controller.dart';
 import 'package:remembeer/friend_request/controller/friend_request_controller.dart';
@@ -90,6 +91,12 @@ class IoCContainer {
           sessionController: get<SessionController>(),
           userSettingsController: get<UserSettingsController>(),
           dateService: get<DateService>(),
+        ),
+      )
+      ..registerSingleton(
+        DrinkListService(
+          drinkService: get<DrinkService>(),
+          sessionService: get<SessionService>(),
         ),
       );
   }
