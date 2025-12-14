@@ -9,7 +9,9 @@ import 'package:remembeer/session/widget/session_divider.dart';
 
 const _sessionBackgroundColor = Color(0x1A4CAF50);
 const _sessionDragOverColor = Color(0x334CAF50);
+const _sessionBorderColor = Color(0x404CAF50);
 const _noSessionMinHeight = 120.0;
+const _borderRadius = 12.0;
 
 /// A unified widget that displays a group of drinks.
 ///
@@ -63,12 +65,19 @@ class _DrinkGroupSectionState extends State<DrinkGroupSection> {
             ? _buildSessionContent()
             : _buildNoSessionContent();
 
-        return SizedBox(
+        return Container(
           width: double.infinity,
           height: _isSessionMode
               ? null
               : (widget.minHeight ?? _noSessionMinHeight),
-          child: ColoredBox(color: _backgroundColor, child: content),
+          decoration: _isSessionMode
+              ? BoxDecoration(
+                  color: _backgroundColor,
+                  borderRadius: BorderRadius.circular(_borderRadius),
+                  border: Border.all(color: _sessionBorderColor),
+                )
+              : BoxDecoration(color: _backgroundColor),
+          child: content,
         );
       },
     );

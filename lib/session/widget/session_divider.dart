@@ -13,32 +13,29 @@ class SessionDivider extends StatelessWidget {
     final timeFormat = DateFormat('H:mm');
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12.0),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       child: Row(
         children: [
-          Expanded(child: Divider(color: theme.colorScheme.outline)),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12.0),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  Icons.table_bar,
-                  size: 16,
-                  color: theme.colorScheme.outline,
-                ),
-                const SizedBox(width: 6),
-                Text(
-                  '${session.name} • ${timeFormat.format(session.startedAt)}',
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.outline,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
+          Icon(
+            Icons.table_bar,
+            size: 16,
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
+          const SizedBox(width: 6),
+          Text(
+            session.name,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+              fontWeight: FontWeight.w500,
             ),
           ),
-          Expanded(child: Divider(color: theme.colorScheme.outline)),
+          const Spacer(),
+          Text(
+            'from ${timeFormat.format(session.startedAt)}',
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
+            ),
+          ),
         ],
       ),
     );
