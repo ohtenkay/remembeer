@@ -14,6 +14,7 @@ class Drink extends Entity {
   final DrinkType drinkType;
   final int volumeInMilliliters;
   final GeoPoint? location;
+  final String? sessionId;
 
   const Drink({
     required super.id,
@@ -25,6 +26,7 @@ class Drink extends Entity {
     required this.drinkType,
     required this.volumeInMilliliters,
     this.location,
+    this.sessionId,
   });
 
   factory Drink.fromJson(Map<String, dynamic> json) => _$DrinkFromJson(json);
@@ -37,6 +39,7 @@ class Drink extends Entity {
     DrinkType? drinkType,
     int? volumeInMilliliters,
     GeoPoint? location,
+    String? sessionId,
   }) {
     return Drink(
       id: id,
@@ -49,6 +52,7 @@ class Drink extends Entity {
       drinkType: drinkType ?? this.drinkType,
       volumeInMilliliters: volumeInMilliliters ?? this.volumeInMilliliters,
       location: location ?? this.location,
+      sessionId: sessionId ?? this.sessionId,
     );
   }
 }
