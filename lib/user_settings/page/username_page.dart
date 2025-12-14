@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:remembeer/ioc/ioc_container.dart';
+import 'package:remembeer/user/constants.dart';
 import 'package:remembeer/user/service/user_service.dart';
 import 'package:remembeer/user_settings/widget/settings_page_template.dart';
-
-const maxUsernameLength = 20;
-const minUsernameLength = 3;
 
 class UserNamePage extends StatefulWidget {
   const UserNamePage({super.key});

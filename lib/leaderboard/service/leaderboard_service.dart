@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:remembeer/auth/service/auth_service.dart';
+import 'package:remembeer/leaderboard/constants.dart';
 import 'package:remembeer/leaderboard/controller/leaderboard_controller.dart';
 import 'package:remembeer/leaderboard/model/join_leaderboard_result.dart';
 import 'package:remembeer/leaderboard/model/leaderboard.dart';
@@ -10,8 +11,6 @@ import 'package:remembeer/leaderboard/service/month_service.dart';
 import 'package:remembeer/user/controller/user_controller.dart';
 import 'package:rxdart/rxdart.dart';
 
-const inviteCodeLength = 8;
-const maxLeaderboardMembers = 200;
 const _inviteCodeChars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 
 class LeaderboardService {

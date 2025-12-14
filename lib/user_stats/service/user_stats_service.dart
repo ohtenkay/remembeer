@@ -1,9 +1,8 @@
+import 'package:remembeer/drink/constants.dart';
 import 'package:remembeer/drink/controller/drink_controller.dart';
 import 'package:remembeer/drink/model/drink.dart';
 import 'package:remembeer/drink_type/model/drink_category.dart';
 import 'package:remembeer/user_stats/model/user_stats.dart';
-
-const _beerVolumeMl = 500;
 
 class UserStatsService {
   final DrinkController drinkController;
@@ -45,7 +44,7 @@ class UserStatsService {
         .where((drink) => drink.drinkType.category == DrinkCategory.beer)
         .fold<double>(
           0.0,
-          (sum, beer) => sum + (beer.volumeInMilliliters / _beerVolumeMl),
+          (sum, beer) => sum + (beer.volumeInMilliliters / beerVolumeMl),
         );
   }
 

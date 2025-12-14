@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:remembeer/common/widget/async_builder.dart';
 import 'package:remembeer/ioc/ioc_container.dart';
-import 'package:remembeer/user_settings/model/user_settings.dart';
+import 'package:remembeer/user_settings/constants.dart';
 import 'package:remembeer/user_settings/service/user_settings_service.dart';
 import 'package:remembeer/user_settings/widget/settings_page_template.dart';
 

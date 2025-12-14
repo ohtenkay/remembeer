@@ -1,16 +1,15 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:remembeer/auth/constants.dart';
 import 'package:remembeer/auth/service/auth_service.dart';
 import 'package:remembeer/auth/util/firebase_error_mapper.dart';
 import 'package:remembeer/common/widget/error_message_box.dart';
 import 'package:remembeer/common/widget/page_template.dart';
 import 'package:remembeer/ioc/ioc_container.dart';
+import 'package:remembeer/user/constants.dart';
 import 'package:remembeer/user/service/user_service.dart';
-import 'package:remembeer/user_settings/page/username_page.dart';
 import 'package:remembeer/user_settings/service/user_settings_service.dart';
-
-const _minPasswordLength = 8;
 
 const _gap8 = SizedBox(height: 8);
 const _gap16 = SizedBox(height: 16);
@@ -70,8 +69,8 @@ class _RegisterPageState extends State<RegisterPage> {
                 if (value == null || value.isEmpty) {
                   return 'Please enter a password.';
                 }
-                if (value.length < _minPasswordLength) {
-                  return 'Password must be at least $_minPasswordLength characters.';
+                if (value.length < minPasswordLength) {
+                  return 'Password must be at least $minPasswordLength characters.';
                 }
                 return null;
               },
@@ -191,7 +190,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   Widget _buildPasswordRequirements(ThemeData theme) {
     final password = _passwordController.text;
-    final hasMinLength = password.length >= _minPasswordLength;
+    final hasMinLength = password.length >= minPasswordLength;
 
     return Container(
       padding: const EdgeInsets.all(12),
@@ -212,7 +211,7 @@ class _RegisterPageState extends State<RegisterPage> {
           _gap8,
           _buildRequirementRow(
             theme,
-            'At least $_minPasswordLength characters',
+            'At least $minPasswordLength characters',
             hasMinLength,
           ),
         ],

@@ -1,0 +1,1 @@
+const minPasswordLength = 8;

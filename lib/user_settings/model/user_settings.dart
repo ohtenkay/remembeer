@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:remembeer/drink_type/model/drink_type.dart';
+import 'package:remembeer/user_settings/constants.dart';
 import 'package:remembeer/user_settings/model/drink_list_sort.dart';
 import 'package:remembeer/user_settings/model/time_of_day_converter.dart';
 
 part 'user_settings.g.dart';
-
-const defaultEndOfDayBoundary = TimeOfDay(hour: 6, minute: 0);
 
 @JsonSerializable(explicitToJson: true)
 class UserSettings {
