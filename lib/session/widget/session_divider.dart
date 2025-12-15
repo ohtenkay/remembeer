@@ -18,13 +18,14 @@ class SessionDivider extends StatelessWidget {
     final theme = Theme.of(context);
     final timeFormat = DateFormat('H:mm');
     final isOwner = _sessionService.isSessionOwner(session);
+    final iconColor = theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.7);
 
     final timeText = session.endedAt != null
         ? '${timeFormat.format(session.startedAt)} to ${timeFormat.format(session.endedAt!)}'
         : '${timeFormat.format(session.startedAt)} - still going';
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
       child: Row(
         children: [
           Icon(
@@ -40,48 +41,34 @@ class SessionDivider extends StatelessWidget {
               fontWeight: FontWeight.w500,
             ),
           ),
-          ...[
-            const SizedBox(width: 8),
-            GestureDetector(
-              onTap: () => Navigator.of(context).push(
-                MaterialPageRoute<void>(
-                  builder: (context) =>
-                      AddFriendsToSessionPage(session: session),
-                ),
-              ),
-              child: Icon(
-                Icons.group_add,
-                size: 16,
-                color: theme.colorScheme.onSurfaceVariant.withValues(
-                  alpha: 0.7,
-                ),
+          IconButton(
+            icon: Icon(Icons.group_add, size: 16, color: iconColor),
+            tooltip: 'Add friends',
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints(),
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (context) => AddFriendsToSessionPage(session: session),
               ),
             ),
-          ],
+          ),
           const Spacer(),
           Text(
             timeText,
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
-            ),
+            style: theme.textTheme.bodySmall?.copyWith(color: iconColor),
           ),
-          if (isOwner) ...[
-            const SizedBox(width: 8),
-            GestureDetector(
-              onTap: () => Navigator.of(context).push(
+          if (isOwner)
+            IconButton(
+              icon: Icon(Icons.edit_outlined, size: 16, color: iconColor),
+              tooltip: 'Edit session',
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints(),
+              onPressed: () => Navigator.of(context).push(
                 MaterialPageRoute<void>(
                   builder: (context) => EditSessionPage(session: session),
                 ),
               ),
-              child: Icon(
-                Icons.edit_outlined,
-                size: 16,
-                color: theme.colorScheme.onSurfaceVariant.withValues(
-                  alpha: 0.7,
-                ),
-              ),
             ),
-          ],
         ],
       ),
     );
