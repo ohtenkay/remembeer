@@ -20,4 +20,14 @@ class SessionController extends Controller<Session, SessionCreate> {
           ),
         );
   }
+
+  Stream<Session> streamFor(String sessionId) {
+    return readCollection.doc(sessionId).snapshots().map((snapshot) {
+      final data = snapshot.data();
+      if (data == null) {
+        throw StateError('Session $sessionId not found');
+      }
+      return data;
+    });
+  }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:remembeer/ioc/ioc_container.dart';
 import 'package:remembeer/session/model/session.dart';
+import 'package:remembeer/session/page/add_friends_to_session_page.dart';
 import 'package:remembeer/session/page/edit_session_page.dart';
 import 'package:remembeer/session/service/session_service.dart';
 
@@ -39,6 +40,24 @@ class SessionDivider extends StatelessWidget {
               fontWeight: FontWeight.w500,
             ),
           ),
+          ...[
+            const SizedBox(width: 8),
+            GestureDetector(
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (context) =>
+                      AddFriendsToSessionPage(session: session),
+                ),
+              ),
+              child: Icon(
+                Icons.group_add,
+                size: 16,
+                color: theme.colorScheme.onSurfaceVariant.withValues(
+                  alpha: 0.7,
+                ),
+              ),
+            ),
+          ],
           const Spacer(),
           Text(
             timeText,

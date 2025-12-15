@@ -91,6 +91,7 @@ class IoCContainer {
           sessionController: get<SessionController>(),
           userSettingsController: get<UserSettingsController>(),
           dateService: get<DateService>(),
+          userService: get<UserService>(),
         ),
       )
       ..registerSingleton(
