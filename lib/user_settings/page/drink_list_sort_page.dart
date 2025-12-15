@@ -22,8 +22,8 @@ class _DrinkListSortPageState extends State<DrinkListSortPage> {
     return SettingsPageTemplate(
       title: const Text('Drink List Order'),
       hint:
-          'Choose how drinks are sorted in the list. '
-          '"Newest first" shows your most recent drinks at the top, '
+          'Choose how drinks and sessions are sorted in the list. '
+          '"Newest first" shows your most recent drinks and sessions at the top, '
           'while "Oldest first" shows them at the bottom.',
       onFabPressed: _saveSettings,
       child: AsyncBuilder(
@@ -68,9 +68,9 @@ class _DrinkListSortPageState extends State<DrinkListSortPage> {
   String _getSubtitle(DrinkListSort sort) {
     switch (sort) {
       case DrinkListSort.descending:
-        return 'Most recent drinks appear at the top';
+        return 'Most recent drinks and sessions appear at the top';
       case DrinkListSort.ascending:
-        return 'Oldest drinks appear at the top';
+        return 'Oldest drinks and sessions appear at the top';
     }
   }
 

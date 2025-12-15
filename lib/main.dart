@@ -13,7 +13,7 @@ Future<void> main() async {
   await GoogleSignIn.instance.initialize(
     serverClientId:
         // TODO(metju-ac): load from .env
-        'GOOGLE_SERVER_CLIENT_ID',
+        '578025081321-npkarems6ug6ehf730425v5q8a3ojs7e.apps.googleusercontent.com',
   );
 
   IoCContainer.initialize();

@@ -1,12 +1,12 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'drink.dart';
+part of 'session.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-Drink _$DrinkFromJson(Map<String, dynamic> json) => Drink(
+Session _$SessionFromJson(Map<String, dynamic> json) => Session(
   id: json['id'] as String,
   userId: json['userId'] as String,
   createdAt: _$JsonConverterFromJson<Timestamp, DateTime>(
@@ -21,17 +21,17 @@ Drink _$DrinkFromJson(Map<String, dynamic> json) => Drink(
     json['deletedAt'],
     const TimestampConverter().fromJson,
   ),
-  consumedAt: DateTime.parse(json['consumedAt'] as String),
-  drinkType: DrinkType.fromJson(json['drinkType'] as Map<String, dynamic>),
-  volumeInMilliliters: (json['volumeInMilliliters'] as num).toInt(),
-  location: _$JsonConverterFromJson<GeoPoint, GeoPoint>(
-    json['location'],
-    const GeoPointConverter().fromJson,
-  ),
-  sessionId: json['sessionId'] as String?,
+  name: json['name'] as String,
+  startedAt: DateTime.parse(json['startedAt'] as String),
+  endedAt: json['endedAt'] == null
+      ? null
+      : DateTime.parse(json['endedAt'] as String),
+  memberIds: (json['memberIds'] as List<dynamic>)
+      .map((e) => e as String)
+      .toSet(),
 );
 
-Map<String, dynamic> _$DrinkToJson(Drink instance) => <String, dynamic>{
+Map<String, dynamic> _$SessionToJson(Session instance) => <String, dynamic>{
   'id': instance.id,
   'userId': instance.userId,
   'createdAt': _$JsonConverterToJson<Timestamp, DateTime>(
@@ -46,14 +46,10 @@ Map<String, dynamic> _$DrinkToJson(Drink instance) => <String, dynamic>{
     instance.deletedAt,
     const TimestampConverter().toJson,
   ),
-  'consumedAt': instance.consumedAt.toIso8601String(),
-  'drinkType': instance.drinkType.toJson(),
-  'volumeInMilliliters': instance.volumeInMilliliters,
-  'location': _$JsonConverterToJson<GeoPoint, GeoPoint>(
-    instance.location,
-    const GeoPointConverter().toJson,
-  ),
-  'sessionId': instance.sessionId,
+  'name': instance.name,
+  'startedAt': instance.startedAt.toIso8601String(),
+  'endedAt': instance.endedAt?.toIso8601String(),
+  'memberIds': instance.memberIds.toList(),
 };
 
 Value? _$JsonConverterFromJson<Json, Value>(
