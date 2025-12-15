@@ -51,27 +51,26 @@ class FriendRequestCard extends StatelessWidget {
                 sender.username,
                 style: const TextStyle(fontWeight: FontWeight.bold),
               ),
-              trailing: SizedBox(
-                width: 80,
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    IconButton(
-                      icon: Icon(
-                        Icons.check_circle,
-                        color: Colors.green.shade600,
-                      ),
-                      onPressed: () =>
-                          _userService.acceptFriendRequest(sender.id),
-                      tooltip: 'Accept',
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    icon: Icon(
+                      Icons.check_circle,
+                      color: Colors.green.shade600,
                     ),
-                    IconButton(
-                      icon: Icon(Icons.cancel, color: Colors.red.shade600),
-                      onPressed: () => _showDenyRequestDialog(context, sender),
-                      tooltip: 'Deny',
-                    ),
-                  ],
-                ),
+                    onPressed: () =>
+                        _userService.acceptFriendRequest(sender.id),
+                    tooltip: 'Accept',
+                    visualDensity: VisualDensity.compact,
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.cancel, color: Colors.red.shade600),
+                    onPressed: () => _showDenyRequestDialog(context, sender),
+                    tooltip: 'Deny',
+                    visualDensity: VisualDensity.compact,
+                  ),
+                ],
               ),
             ),
           ),
