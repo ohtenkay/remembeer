@@ -32,7 +32,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   diacritic: ^0.1.6
   firebase_auth: ^6.1.2
-  firebase_core: ^4.2.0
+  firebase_core: ^4.3.0
 
   flutter:
     sdk: flutter
