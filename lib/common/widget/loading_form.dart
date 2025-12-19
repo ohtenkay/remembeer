@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:remembeer/auth/widget/password_text_field.dart';
 import 'package:remembeer/common/widget/error_message_box.dart';
 
 class LoadingForm extends StatefulWidget {
@@ -54,6 +55,31 @@ class LoadingFormState extends State<LoadingForm> {
     );
   }
 
+  Widget buildPasswordField({
+    required TextEditingController controller,
+    required String label,
+    required bool obscureText,
+    required VoidCallback onToggleVisibility,
+    bool isLastField = false,
+    ValueChanged<String>? onChanged,
+    VoidCallback? onFieldSubmitted,
+    String? Function(String?)? validator,
+  }) {
+    return PasswordTextField(
+      controller: controller,
+      label: label,
+      obscureText: obscureText,
+      onToggleVisibility: onToggleVisibility,
+      enabled: !_isLoading,
+      onChanged: onChanged,
+      validator: validator,
+      textInputAction: isLastField
+          ? TextInputAction.done
+          : TextInputAction.next,
+      onFieldSubmitted: onFieldSubmitted,
+    );
+  }
+
   Widget buildSubmitButton({
     required String text,
     required Future<void> Function() onSubmit,
@@ -86,9 +112,7 @@ class LoadingFormState extends State<LoadingForm> {
     );
   }
 
-  Future<void> _submit(Future<void> Function() action) async {
-    if (!_formKey.currentState!.validate()) return;
-
+  Future<void> runAction(Future<void> Function() action) async {
     setState(() {
       _isLoading = true;
       _errorMessage = null;
@@ -104,5 +128,10 @@ class LoadingFormState extends State<LoadingForm> {
         setState(() => _isLoading = false);
       }
     }
+  }
+
+  Future<void> _submit(Future<void> Function() action) async {
+    if (!_formKey.currentState!.validate()) return;
+    await runAction(action);
   }
 }
