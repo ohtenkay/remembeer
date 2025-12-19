@@ -4,7 +4,6 @@ import 'package:remembeer/auth/constants.dart';
 import 'package:remembeer/auth/service/auth_service.dart';
 import 'package:remembeer/auth/util/firebase_error_mapper.dart';
 import 'package:remembeer/auth/widget/password_requirements.dart';
-import 'package:remembeer/auth/widget/password_text_field.dart';
 import 'package:remembeer/common/widget/loading_form.dart';
 import 'package:remembeer/common/widget/page_template.dart';
 import 'package:remembeer/ioc/ioc_container.dart';
@@ -59,46 +58,11 @@ class _RegisterPageState extends State<RegisterPage> {
             _gap16,
             _buildUsernameField(form),
             _gap16,
-            PasswordTextField(
-              controller: _passwordController,
-              label: 'Password',
-              obscureText: _obscurePassword,
-              onToggleVisibility: () =>
-                  setState(() => _obscurePassword = !_obscurePassword),
-              enabled: !form.isLoading,
-              onChanged: (_) => setState(() {}),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter a password.';
-                }
-                if (!isPasswordValid(value)) {
-                  return 'Password does not meet requirements.';
-                }
-                return null;
-              },
-            ),
+            _buildPasswordField(form),
             _gap8,
             PasswordRequirements(password: _passwordController.text),
             _gap16,
-            PasswordTextField(
-              controller: _confirmPasswordController,
-              label: 'Confirm Password',
-              obscureText: _obscurePassword,
-              onToggleVisibility: () =>
-                  setState(() => _obscurePassword = !_obscurePassword),
-              enabled: !form.isLoading,
-              textInputAction: TextInputAction.done,
-              onFieldSubmitted: () => _register(context),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please confirm your password.';
-                }
-                if (value != _passwordController.text) {
-                  return 'Passwords do not match.';
-                }
-                return null;
-              },
-            ),
+            _buildConfirmPasswordField(form),
             form.buildErrorMessage(),
             const SizedBox(height: 24),
             form.buildSubmitButton(
@@ -126,6 +90,47 @@ class _RegisterPageState extends State<RegisterPage> {
         final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
         if (!emailRegex.hasMatch(value.trim())) {
           return 'Please enter a valid email address.';
+        }
+        return null;
+      },
+    );
+  }
+
+  Widget _buildPasswordField(LoadingFormState form) {
+    return form.buildPasswordField(
+      controller: _passwordController,
+      label: 'Password',
+      obscureText: _obscurePassword,
+      onToggleVisibility: () =>
+          setState(() => _obscurePassword = !_obscurePassword),
+      onChanged: (_) => setState(() {}),
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Please enter a password.';
+        }
+        if (!isPasswordValid(value)) {
+          return 'Password does not meet requirements.';
+        }
+        return null;
+      },
+    );
+  }
+
+  Widget _buildConfirmPasswordField(LoadingFormState form) {
+    return form.buildPasswordField(
+      controller: _confirmPasswordController,
+      label: 'Confirm Password',
+      obscureText: _obscurePassword,
+      onToggleVisibility: () =>
+          setState(() => _obscurePassword = !_obscurePassword),
+      isLastField: true,
+      onFieldSubmitted: () => _register(context),
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Please confirm your password.';
+        }
+        if (value != _passwordController.text) {
+          return 'Passwords do not match.';
         }
         return null;
       },
