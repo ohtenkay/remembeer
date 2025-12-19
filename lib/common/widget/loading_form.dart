@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:remembeer/auth/widget/password_text_field.dart';
 import 'package:remembeer/common/widget/error_message_box.dart';
 
 class LoadingForm extends StatefulWidget {
@@ -65,18 +64,27 @@ class LoadingFormState extends State<LoadingForm> {
     VoidCallback? onFieldSubmitted,
     String? Function(String?)? validator,
   }) {
-    return PasswordTextField(
+    return TextFormField(
       controller: controller,
-      label: label,
       obscureText: obscureText,
-      onToggleVisibility: onToggleVisibility,
-      enabled: !_isLoading,
-      onChanged: onChanged,
-      validator: validator,
       textInputAction: isLastField
           ? TextInputAction.done
           : TextInputAction.next,
-      onFieldSubmitted: onFieldSubmitted,
+      enabled: !_isLoading,
+      onChanged: onChanged,
+      onFieldSubmitted: onFieldSubmitted != null
+          ? (_) => onFieldSubmitted()
+          : null,
+      decoration: InputDecoration(
+        labelText: label,
+        border: const OutlineInputBorder(),
+        prefixIcon: const Icon(Icons.lock_outlined),
+        suffixIcon: IconButton(
+          icon: Icon(obscureText ? Icons.visibility : Icons.visibility_off),
+          onPressed: onToggleVisibility,
+        ),
+      ),
+      validator: validator,
     );
   }
 
