@@ -63,6 +63,7 @@ class ProfilePage extends StatelessWidget {
                   context: context,
                   userStats: data.stats,
                   user: data.user,
+                  isCurrentUser: isCurrentUser,
                 ),
                 const SizedBox(height: 30),
                 _buildConsumptionStats(data.stats),
@@ -258,6 +259,7 @@ class ProfilePage extends StatelessWidget {
     required BuildContext context,
     required UserStats userStats,
     required UserModel user,
+    required bool isCurrentUser,
   }) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -276,11 +278,16 @@ class ProfilePage extends StatelessWidget {
           color: Colors.blue.shade700,
           value: user.friends.length.toString(),
           label: 'Friends',
-          onTap: () => Navigator.of(context).push(
-            MaterialPageRoute<void>(
+          onTap: () {
+            final route = MaterialPageRoute<void>(
               builder: (context) => FriendsListPage(userId: user.id),
-            ),
-          ),
+            );
+            if (isCurrentUser) {
+              Navigator.of(context).push(route);
+            } else {
+              Navigator.of(context).pushReplacement(route);
+            }
+          },
         ),
       ],
     );

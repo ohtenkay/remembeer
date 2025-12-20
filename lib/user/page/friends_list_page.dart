@@ -28,7 +28,7 @@ class FriendsListPage extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
             itemCount: friends.length,
             itemBuilder: (context, index) {
-              return UserCard(user: friends[index]);
+              return UserCard(user: friends[index], replaceRoute: true);
             },
           );
         },
