@@ -10,6 +10,7 @@ import 'package:remembeer/friend_request/controller/friend_request_controller.da
 import 'package:remembeer/leaderboard/controller/leaderboard_controller.dart';
 import 'package:remembeer/leaderboard/service/leaderboard_service.dart';
 import 'package:remembeer/leaderboard/service/month_service.dart';
+import 'package:remembeer/location/service/location_service.dart';
 import 'package:remembeer/session/controller/session_controller.dart';
 import 'package:remembeer/session/service/session_service.dart';
 import 'package:remembeer/user/controller/user_controller.dart';
@@ -28,7 +29,8 @@ class IoCContainer {
       ..registerSingleton(FirebaseAuth.instance)
       ..registerSingleton(AuthService(firebaseAuth: get<FirebaseAuth>()))
       ..registerSingleton(DateService())
-      ..registerSingleton(MonthService());
+      ..registerSingleton(MonthService())
+      ..registerSingleton(LocationService());
 
     _registerControllers();
     _registerServices();
