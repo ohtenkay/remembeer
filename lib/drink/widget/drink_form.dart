@@ -1,20 +1,24 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:remembeer/drink_type/model/drink_category.dart';
 import 'package:remembeer/drink_type/model/drink_type.dart';
 import 'package:remembeer/drink_type/widget/drink_type_picker.dart';
+import 'package:remembeer/ioc/ioc_container.dart';
+import 'package:remembeer/location/service/location_service.dart';
 
 const _spacing = SizedBox(height: 16);
 
-// TODO(metju-ac): add location
 class DrinkForm extends StatefulWidget {
   final DrinkType initialDrinkType;
   final DateTime initialConsumedAt;
   final int initialVolume;
+  final GeoPoint? initialLocation;
   final Future<void> Function(
     DrinkType drinkType,
     DateTime consumedAt,
     int volumeInMilliliters,
+    GeoPoint? location,
   )
   onSubmit;
 
@@ -23,6 +27,7 @@ class DrinkForm extends StatefulWidget {
     required this.initialDrinkType,
     required this.initialConsumedAt,
     required this.initialVolume,
+    this.initialLocation,
     required this.onSubmit,
   });
 
@@ -32,23 +37,31 @@ class DrinkForm extends StatefulWidget {
 
 class _DrinkFormState extends State<DrinkForm> {
   final _formKey = GlobalKey<FormState>();
+  final _locationService = get<LocationService>();
 
   late DrinkType _selectedDrinkType = widget.initialDrinkType;
   late DateTime _selectedConsumedAt = widget.initialConsumedAt;
   final _volumeController = TextEditingController();
   final _consumedAtController = TextEditingController();
+  final _locationController = TextEditingController();
+
+  GeoPoint? _location;
+  var _isLoadingLocation = false;
 
   @override
   void initState() {
     super.initState();
     _consumedAtController.text = _formatDateTime(_selectedConsumedAt);
     _volumeController.text = widget.initialVolume.toString();
+    _location = widget.initialLocation;
+    _updateLocationText();
   }
 
   @override
   void dispose() {
     _volumeController.dispose();
     _consumedAtController.dispose();
+    _locationController.dispose();
     super.dispose();
   }
 
@@ -68,11 +81,55 @@ class _DrinkFormState extends State<DrinkForm> {
                 _buildPredefinedVolumesRow(),
                 _spacing,
                 _buildConsumedAtInput(),
+                _spacing,
+                _buildLocationInput(),
               ],
             ),
           ),
         ),
         _buildActionButtons(context),
+      ],
+    );
+  }
+
+  Widget _buildLocationInput() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        TextFormField(
+          controller: _locationController,
+          readOnly: true,
+          decoration: InputDecoration(
+            labelText: 'Location (optional)',
+            border: const OutlineInputBorder(),
+            prefixIcon: const Icon(Icons.location_on),
+            suffixIcon: _location != null
+                ? IconButton(
+                    icon: const Icon(Icons.clear),
+                    onPressed: () {
+                      setState(() {
+                        _location = null;
+                        _updateLocationText();
+                      });
+                    },
+                  )
+                : null,
+          ),
+        ),
+        const SizedBox(height: 8),
+        OutlinedButton.icon(
+          onPressed: _isLoadingLocation ? null : _fetchCurrentLocation,
+          icon: _isLoadingLocation
+              ? const SizedBox(
+                  width: 18,
+                  height: 18,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+              : const Icon(Icons.my_location),
+          label: Text(
+            _isLoadingLocation ? 'Getting location...' : 'Use current location',
+          ),
+        ),
       ],
     );
   }
@@ -211,7 +268,36 @@ class _DrinkFormState extends State<DrinkForm> {
   Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
       final volume = int.parse(_volumeController.text);
-      await widget.onSubmit(_selectedDrinkType, _selectedConsumedAt, volume);
+      await widget.onSubmit(
+        _selectedDrinkType,
+        _selectedConsumedAt,
+        volume,
+        _location,
+      );
+    }
+  }
+
+  void _updateLocationText() {
+    if (_location != null) {
+      _locationController.text =
+          '${_location!.latitude.toStringAsFixed(5)}, ${_location!.longitude.toStringAsFixed(5)}';
+    } else {
+      _locationController.text = '';
+    }
+  }
+
+  Future<void> _fetchCurrentLocation() async {
+    setState(() => _isLoadingLocation = true);
+
+    final position = await _locationService.getCurrentPosition();
+    if (mounted) {
+      setState(() {
+        _isLoadingLocation = false;
+        if (position != null) {
+          _location = GeoPoint(position.latitude, position.longitude);
+          _updateLocationText();
+        }
+      });
     }
   }
 }
