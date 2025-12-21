@@ -5,6 +5,7 @@ import 'package:remembeer/drink_type/model/drink_category.dart';
 import 'package:remembeer/drink_type/model/drink_type.dart';
 import 'package:remembeer/drink_type/widget/drink_type_picker.dart';
 import 'package:remembeer/ioc/ioc_container.dart';
+import 'package:remembeer/location/page/location_page.dart';
 import 'package:remembeer/location/service/location_service.dart';
 
 const _spacing = SizedBox(height: 16);
@@ -99,19 +100,26 @@ class _DrinkFormState extends State<DrinkForm> {
         TextFormField(
           controller: _locationController,
           readOnly: true,
+          onTap: _location != null ? _viewLocationOnMap : null,
           decoration: InputDecoration(
             labelText: 'Location (optional)',
             border: const OutlineInputBorder(),
             prefixIcon: const Icon(Icons.location_on),
             suffixIcon: _location != null
-                ? IconButton(
-                    icon: const Icon(Icons.clear),
-                    onPressed: () {
-                      setState(() {
-                        _location = null;
-                        _updateLocationText();
-                      });
-                    },
+                ? Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.map),
+                      IconButton(
+                        icon: const Icon(Icons.clear),
+                        onPressed: () {
+                          setState(() {
+                            _location = null;
+                            _updateLocationText();
+                          });
+                        },
+                      ),
+                    ],
                   )
                 : null,
           ),
@@ -131,6 +139,15 @@ class _DrinkFormState extends State<DrinkForm> {
           ),
         ),
       ],
+    );
+  }
+
+  void _viewLocationOnMap() {
+    if (_location == null) return;
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (context) => LocationPage(location: _location!),
+      ),
     );
   }
 
