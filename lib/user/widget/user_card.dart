@@ -4,8 +4,9 @@ import 'package:remembeer/user/page/profile_page.dart';
 
 class UserCard extends StatelessWidget {
   final UserModel user;
+  final bool replaceRoute;
 
-  const UserCard({super.key, required this.user});
+  const UserCard({super.key, required this.user, this.replaceRoute = false});
 
   @override
   Widget build(BuildContext context) {
@@ -21,11 +22,14 @@ class UserCard extends StatelessWidget {
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
           onTap: () {
-            Navigator.of(context).push(
-              MaterialPageRoute<void>(
-                builder: (context) => ProfilePage(userId: user.id),
-              ),
+            final route = MaterialPageRoute<void>(
+              builder: (context) => ProfilePage(userId: user.id),
             );
+            if (replaceRoute) {
+              Navigator.of(context).pushReplacement(route);
+            } else {
+              Navigator.of(context).push(route);
+            }
           },
         ),
       ),
