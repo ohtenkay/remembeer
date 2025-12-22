@@ -97,6 +97,9 @@ class _DrinkTypeFormState extends State<DrinkTypeForm> {
         if (percentage == null || percentage < 0 || percentage > 100) {
           return 'Please enter a valid number.';
         }
+        if (percentage == 0) {
+          return "You don't need our app for that";
+        }
         return null;
       },
     );
