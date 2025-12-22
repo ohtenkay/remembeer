@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:remembeer/common/widget/loading_form.dart';
 import 'package:remembeer/leaderboard/constants.dart';
 import 'package:remembeer/leaderboard/model/leaderboard_icon.dart';
 import 'package:remembeer/leaderboard/widget/leaderboard_icon_picker.dart';
@@ -25,11 +25,9 @@ class LeaderboardForm extends StatefulWidget {
 }
 
 class _LeaderboardFormState extends State<LeaderboardForm> {
-  final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
 
   late LeaderboardIcon _selectedIcon = widget.initialIcon;
-  var _isSubmitting = false;
 
   @override
   void initState() {
@@ -45,14 +43,13 @@ class _LeaderboardFormState extends State<LeaderboardForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Expanded(
-          child: Form(
-            key: _formKey,
+    return LoadingForm(
+      builder: (form) => Column(
+        children: [
+          Expanded(
             child: ListView(
               children: [
-                _buildNameInput(),
+                _buildNameInput(form),
                 if (!widget.isEditing) ...[
                   const SizedBox(height: 24),
                   LeaderboardIconPicker(
@@ -64,59 +61,39 @@ class _LeaderboardFormState extends State<LeaderboardForm> {
               ],
             ),
           ),
-        ),
-        _buildSubmitButton(),
-      ],
-    );
-  }
-
-  Widget _buildNameInput() {
-    return TextFormField(
-      controller: _nameController,
-      maxLength: maxLeaderboardNameLength,
-      inputFormatters: [
-        LengthLimitingTextInputFormatter(maxLeaderboardNameLength),
-      ],
-      decoration: InputDecoration(
-        labelText: 'Leaderboard Name',
-        border: const OutlineInputBorder(),
-        prefixIcon: Icon(_selectedIcon.icon),
+          _buildSubmitButton(form),
+        ],
       ),
-      validator: (value) {
-        if (value == null || value.trim().isEmpty) {
-          return 'Name cannot be empty.';
-        }
-        if (value.trim().length < minLeaderboardNameLength) {
-          return 'Name must be at least $minLeaderboardNameLength characters long.';
-        }
-        return null;
-      },
     );
   }
 
-  Widget _buildSubmitButton() {
-    return ElevatedButton(
-      onPressed: _isSubmitting ? null : _submitForm,
-      style: ElevatedButton.styleFrom(padding: const EdgeInsets.all(16.0)),
-      child: _isSubmitting
-          ? const SizedBox(
-              height: 20,
-              width: 20,
-              child: CircularProgressIndicator(strokeWidth: 2),
-            )
-          : Text(
-              widget.submitButtonText,
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
+  Widget _buildNameInput(LoadingFormState form) {
+    return form.buildTextField(
+      controller: _nameController,
+      label: 'Leaderboard Name',
+      prefixIcon: _selectedIcon.icon,
+      maxLength: maxLeaderboardNameLength,
+      isLastField: true,
+      validator: _validateName,
     );
   }
 
-  Future<void> _submitForm() async {
-    if (_formKey.currentState!.validate()) {
-      setState(() => _isSubmitting = true);
+  Widget _buildSubmitButton(LoadingFormState form) {
+    return form.buildSubmitButton(
+      text: widget.submitButtonText,
+      margin: const EdgeInsets.only(bottom: 16),
+      onSubmit: () =>
+          widget.onSubmit(_nameController.text.trim(), _selectedIcon),
+    );
+  }
 
-      final name = _nameController.text.trim();
-      await widget.onSubmit(name, _selectedIcon);
+  String? _validateName(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Name cannot be empty.';
     }
+    if (value.trim().length < minLeaderboardNameLength) {
+      return 'Name must be at least $minLeaderboardNameLength characters long.';
+    }
+    return null;
   }
 }

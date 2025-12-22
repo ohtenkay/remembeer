@@ -6,12 +6,16 @@ import 'package:remembeer/auth/service/auth_service.dart';
 import 'package:remembeer/auth/util/firebase_error_mapper.dart';
 import 'package:remembeer/common/action/notifications.dart';
 import 'package:remembeer/common/widget/drink_icon.dart';
-import 'package:remembeer/common/widget/error_message_box.dart';
+import 'package:remembeer/common/widget/loading_form.dart';
 import 'package:remembeer/common/widget/page_template.dart';
 import 'package:remembeer/drink_type/model/drink_category.dart';
 import 'package:remembeer/ioc/ioc_container.dart';
 import 'package:remembeer/user/service/user_service.dart';
 import 'package:remembeer/user_settings/service/user_settings_service.dart';
+
+const _gap8 = SizedBox(height: 8);
+const _gap16 = SizedBox(height: 16);
+const _gap24 = SizedBox(height: 24);
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -25,13 +29,10 @@ class _LoginPageState extends State<LoginPage> {
   final _userService = get<UserService>();
   final _userSettingsService = get<UserSettingsService>();
 
-  final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
-  var _isLoading = false;
   var _obscurePassword = true;
-  String? _errorMessage;
 
   @override
   void dispose() {
@@ -46,19 +47,24 @@ class _LoginPageState extends State<LoginPage> {
 
     return PageTemplate(
       padding: const EdgeInsets.all(24),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          _buildHeader(theme),
-          const SizedBox(height: 48),
-          _buildForm(context),
-          const SizedBox(height: 24),
-          _buildDivider(theme),
-          const SizedBox(height: 24),
-          _buildGoogleSignIn(),
-          const SizedBox(height: 16),
-          _buildRegisterLink(context),
-        ],
+      child: LoadingForm(
+        errorMapper: (e) => e is FirebaseAuthException
+            ? mapFirebaseAuthError(e.code)
+            : e.toString(),
+        builder: (form) => Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            _buildHeader(theme),
+            const SizedBox(height: 48),
+            _buildFormContent(context, form),
+            _gap24,
+            _buildDivider(theme),
+            _gap24,
+            _buildGoogleSignIn(form),
+            _gap16,
+            _buildRegisterLink(context, form),
+          ],
+        ),
       ),
     );
   }
@@ -71,7 +77,7 @@ class _LoginPageState extends State<LoginPage> {
           size: 100,
           color: theme.colorScheme.primary,
         ),
-        const SizedBox(height: 8),
+        _gap8,
         Text(
           'Remembeer',
           style: theme.textTheme.headlineLarge?.copyWith(
@@ -79,7 +85,7 @@ class _LoginPageState extends State<LoginPage> {
             color: theme.colorScheme.primary,
           ),
         ),
-        const SizedBox(height: 8),
+        _gap8,
         Text(
           'Track your drinks, compete with friends',
           style: theme.textTheme.bodyLarge?.copyWith(
@@ -90,68 +96,42 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget _buildForm(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Form(
-      key: _formKey,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          _buildEmailField(),
-          const SizedBox(height: 16),
-          _buildPasswordField(),
-          if (_errorMessage != null) ...[
-            const SizedBox(height: 12),
-            ErrorMessageBox(message: _errorMessage!),
-          ],
-          const SizedBox(height: 8),
-          _buildForgotPassword(context),
-          const SizedBox(height: 16),
-          _buildLoginButton(theme),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildEmailField() {
-    return TextFormField(
-      controller: _emailController,
-      keyboardType: TextInputType.emailAddress,
-      textInputAction: TextInputAction.next,
-      enabled: !_isLoading,
-      decoration: const InputDecoration(
-        labelText: 'Email',
-        border: OutlineInputBorder(),
-        prefixIcon: Icon(Icons.email_outlined),
-      ),
-      validator: (value) {
-        if (value == null || value.trim().isEmpty) {
-          return 'Please enter your email.';
-        }
-        return null;
-      },
-    );
-  }
-
-  Widget _buildPasswordField() {
-    return TextFormField(
-      controller: _passwordController,
-      obscureText: _obscurePassword,
-      textInputAction: TextInputAction.done,
-      enabled: !_isLoading,
-      onFieldSubmitted: (_) => _login(),
-      decoration: InputDecoration(
-        labelText: 'Password',
-        border: const OutlineInputBorder(),
-        prefixIcon: const Icon(Icons.lock_outlined),
-        suffixIcon: IconButton(
-          icon: Icon(
-            _obscurePassword ? Icons.visibility : Icons.visibility_off,
-          ),
-          onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
+  Widget _buildFormContent(BuildContext context, LoadingFormState form) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        form.buildTextField(
+          controller: _emailController,
+          label: 'Email',
+          prefixIcon: Icons.email_outlined,
+          keyboardType: TextInputType.emailAddress,
+          validator: (value) {
+            if (value == null || value.trim().isEmpty) {
+              return 'Please enter your email.';
+            }
+            return null;
+          },
         ),
-      ),
+        _gap16,
+        _buildPasswordField(form),
+        form.buildErrorMessage(),
+        _gap8,
+        _buildForgotPassword(context, form),
+        _gap16,
+        form.buildSubmitButton(text: 'Login', onSubmit: _login),
+      ],
+    );
+  }
+
+  Widget _buildPasswordField(LoadingFormState form) {
+    return form.buildPasswordField(
+      controller: _passwordController,
+      label: 'Password',
+      obscureText: _obscurePassword,
+      onToggleVisibility: () =>
+          setState(() => _obscurePassword = !_obscurePassword),
+      isLastField: true,
+      onFieldSubmitted: () => form.runAction(_login),
       validator: (value) {
         if (value == null || value.isEmpty) {
           return 'Please enter your password.';
@@ -161,36 +141,17 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget _buildForgotPassword(BuildContext context) {
+  Widget _buildForgotPassword(BuildContext context, LoadingFormState form) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         TextButton(
-          onPressed: _isLoading
+          onPressed: form.isLoading
               ? null
               : () => _showPasswordResetDialog(context),
           child: const Text('Forgot Password?'),
         ),
       ],
-    );
-  }
-
-  Widget _buildLoginButton(ThemeData theme) {
-    return FilledButton(
-      onPressed: _isLoading ? null : _login,
-      style: FilledButton.styleFrom(
-        padding: const EdgeInsets.symmetric(vertical: 16),
-      ),
-      child: _isLoading
-          ? SizedBox(
-              height: 20,
-              width: 20,
-              child: CircularProgressIndicator(
-                strokeWidth: 2,
-                color: theme.colorScheme.onPrimary,
-              ),
-            )
-          : const Text('Login', style: TextStyle(fontSize: 16)),
     );
   }
 
@@ -210,9 +171,11 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget _buildGoogleSignIn() {
+  Widget _buildGoogleSignIn(LoadingFormState form) {
     return OutlinedButton.icon(
-      onPressed: _isLoading ? null : _signInWithGoogle,
+      onPressed: form.isLoading
+          ? null
+          : () => form.runAction(_signInWithGoogle),
       style: OutlinedButton.styleFrom(
         padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 32),
         minimumSize: const Size(300, 0),
@@ -222,9 +185,9 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget _buildRegisterLink(BuildContext context) {
+  Widget _buildRegisterLink(BuildContext context, LoadingFormState form) {
     return TextButton(
-      onPressed: _isLoading
+      onPressed: form.isLoading
           ? null
           : () => Navigator.of(context).push(
               MaterialPageRoute<void>(
@@ -236,46 +199,18 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> _login() async {
-    if (!_formKey.currentState!.validate()) return;
-
-    setState(() {
-      _isLoading = true;
-      _errorMessage = null;
-    });
-
-    try {
-      await _authService.signInWithEmailAndPassword(
-        email: _emailController.text.trim(),
-        password: _passwordController.text,
-      );
-    } on FirebaseAuthException catch (e) {
-      setState(() => _errorMessage = mapFirebaseAuthError(e.code));
-    } finally {
-      if (mounted) {
-        setState(() => _isLoading = false);
-      }
-    }
+    await _authService.signInWithEmailAndPassword(
+      email: _emailController.text.trim(),
+      password: _passwordController.text,
+    );
   }
 
   Future<void> _signInWithGoogle() async {
-    setState(() {
-      _isLoading = true;
-      _errorMessage = null;
-    });
+    final result = await _authService.signInWithGoogle();
 
-    try {
-      final result = await _authService.signInWithGoogle();
-
-      if (result != null && result.isNewUser) {
-        await _userSettingsService.createDefaultUserSettings();
-        await _userService.createDefaultUser();
-      }
-    } on FirebaseAuthException catch (e) {
-      setState(() => _errorMessage = mapFirebaseAuthError(e.code));
-    } finally {
-      if (mounted) {
-        setState(() => _isLoading = false);
-      }
+    if (result != null && result.isNewUser) {
+      await _userSettingsService.createDefaultUserSettings();
+      await _userService.createDefaultUser();
     }
   }
 
@@ -292,7 +227,7 @@ class _LoginPageState extends State<LoginPage> {
               const Text(
                 "Enter your email address and we'll send you a link to reset your password.",
               ),
-              const SizedBox(height: 16),
+              _gap16,
               TextField(
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
