@@ -20,6 +20,8 @@ class LoadingFormState extends State<LoadingForm> {
   bool get isLoading => _isLoading;
   String? _errorMessage;
 
+  bool validate() => _formKey.currentState!.validate();
+
   @override
   Widget build(BuildContext context) {
     return Form(key: _formKey, child: widget.builder(this));
