@@ -30,7 +30,13 @@ class _LocationPageState extends State<LocationPage> {
         children: [
           FlutterMap(
             mapController: _mapController,
-            options: MapOptions(initialCenter: point, initialZoom: 16),
+            options: MapOptions(
+              initialCenter: point,
+              initialZoom: 16,
+              interactionOptions: const InteractionOptions(
+                flags: InteractiveFlag.pinchZoom | InteractiveFlag.drag,
+              ),
+            ),
             children: [
               TileLayer(
                 urlTemplate:
