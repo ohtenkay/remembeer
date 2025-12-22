@@ -26,6 +26,7 @@ class _LocationPageState extends State<LocationPage> {
         onPressed: _confirmLocation,
         child: const Icon(Icons.check),
       ),
+      padding: EdgeInsets.zero,
       child: Stack(
         children: [
           FlutterMap(
