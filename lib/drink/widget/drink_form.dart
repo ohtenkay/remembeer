@@ -10,6 +10,8 @@ import 'package:remembeer/location/service/location_service.dart';
 
 const _spacing = SizedBox(height: 16);
 
+const _defaultPosition = GeoPoint(49.2099, 16.5990);
+
 class DrinkForm extends StatefulWidget {
   final DrinkType initialDrinkType;
   final DateTime initialConsumedAt;
@@ -100,55 +102,84 @@ class _DrinkFormState extends State<DrinkForm> {
         TextFormField(
           controller: _locationController,
           readOnly: true,
-          onTap: _location != null ? _viewLocationOnMap : null,
+          onTap: _isLoadingLocation ? null : _openLocationPicker,
           decoration: InputDecoration(
             labelText: 'Location (optional)',
+            hintText: 'Tap to set location',
             border: const OutlineInputBorder(),
             prefixIcon: const Icon(Icons.location_on),
             suffixIcon: _location != null
-                ? Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(Icons.map),
-                      IconButton(
-                        icon: const Icon(Icons.clear),
-                        onPressed: () {
-                          setState(() {
-                            _location = null;
-                            _updateLocationText();
-                          });
-                        },
-                      ),
-                    ],
+                ? IconButton(
+                    icon: const Icon(Icons.clear),
+                    onPressed: () {
+                      setState(() {
+                        _location = null;
+                        _updateLocationText();
+                      });
+                    },
                   )
                 : null,
           ),
         ),
         const SizedBox(height: 8),
-        OutlinedButton.icon(
-          onPressed: _isLoadingLocation ? null : _fetchCurrentLocation,
-          icon: _isLoadingLocation
-              ? const SizedBox(
-                  width: 18,
-                  height: 18,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                )
-              : const Icon(Icons.my_location),
-          label: Text(
-            _isLoadingLocation ? 'Getting location...' : 'Use current location',
-          ),
+        Row(
+          children: [
+            Expanded(
+              child: OutlinedButton.icon(
+                onPressed: _isLoadingLocation ? null : _fetchCurrentLocation,
+                icon: _isLoadingLocation
+                    ? const SizedBox(
+                        width: 18,
+                        height: 18,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Icon(Icons.my_location),
+                label: const Text('Current location'),
+              ),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: OutlinedButton.icon(
+                onPressed: _isLoadingLocation ? null : _openLocationPicker,
+                icon: const Icon(Icons.map),
+                label: const Text('Pick on map'),
+              ),
+            ),
+          ],
         ),
       ],
     );
   }
 
-  void _viewLocationOnMap() {
-    if (_location == null) return;
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (context) => LocationPage(location: _location!),
+  Future<void> _openLocationPicker() async {
+    var startLocation = _location;
+    if (startLocation == null) {
+      setState(() => _isLoadingLocation = true);
+      final position = await _locationService.getCurrentPosition();
+      if (mounted) {
+        setState(() => _isLoadingLocation = false);
+      }
+      if (position != null) {
+        startLocation = GeoPoint(position.latitude, position.longitude);
+      } else {
+        startLocation = _defaultPosition;
+      }
+    }
+
+    if (!mounted) return;
+
+    final newLocation = await Navigator.of(context).push<GeoPoint>(
+      MaterialPageRoute(
+        builder: (context) => LocationPage(location: startLocation!),
       ),
     );
+
+    if (newLocation != null && mounted) {
+      setState(() {
+        _location = newLocation;
+        _updateLocationText();
+      });
+    }
   }
 
   String _formatDateTime(DateTime dateTime) {
