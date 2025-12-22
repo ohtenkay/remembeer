@@ -20,13 +20,15 @@ class UpdateDrinkPage extends StatelessWidget {
         initialDrinkType: drinkToUpdate.drinkType,
         initialConsumedAt: drinkToUpdate.consumedAt,
         initialVolume: drinkToUpdate.volumeInMilliliters,
-        onSubmit: (drinkType, consumedAt, volumeInMilliliters) async {
+        initialLocation: drinkToUpdate.location,
+        onSubmit: (drinkType, consumedAt, volumeInMilliliters, location) async {
           await _drinkService.updateDrink(
             oldDrink: drinkToUpdate,
             newDrink: drinkToUpdate.copyWith(
               consumedAt: consumedAt,
               drinkType: drinkType,
               volumeInMilliliters: volumeInMilliliters,
+              location: location,
             ),
           );
           if (context.mounted) {
