@@ -91,24 +91,31 @@ class LoadingFormState extends State<LoadingForm> {
   Widget buildSubmitButton({
     required String text,
     required Future<void> Function() onSubmit,
+    EdgeInsetsGeometry margin = EdgeInsets.zero,
   }) {
     final theme = Theme.of(context);
 
-    return FilledButton(
-      onPressed: _isLoading ? null : () => _submit(onSubmit),
-      style: FilledButton.styleFrom(
-        padding: const EdgeInsets.symmetric(vertical: 16),
+    return Padding(
+      padding: margin,
+      child: SizedBox(
+        width: double.infinity,
+        child: FilledButton(
+          onPressed: _isLoading ? null : () => _submit(onSubmit),
+          style: FilledButton.styleFrom(
+            padding: const EdgeInsets.symmetric(vertical: 16),
+          ),
+          child: _isLoading
+              ? SizedBox(
+                  height: 20,
+                  width: 20,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: theme.colorScheme.onPrimary,
+                  ),
+                )
+              : Text(text, style: const TextStyle(fontSize: 16)),
+        ),
       ),
-      child: _isLoading
-          ? SizedBox(
-              height: 20,
-              width: 20,
-              child: CircularProgressIndicator(
-                strokeWidth: 2,
-                color: theme.colorScheme.onPrimary,
-              ),
-            )
-          : Text(text, style: const TextStyle(fontSize: 16)),
     );
   }
 
