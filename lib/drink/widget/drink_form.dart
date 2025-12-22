@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:remembeer/common/widget/loading_form.dart';
 import 'package:remembeer/drink_type/model/drink_category.dart';
 import 'package:remembeer/drink_type/model/drink_type.dart';
 import 'package:remembeer/drink_type/widget/drink_type_picker.dart';
@@ -9,7 +10,6 @@ import 'package:remembeer/location/page/location_page.dart';
 import 'package:remembeer/location/service/location_service.dart';
 
 const _spacing = SizedBox(height: 16);
-
 const _defaultPosition = GeoPoint(49.2099, 16.5990);
 
 class DrinkForm extends StatefulWidget {
@@ -39,7 +39,6 @@ class DrinkForm extends StatefulWidget {
 }
 
 class _DrinkFormState extends State<DrinkForm> {
-  final _formKey = GlobalKey<FormState>();
   final _locationService = get<LocationService>();
 
   late DrinkType _selectedDrinkType = widget.initialDrinkType;
@@ -70,39 +69,41 @@ class _DrinkFormState extends State<DrinkForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Expanded(
-          child: Form(
-            key: _formKey,
+    return LoadingForm(
+      builder: (form) => Column(
+        children: [
+          Expanded(
             child: ListView(
               children: [
                 _buildDrinkTypeDropdown(),
                 _spacing,
-                _buildVolumeInput(),
+                _buildVolumeInput(form),
                 const SizedBox(height: 8),
                 _buildPredefinedVolumesRow(),
                 _spacing,
-                _buildConsumedAtInput(),
+                _buildConsumedAtInput(form),
                 _spacing,
-                _buildLocationInput(),
+                _buildLocationInput(form),
               ],
             ),
           ),
-        ),
-        _buildActionButtons(context),
-      ],
+          _buildSubmitButton(form),
+        ],
+      ),
     );
   }
 
-  Widget _buildLocationInput() {
+  Widget _buildLocationInput(LoadingFormState form) {
+    final isDisabled = form.isLoading || _isLoadingLocation;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         TextFormField(
           controller: _locationController,
           readOnly: true,
-          onTap: _isLoadingLocation ? null : _openLocationPicker,
+          enabled: !form.isLoading,
+          onTap: isDisabled ? null : _openLocationPicker,
           decoration: InputDecoration(
             labelText: 'Location (optional)',
             hintText: 'Tap to set location',
@@ -126,7 +127,7 @@ class _DrinkFormState extends State<DrinkForm> {
           children: [
             Expanded(
               child: OutlinedButton.icon(
-                onPressed: _isLoadingLocation ? null : _fetchCurrentLocation,
+                onPressed: isDisabled ? null : _fetchCurrentLocation,
                 icon: _isLoadingLocation
                     ? const SizedBox(
                         width: 18,
@@ -140,7 +141,7 @@ class _DrinkFormState extends State<DrinkForm> {
             const SizedBox(width: 8),
             Expanded(
               child: OutlinedButton.icon(
-                onPressed: _isLoadingLocation ? null : _openLocationPicker,
+                onPressed: isDisabled ? null : _openLocationPicker,
                 icon: const Icon(Icons.map),
                 label: const Text('Pick on map'),
               ),
@@ -232,13 +233,10 @@ class _DrinkFormState extends State<DrinkForm> {
     );
   }
 
-  Widget _buildVolumeInput() {
-    return TextFormField(
+  Widget _buildVolumeInput(LoadingFormState form) {
+    return form.buildTextField(
       controller: _volumeController,
-      decoration: const InputDecoration(
-        labelText: 'Volume (ml)',
-        border: OutlineInputBorder(),
-      ),
+      label: 'Volume (ml)',
       keyboardType: TextInputType.number,
       validator: (value) {
         if (value == null || value.isEmpty) {
@@ -279,10 +277,11 @@ class _DrinkFormState extends State<DrinkForm> {
     return Row(children: buttons);
   }
 
-  Widget _buildConsumedAtInput() {
+  Widget _buildConsumedAtInput(LoadingFormState form) {
     return TextFormField(
       controller: _consumedAtController,
       readOnly: true,
+      enabled: !form.isLoading,
       onTap: _selectConsumedAt,
       decoration: const InputDecoration(
         labelText: 'Consumed at',
@@ -298,31 +297,17 @@ class _DrinkFormState extends State<DrinkForm> {
     );
   }
 
-  Widget _buildActionButtons(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        ElevatedButton(
-          onPressed: () async {
-            await _submitForm();
-          },
-          style: ElevatedButton.styleFrom(padding: const EdgeInsets.all(30.0)),
-          child: const Text('Submit'),
-        ),
-      ],
-    );
-  }
-
-  Future<void> _submitForm() async {
-    if (_formKey.currentState!.validate()) {
-      final volume = int.parse(_volumeController.text);
-      await widget.onSubmit(
+  Widget _buildSubmitButton(LoadingFormState form) {
+    return form.buildSubmitButton(
+      text: 'Submit',
+      margin: const EdgeInsets.only(bottom: 16),
+      onSubmit: () => widget.onSubmit(
         _selectedDrinkType,
         _selectedConsumedAt,
-        volume,
+        int.parse(_volumeController.text),
         _location,
-      );
-    }
+      ),
+    );
   }
 
   void _updateLocationText() {
