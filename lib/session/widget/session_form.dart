@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:remembeer/common/widget/loading_form.dart';
 
 const _maxNameLength = 30;
 
@@ -23,12 +23,10 @@ class SessionForm extends StatefulWidget {
 }
 
 class _SessionFormState extends State<SessionForm> {
-  final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _startedAtController = TextEditingController();
 
   late DateTime _selectedStartedAt = widget.initialStartedAt;
-  var _isSubmitting = false;
 
   @override
   void initState() {
@@ -46,22 +44,21 @@ class _SessionFormState extends State<SessionForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Expanded(
-          child: Form(
-            key: _formKey,
+    return LoadingForm(
+      builder: (form) => Column(
+        children: [
+          Expanded(
             child: ListView(
               children: [
-                _buildNameInput(),
+                _buildNameInput(form),
                 const SizedBox(height: 24),
-                _buildStartedAtInput(),
+                _buildStartedAtInput(form),
               ],
             ),
           ),
-        ),
-        _buildSubmitButton(),
-      ],
+          _buildSubmitButton(form),
+        ],
+      ),
     );
   }
 
@@ -104,16 +101,12 @@ class _SessionFormState extends State<SessionForm> {
     _startedAtController.text = _formatDateTime(_selectedStartedAt);
   }
 
-  Widget _buildNameInput() {
-    return TextFormField(
+  Widget _buildNameInput(LoadingFormState form) {
+    return form.buildTextField(
       controller: _nameController,
+      label: 'Session Name',
+      prefixIcon: Icons.celebration,
       maxLength: _maxNameLength,
-      inputFormatters: [LengthLimitingTextInputFormatter(_maxNameLength)],
-      decoration: const InputDecoration(
-        labelText: 'Session Name',
-        border: OutlineInputBorder(),
-        prefixIcon: Icon(Icons.celebration),
-      ),
       validator: (value) {
         if (value == null || value.trim().isEmpty) {
           return 'Name cannot be empty.';
@@ -126,10 +119,11 @@ class _SessionFormState extends State<SessionForm> {
     );
   }
 
-  Widget _buildStartedAtInput() {
+  Widget _buildStartedAtInput(LoadingFormState form) {
     return TextFormField(
       controller: _startedAtController,
       readOnly: true,
+      enabled: !form.isLoading,
       onTap: _selectStartedAt,
       decoration: const InputDecoration(
         labelText: 'Start Time',
@@ -145,29 +139,12 @@ class _SessionFormState extends State<SessionForm> {
     );
   }
 
-  Widget _buildSubmitButton() {
-    return ElevatedButton(
-      onPressed: _isSubmitting ? null : _submitForm,
-      style: ElevatedButton.styleFrom(padding: const EdgeInsets.all(16.0)),
-      child: _isSubmitting
-          ? const SizedBox(
-              height: 20,
-              width: 20,
-              child: CircularProgressIndicator(strokeWidth: 2),
-            )
-          : Text(
-              widget.submitButtonText,
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
+  Widget _buildSubmitButton(LoadingFormState form) {
+    return form.buildSubmitButton(
+      text: widget.submitButtonText,
+      margin: const EdgeInsets.only(bottom: 16),
+      onSubmit: () =>
+          widget.onSubmit(_nameController.text.trim(), _selectedStartedAt),
     );
-  }
-
-  Future<void> _submitForm() async {
-    if (_formKey.currentState!.validate()) {
-      setState(() => _isSubmitting = true);
-
-      final name = _nameController.text.trim();
-      await widget.onSubmit(name, _selectedStartedAt);
-    }
   }
 }
