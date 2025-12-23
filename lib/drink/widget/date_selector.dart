@@ -15,6 +15,8 @@ class DateSelector extends StatelessWidget {
     return AsyncBuilder<DateTime>(
       stream: _dateService.selectedDateStream,
       builder: (context, datetime) {
+        final isToday = _dateService.isToday;
+
         return GestureDetector(
           onTap: () => _showDatePicker(context, datetime),
           onHorizontalDragEnd: (details) {
@@ -24,7 +26,7 @@ class DateSelector extends StatelessWidget {
 
             if (details.primaryVelocity! > 0) {
               _dateService.previousDay();
-            } else if (details.primaryVelocity! < 0) {
+            } else if (details.primaryVelocity! < 0 && !isToday) {
               _dateService.nextDay();
             }
           },
@@ -36,7 +38,7 @@ class DateSelector extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _buildChevron(SwipeDirection.left),
+                _buildChevron(direction: SwipeDirection.left),
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -48,7 +50,10 @@ class DateSelector extends StatelessWidget {
                     ),
                   ],
                 ),
-                _buildChevron(SwipeDirection.right),
+                _buildChevron(
+                  direction: SwipeDirection.right,
+                  enabled: !isToday,
+                ),
               ],
             ),
           ),
@@ -57,7 +62,10 @@ class DateSelector extends StatelessWidget {
     );
   }
 
-  IconButton _buildChevron(SwipeDirection direction) {
+  IconButton _buildChevron({
+    required SwipeDirection direction,
+    bool enabled = true,
+  }) {
     final (icon, moveFunction) = switch (direction) {
       SwipeDirection.left => (Icons.chevron_left, _dateService.previousDay),
       SwipeDirection.right => (Icons.chevron_right, _dateService.nextDay),
@@ -65,7 +73,7 @@ class DateSelector extends StatelessWidget {
 
     return IconButton(
       icon: Icon(icon),
-      onPressed: moveFunction,
+      onPressed: enabled ? moveFunction : null,
       padding: EdgeInsets.zero,
       constraints: const BoxConstraints(),
     );
@@ -80,7 +88,7 @@ class DateSelector extends StatelessWidget {
       context: context,
       initialDate: selectedDate,
       firstDate: DateTime(2020),
-      lastDate: DateTime(2030),
+      lastDate: DateTime.now(),
     );
 
     if (pickedDate != null) {
@@ -95,7 +103,6 @@ class DateSelector extends StatelessWidget {
     return switch (date.difference(nowDate).inDays) {
       0 => 'Today',
       -1 => 'Yesterday',
-      1 => 'Tomorrow',
       _ => DateFormat('EEEE, d MMMM yyyy').format(date),
     };
   }
