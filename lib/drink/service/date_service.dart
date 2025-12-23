@@ -29,6 +29,10 @@ class DateService {
     _selectedDateSubject.add(_selectedDate.subtract(const Duration(days: 1)));
   }
 
+  void goToToday() {
+    _selectedDateSubject.add(DateTime.now());
+  }
+
   void dispose() {
     _selectedDateSubject.close();
   }

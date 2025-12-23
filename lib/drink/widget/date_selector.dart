@@ -39,15 +39,23 @@ class DateSelector extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 _buildChevron(direction: SwipeDirection.left),
-                Row(
-                  mainAxisSize: MainAxisSize.min,
+                Column(
                   children: [
-                    const Icon(Icons.calendar_today, size: 20),
-                    const SizedBox(width: 8),
-                    Text(
-                      _formatDate(datetime),
-                      style: Theme.of(context).textTheme.titleMedium,
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.calendar_today, size: 20),
+                        const SizedBox(width: 8),
+                        Text(
+                          _formatDate(datetime),
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                      ],
                     ),
+                    if (!isToday) ...[
+                      const SizedBox(height: 4),
+                      _buildReturnToToday(context),
+                    ],
                   ],
                 ),
                 _buildChevron(
@@ -59,6 +67,23 @@ class DateSelector extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+
+  Widget _buildReturnToToday(BuildContext context) {
+    return InkWell(
+      onTap: _dateService.goToToday,
+      borderRadius: BorderRadius.circular(12),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+        child: Text(
+          'Return to today',
+          style: Theme.of(context).textTheme.labelSmall?.copyWith(
+            color: Theme.of(context).colorScheme.primary,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
     );
   }
 
