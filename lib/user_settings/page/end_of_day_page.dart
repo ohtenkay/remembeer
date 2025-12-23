@@ -26,7 +26,6 @@ class _EndOfDayPageState extends State<EndOfDayPage> {
           'and viewing the 10th, drinks from 10th 6:00 AM to 11th 6:00 AM '
           'will be shown. This has no effect on statictics or streak '
           'calculations (they always use midnight as day boundary).',
-      onFabPressed: _saveSettings,
       child: AsyncBuilder(
         future: _userSettingsService.currentUserSettings,
         builder: (context, userSettings) {
@@ -108,9 +107,7 @@ class _EndOfDayPageState extends State<EndOfDayPage> {
   }
 
   void _resetToDefault() {
-    setState(() {
-      _selectedEndOfDayBoundary = defaultEndOfDayBoundary;
-    });
+    _onTimeChanged(defaultEndOfDayBoundary);
   }
 
   Future<void> _pickTime() async {
@@ -119,19 +116,15 @@ class _EndOfDayPageState extends State<EndOfDayPage> {
       initialTime: _selectedEndOfDayBoundary!,
     );
     if (pickedTime != null) {
-      setState(() {
-        _selectedEndOfDayBoundary = pickedTime;
-      });
+      await _onTimeChanged(pickedTime);
     }
   }
 
-  Future<void> _saveSettings() async {
-    await _userSettingsService.updateEndOfDayBoundary(
-      _selectedEndOfDayBoundary!,
-    );
+  Future<void> _onTimeChanged(TimeOfDay value) async {
+    setState(() {
+      _selectedEndOfDayBoundary = value;
+    });
 
-    if (mounted) {
-      Navigator.of(context).pop();
-    }
+    await _userSettingsService.updateEndOfDayBoundary(value);
   }
 }
