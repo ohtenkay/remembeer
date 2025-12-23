@@ -25,7 +25,6 @@ class _DrinkListSortPageState extends State<DrinkListSortPage> {
           'Choose how drinks and sessions are sorted in the list. '
           '"Newest first" shows your most recent drinks and sessions at the top, '
           'while "Oldest first" shows them at the bottom.',
-      onFabPressed: _saveSettings,
       child: AsyncBuilder(
         future: _userSettingsService.currentUserSettings,
         builder: (context, userSettings) {
@@ -33,11 +32,7 @@ class _DrinkListSortPageState extends State<DrinkListSortPage> {
 
           return RadioGroup<DrinkListSort>(
             groupValue: _selectedSort,
-            onChanged: (value) {
-              setState(() {
-                _selectedSort = value;
-              });
-            },
+            onChanged: _onSortChanged,
             child: Column(
               children: DrinkListSort.values.map(_buildSortOption).toList(),
             ),
@@ -54,31 +49,18 @@ class _DrinkListSortPageState extends State<DrinkListSortPage> {
       child: ListTile(
         leading: Radio<DrinkListSort>(value: sort),
         title: Text(sort.displayName),
-        subtitle: Text(_getSubtitle(sort)),
+        subtitle: Text(sort.description),
         selected: isSelected,
-        onTap: () {
-          setState(() {
-            _selectedSort = sort;
-          });
-        },
+        onTap: () => _onSortChanged(sort),
       ),
     );
   }
 
-  String _getSubtitle(DrinkListSort sort) {
-    switch (sort) {
-      case DrinkListSort.descending:
-        return 'Most recent drinks and sessions appear at the top';
-      case DrinkListSort.ascending:
-        return 'Oldest drinks and sessions appear at the top';
-    }
-  }
-
-  Future<void> _saveSettings() async {
-    await _userSettingsService.updateDrinkListSort(_selectedSort!);
-
-    if (mounted) {
-      Navigator.of(context).pop();
-    }
+  Future<void> _onSortChanged(DrinkListSort? value) async {
+    if (value == null) return;
+    setState(() {
+      _selectedSort = value;
+    });
+    await _userSettingsService.updateDrinkListSort(value);
   }
 }
