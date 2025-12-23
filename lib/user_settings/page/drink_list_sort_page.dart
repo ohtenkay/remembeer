@@ -49,20 +49,11 @@ class _DrinkListSortPageState extends State<DrinkListSortPage> {
       child: ListTile(
         leading: Radio<DrinkListSort>(value: sort),
         title: Text(sort.displayName),
-        subtitle: Text(_getSubtitle(sort)),
+        subtitle: Text(sort.description),
         selected: isSelected,
         onTap: () => _onSortChanged(sort),
       ),
     );
-  }
-
-  String _getSubtitle(DrinkListSort sort) {
-    switch (sort) {
-      case DrinkListSort.descending:
-        return 'Most recent drinks and sessions appear at the top';
-      case DrinkListSort.ascending:
-        return 'Oldest drinks and sessions appear at the top';
-    }
   }
 
   Future<void> _onSortChanged(DrinkListSort? value) async {
