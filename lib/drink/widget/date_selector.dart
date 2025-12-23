@@ -17,56 +17,64 @@ class DateSelector extends StatelessWidget {
       builder: (context, datetime) {
         final isToday = _dateService.isToday;
 
-        return GestureDetector(
-          onTap: () => _showDatePicker(context, datetime),
-          onHorizontalDragEnd: (details) {
-            if (details.primaryVelocity == null) {
-              return;
-            }
-
-            if (details.primaryVelocity! > 0) {
-              _dateService.previousDay();
-            } else if (details.primaryVelocity! < 0 && !isToday) {
-              _dateService.nextDay();
-            }
-          },
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surfaceContainerHighest,
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _buildChevron(direction: SwipeDirection.left),
-                Column(
+        return Card(
+          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          elevation: 0,
+          color: Theme.of(context).colorScheme.surfaceContainerHighest,
+          child: InkWell(
+            onTap: () => _showDatePicker(context, datetime),
+            child: Padding(
+              padding: const EdgeInsets.all(4),
+              child: GestureDetector(
+                onHorizontalDragEnd: (details) =>
+                    _handleSwipe(details, isToday),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Icon(Icons.calendar_today, size: 20),
-                        const SizedBox(width: 8),
-                        Text(
-                          _formatDate(datetime),
-                          style: Theme.of(context).textTheme.titleMedium,
-                        ),
-                      ],
+                    _buildChevron(direction: SwipeDirection.left),
+                    _buildDateDisplay(datetime, context, isToday),
+                    _buildChevron(
+                      direction: SwipeDirection.right,
+                      enabled: !isToday,
                     ),
-                    if (!isToday) ...[
-                      const SizedBox(height: 4),
-                      _buildReturnToToday(context),
-                    ],
                   ],
                 ),
-                _buildChevron(
-                  direction: SwipeDirection.right,
-                  enabled: !isToday,
-                ),
-              ],
+              ),
             ),
           ),
         );
       },
+    );
+  }
+
+  Widget _buildDateDisplay(
+    DateTime datetime,
+    BuildContext context,
+    bool isToday,
+  ) {
+    return Expanded(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.calendar_today, size: 16),
+              const SizedBox(width: 8),
+              Text(
+                _formatDate(datetime),
+                style: Theme.of(
+                  context,
+                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+          if (!isToday) ...[
+            const SizedBox(height: 4),
+            _buildReturnToToday(context),
+          ],
+        ],
+      ),
     );
   }
 
@@ -78,7 +86,7 @@ class DateSelector extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
         child: Text(
           'Return to today',
-          style: Theme.of(context).textTheme.labelSmall?.copyWith(
+          style: Theme.of(context).textTheme.labelMedium?.copyWith(
             color: Theme.of(context).colorScheme.primary,
             fontWeight: FontWeight.bold,
           ),
@@ -128,7 +136,19 @@ class DateSelector extends StatelessWidget {
     return switch (date.difference(nowDate).inDays) {
       0 => 'Today',
       -1 => 'Yesterday',
-      _ => DateFormat('EEEE, d MMMM yyyy').format(date),
+      _ => DateFormat('EEE, d MMM yyyy').format(date),
     };
+  }
+
+  void _handleSwipe(DragEndDetails details, bool isToday) {
+    if (details.primaryVelocity == null) {
+      return;
+    }
+
+    if (details.primaryVelocity! > 0) {
+      _dateService.previousDay();
+    } else if (details.primaryVelocity! < 0 && !isToday) {
+      _dateService.nextDay();
+    }
   }
 }
