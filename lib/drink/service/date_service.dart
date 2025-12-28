@@ -8,16 +8,29 @@ class DateService {
 
   DateTime get _selectedDate => _selectedDateSubject.value;
 
+  bool get isToday => DateUtils.isSameDay(_selectedDate, DateTime.now());
+
   void setDate(DateTime date) {
     _selectedDateSubject.add(date);
   }
 
   void nextDay() {
-    _selectedDateSubject.add(_selectedDate.add(const Duration(days: 1)));
+    final now = DateTime.now();
+    final nextDate = _selectedDate.add(const Duration(days: 1));
+
+    if (nextDate.isAfter(now) && !DateUtils.isSameDay(nextDate, now)) {
+      return;
+    }
+
+    _selectedDateSubject.add(nextDate);
   }
 
   void previousDay() {
     _selectedDateSubject.add(_selectedDate.subtract(const Duration(days: 1)));
+  }
+
+  void goToToday() {
+    _selectedDateSubject.add(DateTime.now());
   }
 
   void dispose() {

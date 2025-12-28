@@ -15,41 +15,31 @@ class DateSelector extends StatelessWidget {
     return AsyncBuilder<DateTime>(
       stream: _dateService.selectedDateStream,
       builder: (context, datetime) {
-        return GestureDetector(
-          onTap: () => _showDatePicker(context, datetime),
-          onHorizontalDragEnd: (details) {
-            if (details.primaryVelocity == null) {
-              return;
-            }
+        final isToday = _dateService.isToday;
 
-            if (details.primaryVelocity! > 0) {
-              _dateService.previousDay();
-            } else if (details.primaryVelocity! < 0) {
-              _dateService.nextDay();
-            }
-          },
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surfaceContainerHighest,
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _buildChevron(SwipeDirection.left),
-                Row(
-                  mainAxisSize: MainAxisSize.min,
+        return Card(
+          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          elevation: 0,
+          color: Theme.of(context).colorScheme.surfaceContainerHighest,
+          child: InkWell(
+            onTap: () => _showDatePicker(context, datetime),
+            child: Padding(
+              padding: const EdgeInsets.all(4),
+              child: GestureDetector(
+                onHorizontalDragEnd: (details) =>
+                    _handleSwipe(details, isToday),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Icon(Icons.calendar_today, size: 20),
-                    const SizedBox(width: 8),
-                    Text(
-                      _formatDate(datetime),
-                      style: Theme.of(context).textTheme.titleMedium,
+                    _buildChevron(direction: SwipeDirection.left),
+                    _buildDateDisplay(datetime, context, isToday),
+                    _buildChevron(
+                      direction: SwipeDirection.right,
+                      enabled: !isToday,
                     ),
                   ],
                 ),
-                _buildChevron(SwipeDirection.right),
-              ],
+              ),
             ),
           ),
         );
@@ -57,7 +47,58 @@ class DateSelector extends StatelessWidget {
     );
   }
 
-  IconButton _buildChevron(SwipeDirection direction) {
+  Widget _buildDateDisplay(
+    DateTime datetime,
+    BuildContext context,
+    bool isToday,
+  ) {
+    return Expanded(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.calendar_today, size: 16),
+              const SizedBox(width: 8),
+              Text(
+                _formatDate(datetime),
+                style: Theme.of(
+                  context,
+                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+          if (!isToday) ...[
+            const SizedBox(height: 4),
+            _buildReturnToToday(context),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildReturnToToday(BuildContext context) {
+    return InkWell(
+      onTap: _dateService.goToToday,
+      borderRadius: BorderRadius.circular(12),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+        child: Text(
+          'Return to today',
+          style: Theme.of(context).textTheme.labelMedium?.copyWith(
+            color: Theme.of(context).colorScheme.primary,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+    );
+  }
+
+  IconButton _buildChevron({
+    required SwipeDirection direction,
+    bool enabled = true,
+  }) {
     final (icon, moveFunction) = switch (direction) {
       SwipeDirection.left => (Icons.chevron_left, _dateService.previousDay),
       SwipeDirection.right => (Icons.chevron_right, _dateService.nextDay),
@@ -65,7 +106,7 @@ class DateSelector extends StatelessWidget {
 
     return IconButton(
       icon: Icon(icon),
-      onPressed: moveFunction,
+      onPressed: enabled ? moveFunction : null,
       padding: EdgeInsets.zero,
       constraints: const BoxConstraints(),
     );
@@ -80,7 +121,7 @@ class DateSelector extends StatelessWidget {
       context: context,
       initialDate: selectedDate,
       firstDate: DateTime(2020),
-      lastDate: DateTime(2030),
+      lastDate: DateTime.now(),
     );
 
     if (pickedDate != null) {
@@ -95,8 +136,19 @@ class DateSelector extends StatelessWidget {
     return switch (date.difference(nowDate).inDays) {
       0 => 'Today',
       -1 => 'Yesterday',
-      1 => 'Tomorrow',
-      _ => DateFormat('EEEE, d MMMM yyyy').format(date),
+      _ => DateFormat('EEE, d MMM yyyy').format(date),
     };
+  }
+
+  void _handleSwipe(DragEndDetails details, bool isToday) {
+    if (details.primaryVelocity == null) {
+      return;
+    }
+
+    if (details.primaryVelocity! > 0) {
+      _dateService.previousDay();
+    } else if (details.primaryVelocity! < 0 && !isToday) {
+      _dateService.nextDay();
+    }
   }
 }
