@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:remembeer/common/widget/loading_form.dart';
 import 'package:remembeer/ioc/ioc_container.dart';
 import 'package:remembeer/user/constants.dart';
 import 'package:remembeer/user/service/user_service.dart';
@@ -14,8 +14,6 @@ class UserNamePage extends StatefulWidget {
 
 class _UserNamePageState extends State<UserNamePage> {
   final _userService = get<UserService>();
-
-  final _formKey = GlobalKey<FormState>();
   final _usernameController = TextEditingController();
 
   @override
@@ -39,29 +37,25 @@ class _UserNamePageState extends State<UserNamePage> {
 
   @override
   Widget build(BuildContext context) {
-    return SettingsPageTemplate(
-      title: const Text('Change your username'),
-      hint:
-          'This is your displayed username. Other users can find you by '
-          'searching for this username or your email.',
-      onFabPressed: _submitForm,
-      child: Form(
-        key: _formKey,
-        child: Column(children: [_buildUsernameInput()]),
+    return LoadingForm(
+      builder: (form) => SettingsPageTemplate(
+        title: const Text('Change your username'),
+        hint:
+            'This is your displayed username. Other users can find you by '
+            'searching for this username or your email.',
+        onFabPressed: form.isLoading ? null : () => _submitForm(form),
+        child: Column(children: [_buildUsernameInput(form)]),
       ),
     );
   }
 
-  Widget _buildUsernameInput() {
-    return TextFormField(
+  Widget _buildUsernameInput(LoadingFormState form) {
+    return form.buildTextField(
       controller: _usernameController,
+      label: 'Username',
+      prefixIcon: Icons.person_outline,
       maxLength: maxUsernameLength,
-      inputFormatters: [LengthLimitingTextInputFormatter(maxUsernameLength)],
-      decoration: const InputDecoration(
-        labelText: 'Username',
-        border: OutlineInputBorder(),
-        prefixIcon: Icon(Icons.person_outline),
-      ),
+      isLastField: true,
       validator: (value) {
         if (value == null || value.trim().isEmpty) {
           return 'Username cannot be empty.';
@@ -74,12 +68,14 @@ class _UserNamePageState extends State<UserNamePage> {
     );
   }
 
-  Future<void> _submitForm() async {
-    if (_formKey.currentState!.validate()) {
+  Future<void> _submitForm(LoadingFormState form) async {
+    if (!form.validate()) return;
+
+    await form.runAction(() async {
       await _userService.updateUsername(newUsername: _usernameController.text);
       if (mounted) {
         Navigator.of(context).pop();
       }
-    }
+    });
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:remembeer/common/widget/loading_form.dart';
 import 'package:remembeer/drink_type/model/drink_category.dart';
 
 const _spacing = SizedBox(height: 16);
@@ -29,8 +30,6 @@ class DrinkTypeForm extends StatefulWidget {
 }
 
 class _DrinkTypeFormState extends State<DrinkTypeForm> {
-  final _formKey = GlobalKey<FormState>();
-
   late DrinkCategory? _selectedDrinkCategory = widget.initialDrinkCategory;
   final _nameController = TextEditingController();
   final _alcoholPercentageController = TextEditingController();
@@ -52,51 +51,43 @@ class _DrinkTypeFormState extends State<DrinkTypeForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Expanded(
-          child: Form(
-            key: _formKey,
+    return LoadingForm(
+      builder: (form) => Column(
+        children: [
+          Expanded(
             child: ListView(
               children: [
-                _buildNameInput(),
+                _buildNameInput(form),
                 _spacing,
-                _buildAlcoholPercentageInput(),
+                _buildAlcoholPercentageInput(form),
                 _spacing,
-                _buildDrinkCategoryDropdown(),
+                _buildDrinkCategoryDropdown(form),
               ],
             ),
           ),
-        ),
-        _buildActionButtons(context),
-      ],
+          _buildActionButtons(form),
+        ],
+      ),
     );
   }
 
-  Widget _buildNameInput() {
-    return TextFormField(
+  Widget _buildNameInput(LoadingFormState form) {
+    return form.buildTextField(
       controller: _nameController,
-      decoration: const InputDecoration(
-        labelText: 'Name',
-        border: OutlineInputBorder(),
-      ),
+      label: 'Name',
       validator: (value) {
         if (value == null || value.isEmpty) {
           return 'Please enter a name.';
         }
-
         return null;
       },
     );
   }
 
-  Widget _buildAlcoholPercentageInput() {
-    return TextFormField(
+  Widget _buildAlcoholPercentageInput(LoadingFormState form) {
+    return form.buildTextField(
       controller: _alcoholPercentageController,
-      decoration: const InputDecoration(
-        labelText: 'Alcohol Percentage (%)',
-        border: OutlineInputBorder(),
-      ),
+      label: 'Alcohol Percentage (%)',
       keyboardType: TextInputType.number,
       validator: (value) {
         if (value == null || value.isEmpty) {
@@ -106,42 +97,43 @@ class _DrinkTypeFormState extends State<DrinkTypeForm> {
         if (percentage == null || percentage < 0 || percentage > 100) {
           return 'Please enter a valid number.';
         }
+        if (percentage == 0) {
+          return "You don't need our app for that";
+        }
         return null;
       },
     );
   }
 
-  Widget _buildActionButtons(BuildContext context) {
+  Widget _buildActionButtons(LoadingFormState form) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        ElevatedButton(
-          onPressed: () async {
-            await _submitForm(context);
-          },
-          style: ElevatedButton.styleFrom(padding: const EdgeInsets.all(30.0)),
-          child: const Text('Submit'),
+        form.buildSubmitButton(
+          text: 'Submit',
+          margin: const EdgeInsets.only(bottom: 16),
+          onSubmit: _submitForm,
         ),
         if (widget.onDelete != null) ...[
-          const SizedBox(height: 8),
-          ElevatedButton(
-            onPressed: () async {
-              if (widget.onDelete != null) {
-                await widget.onDelete!();
-              }
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
-              padding: const EdgeInsets.all(30.0),
+          Padding(
+            padding: const EdgeInsetsGeometry.symmetric(vertical: 16),
+            child: FilledButton(
+              onPressed: form.isLoading
+                  ? null
+                  : () => form.runAction(widget.onDelete!),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Theme.of(context).colorScheme.error,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+              ),
+              child: const Text('Delete', style: TextStyle(fontSize: 16)),
             ),
-            child: const Text('Delete'),
           ),
         ],
       ],
     );
   }
 
-  Widget _buildDrinkCategoryDropdown() {
+  Widget _buildDrinkCategoryDropdown(LoadingFormState form) {
     return DropdownButtonFormField<DrinkCategory>(
       initialValue: _selectedDrinkCategory,
       hint: const Text('Select Category'),
@@ -151,11 +143,13 @@ class _DrinkTypeFormState extends State<DrinkTypeForm> {
           child: Text(drinkCategory.displayName),
         );
       }).toList(),
-      onChanged: (newValue) {
-        setState(() {
-          _selectedDrinkCategory = newValue;
-        });
-      },
+      onChanged: form.isLoading
+          ? null
+          : (newValue) {
+              setState(() {
+                _selectedDrinkCategory = newValue;
+              });
+            },
       validator: (value) {
         if (value == null) {
           return 'Please select a category.';
@@ -169,16 +163,14 @@ class _DrinkTypeFormState extends State<DrinkTypeForm> {
     );
   }
 
-  Future<void> _submitForm(BuildContext context) async {
-    if (_formKey.currentState!.validate()) {
-      final name = _nameController.text;
-      final alcoholPercentage = double.parse(_alcoholPercentageController.text);
-      final roundedAlcoholPercentage = (alcoholPercentage * 100).round() / 100;
-      await widget.onSubmit(
-        name,
-        roundedAlcoholPercentage,
-        _selectedDrinkCategory!,
-      );
-    }
+  Future<void> _submitForm() async {
+    final name = _nameController.text;
+    final alcoholPercentage = double.parse(_alcoholPercentageController.text);
+    final roundedAlcoholPercentage = (alcoholPercentage * 100).round() / 100;
+    await widget.onSubmit(
+      name,
+      roundedAlcoholPercentage,
+      _selectedDrinkCategory!,
+    );
   }
 }
