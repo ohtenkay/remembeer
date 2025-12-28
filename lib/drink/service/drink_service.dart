@@ -1,9 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:remembeer/drink/constants.dart';
 import 'package:remembeer/drink/controller/drink_controller.dart';
 import 'package:remembeer/drink/model/drink.dart';
 import 'package:remembeer/drink/model/drink_create.dart';
 import 'package:remembeer/drink/service/date_service.dart';
 import 'package:remembeer/drink_type/model/drink_category.dart';
+import 'package:remembeer/location/service/location_service.dart';
 import 'package:remembeer/user/controller/user_controller.dart';
 import 'package:remembeer/user_settings/controller/user_settings_controller.dart';
 import 'package:remembeer/user_settings/model/drink_list_sort.dart';
@@ -14,12 +16,14 @@ class DrinkService {
   final DrinkController drinkController;
   final UserController userController;
   final DateService dateService;
+  final LocationService locationService;
 
   DrinkService({
     required this.userSettingsController,
     required this.drinkController,
     required this.userController,
     required this.dateService,
+    required this.locationService,
   });
 
   Stream<List<Drink>> get drinksForSelectedDateStream {
@@ -146,11 +150,17 @@ class DrinkService {
 
   Future<void> addDefaultDrink() async {
     final userSettings = await userSettingsController.currentUserSettings;
+    final position = await locationService.getLastPositionIfAllowed();
+    final location = position != null
+        ? GeoPoint(position.latitude, position.longitude)
+        : null;
+
     await createDrink(
       DrinkCreate(
         consumedAt: DateTime.now(),
         drinkType: userSettings.defaultDrinkType,
         volumeInMilliliters: userSettings.defaultDrinkSize,
+        location: location,
       ),
     );
   }

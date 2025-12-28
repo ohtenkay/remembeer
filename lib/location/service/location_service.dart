@@ -21,4 +21,19 @@ class LocationService {
 
     return Geolocator.getCurrentPosition();
   }
+
+  Future<Position?> getLastPositionIfAllowed() async {
+    final serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      return null;
+    }
+
+    final permission = await Geolocator.checkPermission();
+    if (permission != LocationPermission.whileInUse &&
+        permission != LocationPermission.always) {
+      return null;
+    }
+
+    return Geolocator.getLastKnownPosition();
+  }
 }
