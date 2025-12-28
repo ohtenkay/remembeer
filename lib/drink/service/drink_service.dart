@@ -71,6 +71,7 @@ class DrinkService {
     final updatedUser = user.addDrink(
       year: drinkCreate.consumedAt.year,
       month: drinkCreate.consumedAt.month,
+      day: drinkCreate.consumedAt.day,
       beersEquivalent: beers,
       alcoholMl: alcohol,
     );
@@ -107,6 +108,7 @@ class DrinkService {
     user = user.removeDrink(
       year: oldDrink.consumedAt.year,
       month: oldDrink.consumedAt.month,
+      day: oldDrink.consumedAt.day,
       beersEquivalent: oldBeers,
       alcoholMl: oldAlcohol,
     );
@@ -114,6 +116,7 @@ class DrinkService {
     user = user.addDrink(
       year: newDrink.consumedAt.year,
       month: newDrink.consumedAt.month,
+      day: newDrink.consumedAt.day,
       beersEquivalent: newBeers,
       alcoholMl: newAlcohol,
     );
@@ -138,6 +141,7 @@ class DrinkService {
     final updatedUser = user.removeDrink(
       year: drink.consumedAt.year,
       month: drink.consumedAt.month,
+      day: drink.consumedAt.day,
       beersEquivalent: beers,
       alcoholMl: alcohol,
     );

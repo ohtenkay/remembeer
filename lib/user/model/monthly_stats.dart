@@ -1,21 +1,24 @@
 import 'dart:math';
 
 import 'package:json_annotation/json_annotation.dart';
+import 'package:remembeer/user/model/daily_stats.dart';
 
 part 'monthly_stats.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class MonthlyStats {
   final int year;
   final int month;
   final double beersConsumed;
   final double alcoholConsumedMl;
+  final Map<int, DailyStats> dailyStats;
 
   const MonthlyStats({
     required this.year,
     required this.month,
     required this.beersConsumed,
     required this.alcoholConsumedMl,
+    this.dailyStats = const {},
   });
 
   factory MonthlyStats.fromJson(Map<String, dynamic> json) =>
@@ -27,32 +30,57 @@ class MonthlyStats {
 
   static String keyFor(int year, int month) => '${year}_$month';
 
-  MonthlyStats copyWith({double? beersConsumed, double? alcoholConsumedMl}) {
+  MonthlyStats addDrink({
+    required int day,
+    required double beersEquivalent,
+    required double alcoholMl,
+  }) {
+    final currentDaily =
+        dailyStats[day] ??
+        DailyStats(day: day, beersConsumed: 0, alcoholConsumedMl: 0);
+    final updatedDaily = currentDaily.addDrink(
+      beersEquivalent: beersEquivalent,
+      alcoholMl: alcoholMl,
+    );
+
+    return copyWith(
+      beersConsumed: beersConsumed + beersEquivalent,
+      alcoholConsumedMl: alcoholConsumedMl + alcoholMl,
+      dailyStats: {...dailyStats, day: updatedDaily},
+    );
+  }
+
+  MonthlyStats removeDrink({
+    required int day,
+    required double beersEquivalent,
+    required double alcoholMl,
+  }) {
+    final currentDaily =
+        dailyStats[day] ??
+        DailyStats(day: day, beersConsumed: 0, alcoholConsumedMl: 0);
+    final updatedDaily = currentDaily.removeDrink(
+      beersEquivalent: beersEquivalent,
+      alcoholMl: alcoholMl,
+    );
+
+    return copyWith(
+      beersConsumed: max(0, beersConsumed - beersEquivalent),
+      alcoholConsumedMl: max(0, alcoholConsumedMl - alcoholMl),
+      dailyStats: {...dailyStats, day: updatedDaily},
+    );
+  }
+
+  MonthlyStats copyWith({
+    double? beersConsumed,
+    double? alcoholConsumedMl,
+    Map<int, DailyStats>? dailyStats,
+  }) {
     return MonthlyStats(
       year: year,
       month: month,
       beersConsumed: beersConsumed ?? this.beersConsumed,
       alcoholConsumedMl: alcoholConsumedMl ?? this.alcoholConsumedMl,
-    );
-  }
-
-  MonthlyStats addDrink({
-    required double beersEquivalent,
-    required double alcoholMl,
-  }) {
-    return copyWith(
-      beersConsumed: beersConsumed + beersEquivalent,
-      alcoholConsumedMl: alcoholConsumedMl + alcoholMl,
-    );
-  }
-
-  MonthlyStats removeDrink({
-    required double beersEquivalent,
-    required double alcoholMl,
-  }) {
-    return copyWith(
-      beersConsumed: max(0, beersConsumed - beersEquivalent),
-      alcoholConsumedMl: max(0, alcoholConsumedMl - alcoholMl),
+      dailyStats: dailyStats ?? this.dailyStats,
     );
   }
 }
