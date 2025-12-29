@@ -78,7 +78,7 @@ class IoCContainer {
         ),
       )
       ..registerSingleton(
-        UserStatsService(drinkController: get<DrinkController>()),
+        UserStatsService(userController: get<UserController>()),
       )
       ..registerSingleton(
         LeaderboardService(

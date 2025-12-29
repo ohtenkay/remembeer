@@ -1,95 +1,88 @@
-import 'package:remembeer/drink/constants.dart';
-import 'package:remembeer/drink/controller/drink_controller.dart';
-import 'package:remembeer/drink/model/drink.dart';
-import 'package:remembeer/drink_type/model/drink_category.dart';
+import 'package:remembeer/user/controller/user_controller.dart';
+import 'package:remembeer/user/model/user_model.dart';
 import 'package:remembeer/user_stats/model/user_stats.dart';
 
 class UserStatsService {
-  final DrinkController drinkController;
+  final UserController userController;
 
-  UserStatsService({required this.drinkController});
+  UserStatsService({required this.userController});
 
   Stream<UserStats> get userStatsStream {
-    return _mapDrinksToStats(drinkController.userRelatedEntitiesStream);
+    return _computeStats(userController.currentUserStream);
   }
 
   Stream<UserStats> userStatsStreamFor(String userId) {
-    return _mapDrinksToStats(drinkController.drinksStreamFor(userId));
+    return _computeStats(userController.userStreamFor(userId));
   }
 
-  Stream<UserStats> _mapDrinksToStats(Stream<List<Drink>> drinksStream) {
-    return drinksStream.map((drinks) {
-      final now = DateTime.now();
-      final thirtyDaysAgo = now.subtract(const Duration(days: 30));
+  Stream<UserStats> _computeStats(Stream<UserModel> userStream) {
+    return userStream.map((user) {
+      final (totalBeers, totalAlcohol) = _calculateTotals(user);
+      final (beersLast30Days, alcoholLast30Days) = _calculateLast30Days(user);
 
-      final drinksLast30Days = drinks.where((drink) {
-        return drink.consumedAt.isAfter(thirtyDaysAgo);
-      }).toList();
-
-      final (isStreakActive, streakDays) = _calculateStreak(drinks);
+      final (isStreakActive, streakDays) = _calculateStreak(user);
 
       return UserStats(
-        totalBeersConsumed: _calculateEquivalentBeers(drinks),
-        totalAlcoholConsumed: _calculateTotalAlcohol(drinks),
-        beersConsumedLast30Days: _calculateEquivalentBeers(drinksLast30Days),
-        alcoholConsumedLast30Days: _calculateTotalAlcohol(drinksLast30Days),
+        totalBeersConsumed: totalBeers,
+        totalAlcoholConsumed: totalAlcohol,
+        beersConsumedLast30Days: beersLast30Days,
+        alcoholConsumedLast30Days: alcoholLast30Days,
         streakDays: streakDays,
         isStreakActive: isStreakActive,
       );
     });
   }
 
-  double _calculateEquivalentBeers(List<Drink> drinks) {
-    return drinks
-        .where((drink) => drink.drinkType.category == DrinkCategory.beer)
-        .fold<double>(
-          0.0,
-          (sum, beer) => sum + (beer.volumeInMilliliters / beerVolumeMl),
-        );
+  (double, double) _calculateTotals(UserModel user) {
+    var totalBeers = 0.0;
+    var totalAlcohol = 0.0;
+
+    for (final monthly in user.monthlyStats.values) {
+      totalBeers += monthly.beersConsumed;
+      totalAlcohol += monthly.alcoholConsumedMl;
+    }
+
+    return (totalBeers, totalAlcohol);
   }
 
-  double _calculateTotalAlcohol(List<Drink> drinks) {
-    return drinks.fold<double>(
-      0.0,
-      (sum, drink) =>
-          sum +
-          (drink.volumeInMilliliters * drink.drinkType.alcoholPercentage / 100),
-    );
+  (double, double) _calculateLast30Days(UserModel user) {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+
+    var beersLast30Days = 0.0;
+    var alcoholLast30Days = 0.0;
+
+    for (final i in List.generate(30, (i) => i)) {
+      final date = today.subtract(Duration(days: i));
+      final daily = user.getDailyStats(date.year, date.month, date.day);
+      beersLast30Days += daily.beersConsumed;
+      alcoholLast30Days += daily.alcoholConsumedMl;
+    }
+
+    return (beersLast30Days, alcoholLast30Days);
   }
 
-  (bool, int) _calculateStreak(List<Drink> drinks) {
+  (bool, int) _calculateStreak(UserModel user) {
     final now = DateTime.now();
     final todayDate = DateTime(now.year, now.month, now.day);
 
-    final uniqueDays =
-        drinks
-            .map(
-              (drink) => DateTime(
-                drink.consumedAt.year,
-                drink.consumedAt.month,
-                drink.consumedAt.day,
-              ),
-            )
-            .toSet()
-            .toList()
-          ..sort((a, b) => b.compareTo(a));
-
-    final isStreakActive = uniqueDays.contains(todayDate);
+    final isStreakActive = _hadDrinkOnDate(user, todayDate);
 
     var streakDays = 0;
-    var expectedDate = isStreakActive
+    var currentDate = isStreakActive
         ? todayDate
         : todayDate.subtract(const Duration(days: 1));
 
-    for (final day in uniqueDays) {
-      if (!day.isAtSameMomentAs(expectedDate)) {
-        break;
-      }
-
+    while (_hadDrinkOnDate(user, currentDate)) {
       streakDays++;
-      expectedDate = expectedDate.subtract(const Duration(days: 1));
+      currentDate = currentDate.subtract(const Duration(days: 1));
     }
 
     return (isStreakActive, streakDays);
+  }
+
+  bool _hadDrinkOnDate(UserModel user, DateTime date) {
+    final stats = user.getDailyStats(date.year, date.month, date.day);
+    return stats.alcoholConsumedMl > 0;
   }
 }
