@@ -58,6 +58,8 @@ class DrinkService {
   }
 
   Future<void> createDrink(DrinkCreate drinkCreate) async {
+    final effectiveDate = await _effectiveDate(drinkCreate.consumedAt);
+
     final beers = _beersEquivalent(
       category: drinkCreate.drinkType.category,
       volumeInMilliliters: drinkCreate.volumeInMilliliters,
@@ -69,9 +71,9 @@ class DrinkService {
 
     final user = await userController.currentUser;
     final updatedUser = user.addDrink(
-      year: drinkCreate.consumedAt.year,
-      month: drinkCreate.consumedAt.month,
-      day: drinkCreate.consumedAt.day,
+      year: effectiveDate.year,
+      month: effectiveDate.month,
+      day: effectiveDate.day,
       beersEquivalent: beers,
       alcoholMl: alcohol,
     );
@@ -86,6 +88,9 @@ class DrinkService {
     required Drink oldDrink,
     required Drink newDrink,
   }) async {
+    final oldEffectiveDate = await _effectiveDate(oldDrink.consumedAt);
+    final newEffectiveDate = await _effectiveDate(newDrink.consumedAt);
+
     final oldBeers = _beersEquivalent(
       category: oldDrink.drinkType.category,
       volumeInMilliliters: oldDrink.volumeInMilliliters,
@@ -106,17 +111,17 @@ class DrinkService {
     var user = await userController.currentUser;
 
     user = user.removeDrink(
-      year: oldDrink.consumedAt.year,
-      month: oldDrink.consumedAt.month,
-      day: oldDrink.consumedAt.day,
+      year: oldEffectiveDate.year,
+      month: oldEffectiveDate.month,
+      day: oldEffectiveDate.day,
       beersEquivalent: oldBeers,
       alcoholMl: oldAlcohol,
     );
 
     user = user.addDrink(
-      year: newDrink.consumedAt.year,
-      month: newDrink.consumedAt.month,
-      day: newDrink.consumedAt.day,
+      year: newEffectiveDate.year,
+      month: newEffectiveDate.month,
+      day: newEffectiveDate.day,
       beersEquivalent: newBeers,
       alcoholMl: newAlcohol,
     );
@@ -128,6 +133,8 @@ class DrinkService {
   }
 
   Future<void> deleteDrink(Drink drink) async {
+    final effectiveDate = await _effectiveDate(drink.consumedAt);
+
     final beers = _beersEquivalent(
       category: drink.drinkType.category,
       volumeInMilliliters: drink.volumeInMilliliters,
@@ -139,9 +146,9 @@ class DrinkService {
 
     final user = await userController.currentUser;
     final updatedUser = user.removeDrink(
-      year: drink.consumedAt.year,
-      month: drink.consumedAt.month,
-      day: drink.consumedAt.day,
+      year: effectiveDate.year,
+      month: effectiveDate.month,
+      day: effectiveDate.day,
       beersEquivalent: beers,
       alcoholMl: alcohol,
     );
@@ -190,5 +197,23 @@ class DrinkService {
     required double alcoholPercentage,
   }) {
     return volumeInMilliliters * alcoholPercentage / 100;
+  }
+
+  Future<DateTime> _effectiveDate(DateTime consumedAt) async {
+    final userSettings = await userSettingsController.currentUserSettings;
+    final endOfDayBoundary = userSettings.endOfDayBoundary;
+
+    final boundaryTime = DateTime(
+      consumedAt.year,
+      consumedAt.month,
+      consumedAt.day,
+      endOfDayBoundary.hour,
+      endOfDayBoundary.minute,
+    );
+
+    if (consumedAt.isBefore(boundaryTime)) {
+      return consumedAt.subtract(const Duration(days: 1));
+    }
+    return consumedAt;
   }
 }
